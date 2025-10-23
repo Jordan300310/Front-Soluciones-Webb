@@ -1,0 +1,54 @@
+:host {
+  --bs-primary: #1193d4;
+  --bs-primary-rgb: 17, 147, 212;
+  --bs-light: #f0f3f4;
+  --bs-light-rgb: 240, 243, 244;
+  --bs-font-sans-serif: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+
+  font-family: var(--bs-font-sans-serif);
+}
+
+.epp-logo-text {
+  font-size: 1.125rem; /* 18px */
+  font-weight: 700;
+  color: var(--bs-primary);
+}
+
+.nav-link {
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500;
+  color: #333333;
+}
+
+.nav-link:hover {
+  color: var(--bs-primary);
+}
+
+.nav-link.active {
+  color: var(--bs-primary) !important;
+  font-weight: 600;
+}
+
+.btn {
+  font-size: 0.875rem;
+  font-weight: 700;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+}
+
+.btn-primary {
+  --bs-btn-color: #ffffff;
+  --bs-btn-bg: var(--bs-primary);
+  --bs-btn-border-color: var(--bs-primary);
+  --bs-btn-hover-bg: #1082bb;
+  --bs-btn-hover-border-color: #1082bb;
+}
+
+.btn-light {
+  --bs-btn-color: #333333;
+  --bs-btn-bg: var(--bs-light);
+  --bs-btn-border-color: var(--bs-light);
+  --bs-btn-hover-bg: #e2e6e9;
+  --bs-btn-hover-border-color: #e2e6e9;
+}

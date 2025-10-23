@@ -1,0 +1,17 @@
+<div class="d-flex" style="min-height: calc(100vh - 56px);">
+  <aside class="p-3 border-end" style="width:320px;">
+    <h5 class="mb-3">Panel Admin</h5>
+    <nav class="nav flex-column gap-2">
+      <a [routerLink]="['clientes']" class="nav-link" routerLinkActive="active">Clientes</a>
+      <a [routerLink]="['empleados']" class="nav-link" routerLinkActive="active">Empleados</a>
+      <a [routerLink]="['productos']" class="nav-link" routerLinkActive="active">Productos</a>
+      <a [routerLink]="['proveedores']" class="nav-link" routerLinkActive="active">Proveedores</a>
+      <a [routerLink]="['compras']" class="nav-link" routerLinkActive="active">Compras</a>
+      <a [routerLink]="['dashboard']" class="nav-link" routerLinkActive="active">Dashboard</a>
+    </nav>
+  </aside>
+
+  <main class="flex-grow-1 p-4">
+    <router-outlet />
+  </main>
+</div>

@@ -1,0 +1,38 @@
+:host {
+  --bs-primary: #1193d4;
+  --bs-primary-rgb: 17, 147, 212;
+}
+
+.hero-section {
+  min-height: 480px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)),
+    url('https://www.gorayeb.com/wp-content/uploads/2025/03/equipo-proteccion-personal-salva-vidas-construccion.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-section .btn-primary {
+  --bs-btn-color: #ffffff;
+  --bs-btn-bg: var(--bs-primary);
+  --bs-btn-border-color: var(--bs-primary);
+  --bs-btn-hover-bg: #1082bb;
+  --bs-btn-hover-border-color: #1082bb;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0.75rem 1.25rem;
+}
+
+.product-image {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.product-price {
+  color: var(--bs-primary);
+  font-size: 0.875rem; /* 14px */
+}
+
+.card-title {
+  font-weight: 500;
+}

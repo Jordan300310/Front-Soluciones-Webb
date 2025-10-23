@@ -1,0 +1,131 @@
+<h5>Empleados</h5>
+<div class="d-flex gap-4">
+  <!-- LISTA -->
+  <div class="flex-grow-1">
+    <div class="mb-2 text-end">
+      <button class="btn btn-sm btn-primary" (click)="nuevo()">Nuevo</button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Contraseña</th>
+            <th>Nombres</th>
+            <th>A. paterno</th>
+            <th>A. materno</th>
+            <th>DNI</th>
+            <th>Telefono</th>
+            <th>Email</th>
+            <th>F. nac.</th>
+            <th>Cargo</th>
+            <th>Sueldo</th>
+            <th>Estado empleado</th>
+            <th class="text-end text-nowrap">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let e of data$ | async">
+            <td>{{ e.idEmpleado }}</td>
+            <td>{{ e.username }}</td>
+            <td>{{ e.password }}</td>
+            <td>{{ e.nom }}</td>
+            <td>{{ e.apat }}</td>
+            <td>{{ e.amat }}</td>
+            <td>{{ e.dni }}</td>
+            <td>{{ e.cel }}</td>
+            <td>
+              <span class="d-inline-block text-truncate" style="max-width:220px;">
+                {{ e.email }}
+              </span>
+            </td>
+            <td>{{ e.fen }}</td>
+            <td>{{ e.cargo }}</td>
+            <td>{{ e.sueldo }}</td>
+            <td>
+              <span class="badge" [class.text-bg-success]="e.empleadoEstado" [class.text-bg-secondary]="!e.empleadoEstado">
+                {{ e.empleadoEstado ? 'Activo' : 'Inactivo' }}
+              </span>
+            </td>
+            <td class="text-end text-nowrap">
+              <div class="btn-group btn-group-sm" role="group">
+                <button class="btn btn-outline-primary" (click)="editar(e)">Editar</button>
+                <button class="btn btn-outline-danger" (click)="eliminar(e)">Eliminar</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- (Formulario lateral eliminado a propósito) -->
+</div>
+
+<!-- MODAL EMPLEADO (solo HTML, controlado por selected()) -->
+<div class="modal-backdrop show" *ngIf="selected()"></div>
+<div class="modal d-block" tabindex="-1" *ngIf="selected() as s">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ (s?.idEmpleado ? 'Editar' : 'Nuevo') + ' empleado' }}</h5>
+        <button type="button" class="btn-close" (click)="cancelar()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="guardar()">
+          <div class="mb-2">
+            <input class="form-control" placeholder="Nombres" [(ngModel)]="s.nom" name="nom" required>
+          </div>
+          <div class="mb-2">
+            <input class="form-control" placeholder="A. paterno" [(ngModel)]="s.apat" name="apat" required>
+          </div>
+          <div class="mb-2">
+            <input class="form-control" placeholder="A. materno" [(ngModel)]="s.amat" name="amat" required>
+          </div>
+          <div class="mb-2">
+            <input class="form-control" placeholder="DNI" [(ngModel)]="s.dni" name="dni">
+          </div>
+          <div class="mb-2">
+            <input class="form-control" placeholder="Cel" [(ngModel)]="s.cel" name="cel">
+          </div>
+          <div class="mb-2">
+            <input class="form-control" placeholder="Email" [(ngModel)]="s.email" name="email">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Fecha de nacimiento</label>
+            <input type="date" class="form-control" [(ngModel)]="s.fen" name="fen">
+          </div>
+          <div class="mb-2">
+            <input class="form-control" placeholder="Usuario" [(ngModel)]="s.username" name="username" required>
+          </div>
+          <div class="mb-2">
+            <input class="form-control" placeholder="Password" [(ngModel)]="s.password" name="password" [required]="creando()">
+          </div>
+          <div class="row">
+            <div class="col-6 mb-2">
+              <select class="form-select" [(ngModel)]="s.cargo" name="cargo">
+                <option value="EMPLEADO">EMPLEADO</option>
+                <option value="ADMIN">ADMIN</option>
+              </select>
+            </div>
+            <div class="col-6 mb-2">
+              <input type="number" class="form-control" placeholder="Sueldo" [(ngModel)]="s.sueldo" name="sueldo">
+            </div>
+          </div>
+          <div class="mb-2">
+            <select class="form-select" [(ngModel)]="s.empleadoEstado" name="empleadoEstado">
+              <option [ngValue]="true">Activo</option>
+              <option [ngValue]="false">Inactivo</option>
+            </select>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<h5>Compras</h5>
+
+<div class="d-flex gap-4">
+  <!-- LISTA -->
+  <div class="flex-grow-1">
+    <div class="mb-2 text-end">
+      <button class="btn btn-sm btn-primary" (click)="nuevo()">Registrar compra</button>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Proveedor</th>
+            <th>Fecha</th>
+            <th>Productos</th>
+            <th>Subtotal</th>
+            <th>IGV</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of data$ | async">
+            <td>{{ c.idCompra }}</td>
+            <td>{{ c.proveedor || ('#' + c.idProveedor) }}</td>
+            <td>{{ c.fecha }}</td>
+            <td>{{ c.productos }}</td>
+            <td>{{ c.subtotal }}</td>
+            <td>{{ c.igv }}</td>
+            <td>{{ c.total }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- (El formulario lateral se eliminó a propósito) -->
+</div>
+
+<!-- MODAL COMPRA (solo HTML, controlado por creando()) -->
+<div class="modal-backdrop show" *ngIf="creando()"></div>
+<div class="modal d-block" tabindex="-1" *ngIf="creando()">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Registrar compra</h5>
+        <button type="button" class="btn-close" (click)="cancelar()" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="guardar()">
+          <div class="mb-3">
+            <label class="form-label">ID Proveedor</label>
+            <input
+              type="number"
+              class="form-control"
+              [ngModel]="idProveedor()"
+              (ngModelChange)="idProveedor.set($event ? +$event : null)"
+              name="idProveedor"
+              required
+            />
+          </div>
+
+          <div class="mb-2 d-flex justify-content-between align-items-center">
+            <strong>Items</strong>
+            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="addItem()">+ Item</button>
+          </div>
+
+          <div class="border rounded p-2 mb-3" *ngFor="let it of items(); let i = index">
+            <div class="row g-2">
+              <div class="col-4">
+                <input type="number" class="form-control" placeholder="ID Producto"
+                       [(ngModel)]="it.idProducto" name="prod{{i}}">
+              </div>
+              <div class="col-3">
+                <input type="number" class="form-control" placeholder="Cant."
+                       [(ngModel)]="it.cantidad" name="cant{{i}}">
+              </div>
+              <div class="col-3">
+                <input type="number" step="0.01" class="form-control" placeholder="Costo"
+                       [(ngModel)]="it.costoUnit" name="cost{{i}}">
+              </div>
+              <div class="col-2 text-end">
+                <button type="button" class="btn btn-outline-danger" (click)="removeItem(i)">X</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
