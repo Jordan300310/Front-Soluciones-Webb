@@ -64,6 +64,11 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'ticket',
+        loadComponent: () =>
+          import('./features/admin/ticket/ticket.component').then((m) => m.TicketComponent),
+      },
+      {
         path: 'compras',
         loadComponent: () =>
           import('./features/admin/compra/compra.component').then((m) => m.CompraComponent),
