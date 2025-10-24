@@ -38,6 +38,9 @@
             <h5 class="card-title fs-6 fw-medium">
               {{ producto.nombre }}
             </h5>
+            <p class="card-body text-center d-flex flex-column">
+              {{ producto.descripcion }}
+            </p>
             <p class="fw-bold product-price mt-auto mb-0">
               S/ {{ producto.precio | number : '1.2-2' }}
             </p>
