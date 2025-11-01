@@ -42,6 +42,18 @@
       </ul>
 
       <div class="d-flex align-items-center gap-2">
+        <a [routerLink]="['/carrito']" class="btn btn-outline-dark btn-sm position-relative me-2">
+          <i class="bi bi-cart"></i>
+
+          @if (CartStore.totalItems() > 0) {
+          <span
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+            style="font-size: 0.6em"
+          >
+            {{ CartStore.totalItems() }}
+          </span>
+          }
+        </a>
         @if (!store.isLoggedIn()) {
         <a [routerLink]="['/auth/register']" class="btn btn-primary btn-sm">
           <span>Registrarse</span>

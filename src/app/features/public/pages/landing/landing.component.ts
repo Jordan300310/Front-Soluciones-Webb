@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { CartStore } from './../../../../core/store/cart.store';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -14,13 +15,16 @@ import { RouterLink } from '@angular/router';
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.css'],
 })
-export class LandingComponent {
+export class LandingComponent implements OnInit {
   productos$!: Observable<ProductoAdminDTO[]>;
   filtro: string = '';
 
-  constructor(private productosService: AdminProductosService) {}
+  constructor(private productosService: AdminProductosService, private CartStore: CartStore) {}
 
   ngOnInit() {
     this.productos$ = this.productosService.listPublic$();
+  }
+  agregarAlCarrito(producto: ProductoAdminDTO) {
+    this.CartStore.agregarProducto(producto);
   }
 }

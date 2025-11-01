@@ -9,6 +9,27 @@ export const routes: Routes = [
       import('./features/public/pages/landing/landing.component').then((m) => m.LandingComponent),
   },
   {
+    path: 'carrito',
+    loadComponent: () =>
+      import('./features/public/pages/cart/cart.component').then((m) => m.CartComponent),
+  },
+  {
+    path: 'checkout',
+    loadComponent: () =>
+      import('./features/public/pages/checkout/checkout.component').then(
+        (m) => m.CheckoutComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'compra-exitosa/:id',
+    loadComponent: () =>
+      import('./features/public/pages/compra-exitosa/compra-exitosa.component').then(
+        (m) => m.CompraExitosaComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'auth',
     children: [
       {

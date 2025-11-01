@@ -1,0 +1,125 @@
+<div class="container my-5">
+  <div class="row g-5">
+    <div class="col-md-7">
+      <h2 class="h4 fw-bold mb-4">Finalizar Compra</h2>
+
+      <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+        <div formGroupName="envio" class="card shadow-sm rounded-3 mb-4">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">Dirección de Envío</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="direccion" class="form-label">Dirección</label>
+              <input type="text" id="direccion" class="form-control" formControlName="direccion" />
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="ciudad" class="form-label">Ciudad</label>
+                <input type="text" id="ciudad" class="form-control" formControlName="ciudad" />
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="pais" class="form-label">País</label>
+                <input type="text" id="pais" class="form-control" formControlName="pais" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="codigoPostal" class="form-label">Código Postal</label>
+              <input
+                type="text"
+                id="codigoPostal"
+                class="form-control"
+                formControlName="codigoPostal"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div formGroupName="pago" class="card shadow-sm rounded-3">
+          <div class="card-header bg-light">
+            <h5 class="mb-0">Datos de Pago</h5>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label for="numeroTarjeta" class="form-label">Número de Tarjeta</label>
+              <input
+                type="text"
+                id="numeroTarjeta"
+                class="form-control"
+                formControlName="numeroTarjeta"
+                placeholder="1111222233334444"
+              />
+            </div>
+            <div class="row">
+              <div class="col-md-7 mb-3">
+                <label for="fechaExp" class="form-label">Fecha Exp. (MM/AA)</label>
+                <input
+                  type="text"
+                  id="fechaExp"
+                  class="form-control"
+                  formControlName="fechaExp"
+                  placeholder="12/25"
+                />
+              </div>
+              <div class="col-md-5 mb-3">
+                <label for="cvc" class="form-label">CVC</label>
+                <input
+                  type="text"
+                  id="cvc"
+                  class="form-control"
+                  formControlName="cvc"
+                  placeholder="123"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        @if (errorMessage) {
+        <div class="alert alert-danger mt-4">
+          {{ errorMessage }}
+        </div>
+        }
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100 btn-lg mt-4"
+          [disabled]="checkoutForm.invalid || isSubmitting || cartStore.items().length === 0"
+        >
+          @if (isSubmitting) {
+          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+          Procesando... } @else { Pagar S/ {{ cartStore.subtotal() | number : '1.2-2' }}
+          }
+        </button>
+      </form>
+    </div>
+
+    <div class="col-md-5">
+      <div class="card shadow-sm rounded-3 position-sticky" style="top: 2rem">
+        <div class="card-header bg-light">
+          <h5 class="mb-0">Resumen de tu Pedido ({{ cartStore.totalItems() }})</h5>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            @for (item of cartStore.items(); track item.producto.id) {
+            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+              <div>
+                <h6 class="my-0">{{ item.producto.nombre }}</h6>
+                <small class="text-muted">Cantidad: {{ item.cantidad }}</small>
+              </div>
+              <span class="text-muted"
+                >S/ {{ item.producto.precio * item.cantidad | number : '1.2-2' }}</span
+              >
+            </li>
+            }
+          </ul>
+          <hr />
+          <div class="d-flex justify-content-between fw-bold fs-5">
+            <span>Total</span>
+            <span>S/ {{ cartStore.subtotal() | number : '1.2-2' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

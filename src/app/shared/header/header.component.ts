@@ -1,3 +1,4 @@
+import { CartStore } from './../../core/store/cart.store';
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { AuthStore } from '../../core/store/auth.store';
@@ -11,7 +12,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './header.component.css',
 })
 export class HeaderComponent {
-  constructor(public store: AuthStore, private router: Router) {}
+  constructor(public store: AuthStore, public CartStore: CartStore, private router: Router) {}
 
   logout() {
     this.store.setUser(null);
