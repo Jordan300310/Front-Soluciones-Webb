@@ -1,19 +1,17 @@
 import { CanActivateFn, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { AuthStore } from '../store/auth.store';
+import { AuthService } from '../services/auth/auth.service';
 
-export const roleGuard: CanActivateFn = async (route: ActivatedRouteSnapshot) => {
+export const roleGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const router = inject(Router);
-  const store  = inject(AuthStore);
+  const auth   = inject(AuthService);
 
-  if (!store.isLoggedIn()) {
-    return router.createUrlTree(['/auth/login']); 
+  if (!auth.isLoggedIn()) {
+    return router.createUrlTree(['/auth/login']);
   }
 
   const needed: string[] = route.data?.['roles'] ?? [];
-  const roles = store.roles();
+  const roles = auth.getRoles();
   const ok = needed.length === 0 || needed.some(r => roles.includes(r));
-  if (ok) return true;
-
-  return router.createUrlTree(['/']);     
+  return ok ? true : router.createUrlTree(['/']);
 };

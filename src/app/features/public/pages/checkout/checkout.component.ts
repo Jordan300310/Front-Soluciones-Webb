@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CartStore } from '../../../../core/store/cart.store';
-import { AuthStore } from '../../../../core/store/auth.store';
 import { CheckoutService } from '../../../../core/services/venta/checkout.service';
 import { Router } from '@angular/router';
 import { VentaItemRequest } from '../../../../core/models/venta/VentaItemRequest';
@@ -10,6 +9,7 @@ import { CheckoutRequest } from '../../../../core/models/venta/CheckoutRequest';
 
 @Component({
   selector: 'app-checkout',
+  standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css',
@@ -21,12 +21,10 @@ export class CheckoutComponent implements OnInit {
 
   constructor(
     public cartStore: CartStore,
-    private authStore: AuthStore,
     private fb: FormBuilder,
     private checkoutService: CheckoutService,
     private router: Router
   ) {
-    // 2. Crea el formulario reactivo
     this.checkoutForm = this.fb.group({
       envio: this.fb.group({
         direccion: ['', Validators.required],
@@ -34,7 +32,6 @@ export class CheckoutComponent implements OnInit {
         pais: ['', Validators.required],
         codigoPostal: ['', Validators.required],
       }),
-      //Pago simulado
       pago: this.fb.group({
         numeroTarjeta: ['', [Validators.required]],
         fechaExp: ['', [Validators.required]], // MM/YY
@@ -42,14 +39,12 @@ export class CheckoutComponent implements OnInit {
       }),
     });
   }
-  //[Validators.required, Validators.pattern(/^\d{3}$/)]
+
   ngOnInit(): void {
-    //const user = this.authStore.user();
+    // Si más adelante quieres cargar datos del usuario (dirección, etc),
+    // aquí podrías llamar a /auth/me con AuthService.
   }
 
-  /**
-   * Se ejecuta al enviar el formulario
-   */
   onSubmit() {
     if (this.checkoutForm.invalid || this.cartStore.items().length === 0) {
       this.errorMessage = 'Por favor, completa todos los campos requeridos.';
@@ -77,7 +72,6 @@ export class CheckoutComponent implements OnInit {
     this.checkoutService.realizarCheckout(request).subscribe({
       next: (response) => {
         this.cartStore.limpiarCarrito();
-
         this.router.navigate(['/compra-exitosa', response.ventaId]);
       },
       error: (err) => {

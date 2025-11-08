@@ -1,18 +1,49 @@
+// Empleado que viene del backend para panel admin
 export interface EmpleadoAdminDTO {
   idEmpleado: number;
-  idUsuario: number;
+  idUsuario: number | null;
   username: string | null;
-  password: string | null;
-  usuarioEstado: boolean | null;
-  nom: string | null; apat: string | null; amat: string | null;
-  dni: string | null; cel: string | null; email: string | null;
-  fen: string | null; cargo: string | null; sueldo: number | null;
-  empleadoEstado: boolean | null;
+
+  nom: string | null;
+  apat: string | null;
+  amat: string | null;
+  dni: string | null;
+  cel: string | null;
+  email: string | null;
+  fen: string | null; // LocalDate representado como 'yyyy-MM-dd'
+
+  cargo: string | null;
+  sueldo: number | null;
+
+  empleadoEstado: boolean;
+  usuarioEstado: boolean;
 }
+
+// Crear empleado (tiene password)
 export interface CrearEmpleadoRequest {
-  nom: string; apat: string; amat: string; dni: string; cel: string; email: string;
-  fen: string; cargo: string; sueldo: number; username: string; password: string;
+  nom: string;
+  apat: string;
+  amat: string;
+  dni: string;
+  cel: string;
+  email: string;
+  fen: string;      // 'yyyy-MM-dd'
+  cargo: string;
+  sueldo: number;
+  username: string;
+  password: string;
 }
-export interface UpdateEmpleadoRequest extends Partial<CrearEmpleadoRequest> {
-  empleadoEstado?: boolean; usuarioEstado?: boolean;
+
+// Update empleado (ya sin password ni estado)
+export interface UpdateEmpleadoRequest {
+  nom: string;
+  apat: string;
+  amat: string;
+  dni: string;
+  cel: string;
+  email: string;
+  fen: string;      // 'yyyy-MM-dd'
+  cargo: string;
+  sueldo: number;
+  username: string;
 }

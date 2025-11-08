@@ -14,23 +14,52 @@ export class ProveedorComponent {
   private api = inject(AdminProveedoresService);
 
   private refresh$ = new Subject<void>();
-  data$ = this.refresh$.pipe(startWith(void 0), switchMap(() => this.api.list$()));
+  data$ = this.refresh$.pipe(
+    startWith(void 0),
+    switchMap(() => this.api.list$())
+  );
 
   selected = signal<Proveedor | null>(null);
 
-  editar(p: Proveedor) { this.api.get$(p.id).subscribe(v => this.selected.set(v)); }
-  nuevo() { this.selected.set({ id:0, razonSocial:'', ruc:'', cel:'', email:'', direccion:'', estado:true }); }
-  cancelar() { this.selected.set(null); }
+  editar(p: Proveedor) {
+    this.api.get$(p.id).subscribe(v => this.selected.set(v));
+  }
+
+  nuevo() {
+    this.selected.set({
+      id: 0,
+      razonSocial: '',
+      ruc: '',
+      cel: '',
+      email: '',
+      estado: true
+    });
+  }
+
+  cancelar() {
+    this.selected.set(null);
+  }
 
   guardar() {
-    const s = this.selected(); if(!s) return;
+    const s = this.selected();
+    if (!s) return;
+
     const body = {
-      razonSocial: s.razonSocial, ruc: s.ruc,
-      cel: s.cel || '', email: s.email || '',
-      direccion: s.direccion || '', estado: s.estado ?? true
+      razonSocial: s.razonSocial,
+      ruc: s.ruc,
+      cel: s.cel || '',
+      email: s.email || '',
+
     };
-    const obs = s.id > 0 ? this.api.update$(s.id, body) : this.api.create$(body);
-    obs.subscribe(() => { this.cancelar(); this.refresh$.next(); });
+
+    const obs = s.id > 0
+      ? this.api.update$(s.id, body)
+      : this.api.create$(body);
+
+    obs.subscribe(() => {
+      this.cancelar();
+      this.refresh$.next();
+    });
   }
 
   eliminar(p: Proveedor) {

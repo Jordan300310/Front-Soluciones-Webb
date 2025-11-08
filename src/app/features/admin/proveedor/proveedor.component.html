@@ -25,7 +25,9 @@
           <td>{{ p.cel || '-' }}</td>
           <td>{{ p.email || '-' }}</td>
           <td>
-            <span class="badge" [class.text-bg-success]="p.estado" [class.text-bg-secondary]="!p.estado">
+            <span class="badge"
+                  [class.text-bg-success]="p.estado"
+                  [class.text-bg-secondary]="!p.estado">
               {{ p.estado ? 'Activo' : 'Inactivo' }}
             </span>
           </td>
@@ -37,11 +39,9 @@
       </tbody>
     </table>
   </div>
-
-  <!-- (Formulario lateral eliminado a propósito) -->
 </div>
 
-<!-- MODAL PROVEEDOR (solo HTML, controlado por selected()) -->
+<!-- MODAL PROVEEDOR -->
 <div class="modal-backdrop show" *ngIf="selected()"></div>
 <div class="modal d-block" tabindex="-1" *ngIf="selected() as s">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -53,23 +53,23 @@
       <div class="modal-body">
         <form (ngSubmit)="guardar()">
           <div class="mb-2">
-            <input class="form-control" placeholder="Razón social" [(ngModel)]="s.razonSocial" name="razonSocial" required>
+            <input class="form-control" placeholder="Razón social"
+                   [(ngModel)]="s.razonSocial" name="razonSocial" required>
           </div>
           <div class="mb-2">
-            <input class="form-control" placeholder="RUC" [(ngModel)]="s.ruc" name="ruc" required>
+            <input class="form-control" placeholder="RUC"
+                   [(ngModel)]="s.ruc" name="ruc" required>
           </div>
           <div class="mb-2">
-            <input class="form-control" placeholder="Teléfono" [(ngModel)]="s.cel" name="te lefono">
+            <input class="form-control" placeholder="Teléfono"
+                   [(ngModel)]="s.cel" name="cel">
           </div>
           <div class="mb-2">
-            <input class="form-control" placeholder="Email" [(ngModel)]="s.email" name="email">
+            <input class="form-control" placeholder="Email"
+                   [(ngModel)]="s.email" name="email">
           </div>
-          <div class="mb-2">
-            <select class="form-select" [(ngModel)]="s.estado" name="estado">
-              <option [ngValue]="true">Activo</option>
-              <option [ngValue]="false">Inactivo</option>
-            </select>
-          </div>
+
+
           <div class="d-flex gap-2">
             <button class="btn btn-primary">Guardar</button>
             <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">Cancelar</button>

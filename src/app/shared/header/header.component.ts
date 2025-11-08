@@ -1,8 +1,9 @@
-import { CartStore } from './../../core/store/cart.store';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { AuthStore } from '../../core/store/auth.store';
+import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+
+import { CartStore } from './../../core/store/cart.store';
+import { AuthService } from '../../core/services/auth/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -12,10 +13,25 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './header.component.css',
 })
 export class HeaderComponent {
-  constructor(public store: AuthStore, public CartStore: CartStore, private router: Router) {}
+  public cartStore = inject(CartStore);
 
-  logout() {
-    this.store.setUser(null);
+  private auth = inject(AuthService);
+  private router = inject(Router);
+
+  get isLoggedIn(): boolean {
+    return this.auth.isLoggedIn();
+  }
+
+  get roles(): string[] {
+    return this.auth.getRoles();
+  }
+
+  get username(): string | null {
+    return localStorage.getItem('username');
+  }
+
+  async logout() {
+    await this.auth.logout();
     this.router.navigate(['/']);
   }
 }

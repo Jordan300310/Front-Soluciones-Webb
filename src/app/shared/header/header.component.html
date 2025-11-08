@@ -45,29 +45,30 @@
         <a [routerLink]="['/carrito']" class="btn btn-outline-dark btn-sm position-relative me-2">
           <i class="bi bi-cart"></i>
 
-          @if (CartStore.totalItems() > 0) {
+          @if (cartStore.totalItems() > 0) {
           <span
             class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
             style="font-size: 0.6em"
           >
-            {{ CartStore.totalItems() }}
+            {{ cartStore.totalItems() }}
           </span>
           }
         </a>
-        @if (!store.isLoggedIn()) {
-        <a [routerLink]="['/auth/register']" class="btn btn-primary btn-sm">
-          <span>Registrarse</span>
-        </a>
-        <a [routerLink]="['/auth/login']" class="btn btn-light btn-sm">
-          <span>Iniciar sesión</span>
-        </a>
+
+        @if (!isLoggedIn) {
+          <a [routerLink]="['/auth/register']" class="btn btn-primary btn-sm">
+            <span>Registrarse</span>
+          </a>
+          <a [routerLink]="['/auth/login']" class="btn btn-light btn-sm">
+            <span>Iniciar sesión</span>
+          </a>
         } @else {
-        <span class="navbar-text me-2 d-none d-lg-inline">
-          {{ store.user()?.username }} ({{ store.roles().join(', ') }})
-        </span>
-        <button (click)="logout()" class="btn btn-outline-danger btn-sm">
-          <span>Salir</span>
-        </button>
+          <span class="navbar-text me-2 d-none d-lg-inline">
+            {{ username }} ({{ roles.join(', ') }})
+          </span>
+          <button (click)="logout()" class="btn btn-outline-danger btn-sm">
+            <span>Salir</span>
+          </button>
         }
       </div>
     </div>

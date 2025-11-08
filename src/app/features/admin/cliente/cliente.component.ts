@@ -34,10 +34,14 @@ export class ClienteComponent {
     if (!s) return;
 
     const body: UpdateClienteRequest = {
-      nom: s.nom || '', apat: s.apat || '', amat: s.amat || '',
-      dni: s.dni || '', cel: s.cel || '', email: s.email || '',
-      fen: s.fen || '', clienteEstado: s.clienteEstado ?? true,
-      username: s.username || '', password: s.password || '',
+      nom: s.nom || '',
+      apat: s.apat || '',
+      amat: s.amat || '',
+      dni: s.dni || '',
+      cel: s.cel || '',
+      email: s.email || '',
+      fen: s.fen || '',          // ojo: debe venir en formato 'yyyy-MM-dd'
+      username: s.username || ''
     };
 
     this.api.update$(s.idCliente, body).subscribe(() => {

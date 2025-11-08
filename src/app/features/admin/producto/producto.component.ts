@@ -14,24 +14,57 @@ export class ProductoComponent {
   private api = inject(AdminProductosService);
 
   private refresh$ = new Subject<void>();
-  data$ = this.refresh$.pipe(startWith(void 0), switchMap(() => this.api.list$()));
+  data$ = this.refresh$.pipe(
+    startWith(void 0),
+    switchMap(() => this.api.list$())
+  );
 
-  selected = signal<any | null>(null);
+  selected = signal<ProductoAdminDTO | null>(null);
 
-  editar(p: ProductoAdminDTO) { this.api.get$(p.id).subscribe(v => this.selected.set(v)); }
-  nuevo() {
-    this.selected.set({ id:0, nombre:'', descripcion:'', precio:0, stock:0, marca:'', categoria:'', idProveedor:null, imagenUrl:'', estado:true });
+  editar(p: ProductoAdminDTO) {
+    this.api.get$(p.id).subscribe(v => this.selected.set(v));
   }
-  cancelar(){ this.selected.set(null); }
+
+  nuevo() {
+    this.selected.set({
+      id: 0,
+      nombre: '',
+      descripcion: '',
+      precio: 0,
+      stock: 0,
+      marca: '',
+      categoria: '',
+      idProveedor: null,
+      proveedorNombre: null,
+      imagenUrl: '',
+      estado: true
+    });
+  }
+
+  cancelar() {
+    this.selected.set(null);
+  }
 
   guardar() {
-    const s = this.selected(); if(!s) return;
+    const s = this.selected();
+    if (!s) return;
+
     const body = {
-      nombre:s.nombre, descripcion:s.descripcion||'', precio:Number(s.precio)||0, stock:Number(s.stock)||0,
-      marca:s.marca||'', categoria:s.categoria||'', idProveedor:s.idProveedor??null, imagenUrl:s.imagenUrl||'', estado:s.estado??true
+      nombre: s.nombre,
+      descripcion: s.descripcion || '',
+      precio: Number(s.precio) || 0,
+      stock: Number(s.stock) || 0,
+      marca: s.marca || '',
+      categoria: s.categoria || '',
+      idProveedor: s.idProveedor ?? null,
+      imagenUrl: s.imagenUrl || ''
     };
+
     const obs = s.id > 0 ? this.api.update$(s.id, body) : this.api.create$(body);
-    obs.subscribe(() => { this.cancelar(); this.refresh$.next(); });
+    obs.subscribe(() => {
+      this.cancelar();
+      this.refresh$.next();
+    });
   }
 
   eliminar(p: ProductoAdminDTO) {

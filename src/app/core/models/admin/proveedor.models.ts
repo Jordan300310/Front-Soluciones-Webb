@@ -4,6 +4,5 @@ export interface Proveedor {
   ruc: string;
   cel?: string;
   email?: string;
-  direccion?: string;
   estado?: boolean;
 }

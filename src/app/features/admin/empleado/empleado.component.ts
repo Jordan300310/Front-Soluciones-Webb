@@ -16,19 +16,34 @@ export class EmpleadoComponent {
   private refresh$ = new Subject<void>();
   data$ = this.refresh$.pipe(startWith(void 0), switchMap(() => this.api.list$()));
 
-  selected = signal<EmpleadoAdminDTO | null>(null);
-  creando = signal<boolean>(false); // flag simple para decidir create vs update
+  selected = signal<(EmpleadoAdminDTO & { password?: string }) | null>(null);
+  creando = signal<boolean>(false); 
 
   editar(e: EmpleadoAdminDTO) {
-    this.api.get$(e.idEmpleado).subscribe(v => { this.creando.set(false); this.selected.set(v); });
+    this.api.get$(e.idEmpleado).subscribe(v => {
+      this.creando.set(false);
+      this.selected.set({ ...v });
+    });
   }
 
   nuevo() {
     this.creando.set(true);
     this.selected.set({
-      idEmpleado: 0, idUsuario: 0, username: '', password: '', usuarioEstado: true,
-      nom: '', apat: '', amat: '', dni: '', cel: '', email: '', fen: '',
-      cargo: '', sueldo: 0, empleadoEstado: true
+      idEmpleado: 0,
+      idUsuario: 0,
+      username: '',
+      nom: '',
+      apat: '',
+      amat: '',
+      dni: '',
+      cel: '',
+      email: '',
+      fen: '',
+      cargo: '',
+      sueldo: 0,
+      empleadoEstado: true,
+      usuarioEstado: true,
+      password: ''
     });
   }
 
@@ -40,21 +55,39 @@ export class EmpleadoComponent {
 
     if (this.creando()) {
       const b: CrearEmpleadoRequest = {
-        nom:s.nom||'', apat:s.apat||'', amat:s.amat||'',
-        dni:s.dni||'', cel:s.cel||'', email:s.email||'',
-        fen:s.fen||'', cargo:s.cargo||'', sueldo:Number(s.sueldo)||0,
-        username:s.username||'', password:s.password||''
+        nom: s.nom || '',
+        apat: s.apat || '',
+        amat: s.amat || '',
+        dni: s.dni || '',
+        cel: s.cel || '',
+        email: s.email || '',
+        fen: s.fen || '',
+        cargo: s.cargo || '',
+        sueldo: Number(s.sueldo) || 0,
+        username: s.username || '',
+        password: s.password || ''
       };
-      this.api.create$(b).subscribe(() => { this.cancelar(); this.refresh$.next(); });
+      this.api.create$(b).subscribe(() => {
+        this.cancelar();
+        this.refresh$.next();
+      });
     } else {
       const b: UpdateEmpleadoRequest = {
-        nom:s.nom||'', apat:s.apat||'', amat:s.amat||'',
-        dni:s.dni||'', cel:s.cel||'', email:s.email||'',
-        fen:s.fen||'', cargo:s.cargo||'', sueldo:Number(s.sueldo)||0,
-        username:s.username||'', password:s.password||'',
-        empleadoEstado:s.empleadoEstado??true
+        nom: s.nom || '',
+        apat: s.apat || '',
+        amat: s.amat || '',
+        dni: s.dni || '',
+        cel: s.cel || '',
+        email: s.email || '',
+        fen: s.fen || '',
+        cargo: s.cargo || '',
+        sueldo: Number(s.sueldo) || 0,
+        username: s.username || ''
       };
-      this.api.update$(s.idEmpleado, b).subscribe(() => { this.cancelar(); this.refresh$.next(); });
+      this.api.update$(s.idEmpleado, b).subscribe(() => {
+        this.cancelar();
+        this.refresh$.next();
+      });
     }
   }
 
