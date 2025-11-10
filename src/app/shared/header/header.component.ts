@@ -22,9 +22,6 @@ export class HeaderComponent {
     return this.auth.isLoggedIn();
   }
 
-  get roles(): string[] {
-    return this.auth.getRoles();
-  }
 
   get username(): string | null {
     return localStorage.getItem('username');

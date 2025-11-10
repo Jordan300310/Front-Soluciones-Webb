@@ -6,7 +6,7 @@ import { LoginRequest } from '../../models/auth/LoginRequest';
 import { LoginResponse } from '../../models/auth/LoginResponse';
 import { RegisterRequest } from '../../models/auth/RegisterRequest';
 import { RegisterResponse } from '../../models/auth/RegisterResponse';
-import { SessionUser } from '../../models/auth/SessionUser';
+import { MeResponse } from '../../models/auth/MeResponse';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -30,12 +30,11 @@ export class AuthService {
     return !!this.getToken();
   }
 
-  async me(): Promise<SessionUser | null> {
+  async me(): Promise<MeResponse | null> {
     try {
       const me = await firstValueFrom(
-        this.http.get<SessionUser>(`${this.base}/me`)
+        this.http.get<MeResponse>(`${this.base}/me`)
       );
-      // Si quieres, guarda username aquí también:
       localStorage.setItem(this.userKey, me.username);
       localStorage.setItem(this.rolesKey, JSON.stringify(me.roles ?? []));
       return me;
@@ -51,6 +50,7 @@ export class AuthService {
 
     localStorage.setItem(this.tokenKey, resp.token);
     localStorage.setItem(this.rolesKey, JSON.stringify(resp.roles ?? []));
+    await this.me();
 
     return resp;
   }
