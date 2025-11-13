@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { LoginRequest } from '../../../../core/models/auth/LoginRequest';
 
@@ -13,6 +14,7 @@ import { LoginRequest } from '../../../../core/models/auth/LoginRequest';
 export class LoginComponent {
   private auth = inject(AuthService);
   private router = inject(Router);
+  private cdr = inject(ChangeDetectorRef);
 
   username = '';
   password = '';
@@ -21,7 +23,16 @@ export class LoginComponent {
 
   async onSubmit() {
     this.error = '';
+
+    if (!this.username || !this.password) {
+      this.error = 'Username y contraseña son requeridos.';
+      this.cdr.detectChanges();
+      return;
+    }
+
     this.loading = true;
+    this.cdr.detectChanges(); 
+
     try {
       const body: LoginRequest = { username: this.username, password: this.password };
       const resp = await this.auth.login(body);
@@ -32,10 +43,27 @@ export class LoginComponent {
       } else {
         this.router.navigate(['/']);
       }
-    } catch (e: any) {
-      this.error = e?.error?.message || 'No se pudo iniciar sesión';
+      } catch (err) {
+      const e = err as HttpErrorResponse;
+
+      if (e.status === 0) {
+        this.error = 'No se pudo conectar con el servidor. Inténtalo más tarde.';
+      } else if (e.status === 401) {
+        this.error = (e.error && (e.error as any).message)
+          ? (e.error as any).message
+          : 'Credenciales inválidas. Verifica tu usuario o contraseña.';
+      } else if (e.error && typeof e.error === 'object' && 'message' in e.error) {
+        this.error = (e.error as any).message;
+      } else if (e.error && typeof e.error === 'string') {
+        this.error = e.error;
+      } else {
+        this.error = 'No se pudo iniciar sesión. Inténtalo nuevamente.';
+      }
+
+      this.cdr.detectChanges();
     } finally {
       this.loading = false;
+      this.cdr.detectChanges(); // habilita el botón
     }
   }
 }

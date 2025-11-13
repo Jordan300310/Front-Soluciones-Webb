@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-
+import { ChangeDetectorRef } from '@angular/core';
 import { PerfilService } from '../../../../core/services/perfil/perfil.service';
 import { PerfilResponse } from '../../../../core/models/perfil/PerfilResponse';
 import { PerfilUpdateRequest } from '../../../../core/models/perfil/PerfilUpdateRequest';
@@ -17,7 +17,7 @@ import { Pedido } from '../../../../core/models/perfil/Pedido';
 export class PerfilComponent implements OnInit {
   private perfilService = inject(PerfilService);
   private fb = inject(FormBuilder);
-
+  private cdr = inject(ChangeDetectorRef);
   activeTab: 'datos' | 'password' | 'pedidos' = 'datos';
 
   perfil: PerfilResponse | null = null;
@@ -30,6 +30,9 @@ export class PerfilComponent implements OnInit {
 
   pedidos: Pedido[] = [];
   errorPedidos: string | null = null;
+
+  // NUEVO: controlar la visibilidad del modal de edición
+  showEditModal = false;
 
   personalForm = this.fb.group({
     nombres: [''],
@@ -69,6 +72,7 @@ export class PerfilComponent implements OnInit {
           email: res.email ?? '',
           fechaNacimiento: res.fechaNacimiento ?? '',
         });
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorPerfil = err?.error || 'Error al cargar el perfil';
@@ -80,9 +84,11 @@ export class PerfilComponent implements OnInit {
     this.perfilService.getPedidos().subscribe({
       next: (res) => {
         this.pedidos = res;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorPedidos = err?.error || 'Error al cargar los pedidos';
+        this.cdr.detectChanges();
       },
     });
   }
@@ -94,6 +100,19 @@ export class PerfilComponent implements OnInit {
     this.mensajePassword = null;
     this.errorPassword = null;
     this.errorPedidos = null;
+
+    // Cerrar el modal si estaba abierto
+    this.showEditModal = false;
+  }
+
+  // NUEVO: abrir/cerrar popup de edición
+  abrirModalDatos() {
+    this.showEditModal = true;
+  }
+
+  cerrarModalDatos() {
+    this.showEditModal = false;
+    this.cdr.detectChanges();
   }
 
   onSubmitDatos() {
@@ -118,6 +137,19 @@ export class PerfilComponent implements OnInit {
       next: (res) => {
         this.perfil = res;
         this.mensajePerfil = 'Datos personales actualizados correctamente.';
+        // OPCIONAL: repatch por si el backend modifica algo
+        this.personalForm.patchValue({
+          nombres: res.nombres ?? '',
+          apellidoPaterno: res.apellidoPaterno ?? '',
+          apellidoMaterno: res.apellidoMaterno ?? '',
+          dni: res.dni ?? '',
+          celular: res.celular ?? '',
+          email: res.email ?? '',
+          fechaNacimiento: res.fechaNacimiento ?? '',
+        });
+        // Cerrar el modal al guardar correctamente
+        this.showEditModal = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorPerfil = err?.error || 'Error al actualizar los datos';
