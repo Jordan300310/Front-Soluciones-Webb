@@ -1,20 +1,64 @@
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6">
-      <div class="card shadow-sm text-center">
-        <img
-          class="card-img-top img-fluid"
-          src="https://sgame.etsisi.upm.es/pictures/28835.gif?1688259376"
-          alt="Componente en construcción (GIF)">
-        <div class="card-body">
-            <div class="mb-3">
-            <div class="spinner-border" role="status" aria-hidden="true"></div>
+<div class="container py-4">
+  <div *ngIf="loading" class="text-center mb-3">
+    <div class="spinner-border" role="status" aria-hidden="true"></div>
+    <div class="mt-2">Cargando dashboard...</div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div *ngIf="!loading && !error">
+    <div class="row mb-4">
+      <div class="col-12 col-md-6">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h6 class="card-subtitle mb-2 text-muted">Ventas (mes)</h6>
+            <h2 class="mb-0">{{ ventasMes ?? 0 }}</h2>
           </div>
-          <h5 class="card-title mb-2">Componente en construcción</h5>
-          <p class="card-text text-muted mb-0">
-            Estamos trabajando para habilitar esta funcionalidad. Vuelve más tarde.
-          </p>
-          <!-- <a routerLink="/" class="btn btn-primary mt-3">Volver al inicio</a> -->
+        </div>
+      </div>
+      <div class="col-12 col-md-6 mt-3 mt-md-0">
+        <div class="card shadow-sm">
+          <div class="card-body text-center">
+            <h6 class="card-subtitle mb-2 text-muted">Ganancias (mes)</h6>
+            <h2 class="mb-0">S/{{ gananciasMes | number : '1.2-2' }}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Top productos vendidos</div>
+      <div class="card-body p-0">
+        <div class="row p-3">
+          <div class="col-12 col-lg-6" style="height: 300px">
+            <canvas #barCanvas></canvas>
+          </div>
+          <div class="col-12 col-lg-6" style="height: 300px">
+            <canvas #doughnutCanvas></canvas>
+          </div>
+        </div>
+        <div *ngIf="topProductos.length === 0" class="p-3 text-muted">
+          No hay productos vendidos en el periodo.
+        </div>
+        <div *ngIf="topProductos.length > 0" class="table-responsive">
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Producto</th>
+                <th>Cantidad</th>
+                <th>Total Ganancia</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let p of topProductos; index as i">
+                <td>{{ i + 1 }}</td>
+                <td>{{ p.nombre }}</td>
+                <td>{{ p.cantidadVendida }}</td>
+                <td>S/{{ p.totalVenta | number : '1.2-2' }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
