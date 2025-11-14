@@ -1,0 +1,9 @@
+.product-image {
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.product-price {
+  font-size: 1rem;
+}

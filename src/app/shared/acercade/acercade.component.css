@@ -1,0 +1,41 @@
+:host {
+  --primary-color: #137fec;
+}
+
+.text-primary-custom {
+  color: var(--primary-color);
+}
+.bg-primary-custom {
+  background-color: var(--primary-color);
+  color: white;
+}
+.border-primary-hover:hover {
+  border-color: var(--primary-color) !important;
+}
+
+.hero-section {
+  min-height: 400px;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 0.75rem;
+  background-image: linear-gradient(rgba(16, 25, 34, 0.6) 0%, rgba(16, 25, 34, 0.8) 100%),
+    url('https://lh3.googleusercontent.com/aida-public/AB6AXuCDGneOLYqEC3akB2ZVbxg1SX0wVXvA5N507dUOHTtmgiFPwMQ676v6S7bijes3OmpmlCSREpCNV27bOAm-Jp8zEQyGalAz7VgZB6Cw4Yf7XnwesgqWi6ufkc7V_pRh1pomqSPgFn9GqBmirCNr6-cd2t_tqGEnXcBsQSA-KIhYcTrffU2cMVpoGjZXW4mD9Ui-oGFqjW8UI0YXSgPVviIQCuJYDLCSRxR5k1AAAET3WARRfTVw3qDpPhA1zhHAjetAytDgepTG-2lZ');
+}
+
+.card-img-custom {
+  height: 12rem;
+  background-position: center;
+  background-size: cover;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+}
+
+.category-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.category-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}

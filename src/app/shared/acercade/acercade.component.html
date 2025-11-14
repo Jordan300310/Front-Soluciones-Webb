@@ -1,0 +1,112 @@
+<div class="d-flex flex-column min-vh-100 overflow-hidden bg-light">
+  <main class="flex-grow-1">
+    <div class="container py-5">
+      <section class="w-100 mb-5">
+        <div
+          class="hero-section d-flex flex-column align-items-center justify-content-center text-center p-4 p-md-5"
+        >
+          <div class="mb-4">
+            <h1 class="display-4 fw-bolder text-white mb-3">Sobre FyJ Multiservicios Generales</h1>
+            <p class="lead text-light opacity-75 mx-auto" style="max-width: 600px">
+              Su socio confiable en seguridad y suministros industriales.
+            </p>
+          </div>
+          <a
+            href="/productos"
+            class="btn bg-primary-custom text-white fw-bold px-4 py-2 rounded-3"
+            role="button"
+          >
+            Ver Nuestros Productos
+          </a>
+        </div>
+      </section>
+
+      <section class="mb-4 text-center">
+        <h2 class="display-6 fw-bolder text-dark">Nuestra Misión y Visión</h2>
+      </section>
+
+      <section class="row g-4 mb-5">
+        <div class="col-md-6">
+          <div class="card h-100 shadow-sm border rounded-4 overflow-hidden">
+            <div
+              class="card-img-custom"
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBboN8UB6i4n7qJ5wTHghRCFlnvRDMA1aCF1JzdJ2Uc9Bd2ogeLQKCwGa292r9pOmVFxgrv9ACYmQMN9-ftFqLaowF6bWK2nOxE5c5EnwC5vvzAiZwc3dICm1_LgiQJwS8vMg6_LSF3WmFu_QhA0S-lrPten-8-2mY4yFO5L8C5uC_cQRhhhJyyGzSdf1jZ9VsajjpOZOnEP5Yg9_PMvuyWct3ONPjfsH_qU_H4tFFX4wyBQoNPhwb4EWDk8Cd8OZL4Sg7MiNa1as6W');
+              "
+            ></div>
+            <div class="card-body p-4 d-flex flex-column">
+              <small class="text-primary-custom fw-bold mb-2">Nuestra Misión</small>
+              <h3 class="h4 fw-bold text-dark mb-3">Asegurando Seguridad y Confianza</h3>
+              <p class="text-secondary mb-0">
+                Proporcionar equipos de protección personal (EPP) de alta calidad, asegurando
+                seguridad y confianza en cada entrega. Buscamos optimizar los procesos de
+                cotización, despacho, facturación y gestión de inventarios.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card h-100 shadow-sm border rounded-4 overflow-hidden">
+            <div
+              class="card-img-custom"
+              style="
+                background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA3PPBFV0PxykUScgPIcFGf8xHIPa5AtPynJpeCeqh_IuZvGYJH9oFy9p0Gn5Fgk5ri83agA2MmPEuHFoS-wLO9Coan6JFSys2hRbREmrpm4ZTr_Z0YIV3koeE6Xs2jHRCnVfOT5x7AU6yUaePDdWEGX7uUbW1D0ngZ5SXHaxO84SpSrye_JEjPP2HWmJFncdESXmaJbraF37PnkpGNiW4yccJft5Z8RCU08AIicmdHK65Vs3KYYlVwLYq2PEz8RETc2KNslqWmN-Pz');
+              "
+            ></div>
+            <div class="card-body p-4 d-flex flex-column">
+              <small class="text-primary-custom fw-bold mb-2">Nuestra Visión</small>
+              <h3 class="h4 fw-bold text-dark mb-3">Referente Nacional en Distribución</h3>
+              <p class="text-secondary mb-0">
+                Convertirse en los próximos tres años en un referente nacional en la distribución de
+                EPP, alcanzando un control de inventario con 98% de precisión y una eficiencia
+                operativa superior en 25%.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="mb-5 text-center">
+        <h2 class="display-6 fw-bolder text-dark mb-3">Nuestra Amplia Gama de Productos</h2>
+        <p class="text-secondary mx-auto mb-5" style="max-width: 700px">
+          Ofrecemos una solución integral para todas sus necesidades de seguridad, construcción y
+          mantenimiento industrial.
+        </p>
+
+        <div class="row g-3 justify-content-center">
+          <div class="col-6 col-sm-4 col-md-3 col-lg-2" *ngFor="let cat of categories">
+            <div class="card category-card border rounded-3 h-100 border-primary-hover">
+              <div
+                class="card-body d-flex flex-column align-items-center justify-content-center p-3"
+              >
+                <span class="material-symbols-outlined fs-1 text-primary-custom mb-2">
+                  {{ cat.icon }}
+                </span>
+                <p class="fw-semibold text-dark mb-0 small">{{ cat.name }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="w-100 p-5 rounded-4 text-center"
+        style="background-color: rgba(19, 127, 236, 0.1)"
+      >
+        <h2 class="h3 fw-bold text-dark mb-3">¿Listo para construir con seguridad y calidad?</h2>
+        <p class="text-secondary mb-4 mx-auto" style="max-width: 600px">
+          Contáctenos hoy mismo para obtener una cotización o explorar nuestro catálogo completo.
+        </p>
+        <a
+          class="btn bg-primary-custom text-white fw-bold px-4 py-2"
+          role="button"
+          data-bs-toggle="modal"
+          data-bs-target="#modalContacto"
+        >
+          Contáctanos
+        </a>
+      </section>
+    </div>
+  </main>
+</div>

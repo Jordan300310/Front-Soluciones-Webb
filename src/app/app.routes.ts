@@ -14,6 +14,13 @@ export const routes: Routes = [
       import('./features/public/pages/cart/cart.component').then((m) => m.CartComponent),
   },
   {
+    path: 'productos',
+    loadComponent: () =>
+      import('./features/public/pages/products/products.component').then(
+        (m) => m.ProductsComponent
+      ),
+  },
+  {
     path: 'checkout',
     loadComponent: () =>
       import('./features/public/pages/checkout/checkout.component').then(
@@ -29,12 +36,10 @@ export const routes: Routes = [
       ),
     canActivate: [authGuard],
   },
-   {
+  {
     path: 'perfil',
     loadComponent: () =>
-      import('./features/public/pages/perfil/perfil.component').then(
-        (m) => m.PerfilComponent
-      ),
+      import('./features/public/pages/perfil/perfil.component').then((m) => m.PerfilComponent),
     canActivate: [authGuard],
   },
   {
@@ -103,6 +108,18 @@ export const routes: Routes = [
           import('./features/admin/compra/compra.component').then((m) => m.CompraComponent),
       },
     ],
+  },
+  {
+    path: 'acerca-de',
+    loadComponent: () =>
+      import('./shared/acercade/acercade.component').then((m) => m.AcercadeComponent),
+  },
+  {
+    path: 'politicas-privacidad',
+    loadComponent: () =>
+      import('./shared/politicas-privacidad/politicas-privacidad.component').then(
+        (m) => m.PoliticasPrivacidadComponent
+      ),
   },
   { path: '**', redirectTo: '' },
 ];

@@ -27,27 +27,47 @@ export class CheckoutComponent implements OnInit {
   ) {
     this.checkoutForm = this.fb.group({
       envio: this.fb.group({
-        direccion: ['', Validators.required],
-        ciudad: ['', Validators.required],
-        pais: ['', Validators.required],
-        codigoPostal: ['', Validators.required],
+        direccion: ['', [Validators.required, Validators.minLength(5)]],
+        ciudad: ['', [Validators.required]],
+        pais: ['', [Validators.required]],
+        codigoPostal: ['', [Validators.required, Validators.pattern('^[0-9]{5}$')]],
       }),
       pago: this.fb.group({
-        numeroTarjeta: ['', [Validators.required]],
-        fechaExp: ['', [Validators.required]], // MM/YY
-        cvc: ['', Validators.required],
+        numeroTarjeta: ['', [Validators.required, Validators.pattern('^[0-9]{16}$')]],
+        fechaExp: ['', [Validators.required, Validators.pattern('^(0[1-9]|1[0-2])\\/([0-9]{2})$')]],
+        cvc: ['', [Validators.required, Validators.pattern('^[0-9]{3}$')]],
       }),
     });
   }
 
-  ngOnInit(): void {
-    // Si más adelante quieres cargar datos del usuario (dirección, etc),
-    // aquí podrías llamar a /auth/me con AuthService.
+  ngOnInit(): void {}
+
+  // --- GETTERS para acceso fácil en el HTML ---
+  get envio() {
+    return this.checkoutForm.get('envio') as FormGroup;
+  }
+
+  get pago() {
+    return this.checkoutForm.get('pago') as FormGroup;
+  }
+
+  get envioCtrl() {
+    return this.envio.controls;
+  }
+
+  get pagoCtrl() {
+    return this.pago.controls;
   }
 
   onSubmit() {
-    if (this.checkoutForm.invalid || this.cartStore.items().length === 0) {
-      this.errorMessage = 'Por favor, completa todos los campos requeridos.';
+    if (this.checkoutForm.invalid) {
+      this.checkoutForm.markAllAsTouched();
+      this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
+      return;
+    }
+
+    if (this.cartStore.items().length === 0) {
+      this.errorMessage = 'Tu carrito está vacío.';
       return;
     }
 
@@ -75,9 +95,80 @@ export class CheckoutComponent implements OnInit {
         this.router.navigate(['/compra-exitosa', response.ventaId]);
       },
       error: (err) => {
-        this.errorMessage = err.error || 'Ocurrió un error al procesar el pago.';
+        this.errorMessage =
+          err.error?.message || err.error || 'Ocurrió un error al procesar el pago.';
         this.isSubmitting = false;
       },
     });
+  }
+
+  private formatFecha(value: string, strict = false): { digits: string; formatted: string } {
+    let digits = (value || '').replace(/\D/g, '').slice(0, 4);
+
+    if (digits.length === 0) {
+      return { digits: '', formatted: '' };
+    }
+
+    if (digits.length === 1 && strict) {
+      const month = parseInt(digits, 10);
+      if (month > 0 && month < 10) {
+        digits = '0' + month;
+      }
+    } else if (digits.length === 2) {
+      let month = parseInt(digits, 10);
+
+      if (isNaN(month) || month <= 0) {
+        month = 1; // "00" -> "01"
+      } else if (month > 12) {
+        month = 12; // "13" -> "12"
+      }
+      digits = (month < 10 ? '0' + month : String(month)) + digits.slice(2);
+    }
+
+    let formatted = digits;
+    if (formatted.length > 2) {
+      formatted = formatted.slice(0, 2) + '/' + formatted.slice(2);
+    }
+
+    return { digits, formatted };
+  }
+
+  onFechaExpInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const raw = input.value || '';
+    const selectionStart = input.selectionStart ?? raw.length;
+
+    const digitsBefore = raw.slice(0, selectionStart).replace(/\D/g, '').length;
+
+    const { formatted } = this.formatFecha(raw, false);
+
+    let newCaret = 0;
+    let seen = 0;
+    while (newCaret < formatted.length && seen < digitsBefore) {
+      if (/\d/.test(formatted[newCaret])) {
+        seen++;
+      }
+      newCaret++;
+    }
+
+    if (raw.replace(/\D/g, '').length === 2 && formatted.length === 5 && newCaret === 2) {
+      newCaret = 3;
+    }
+
+    this.pagoCtrl['fechaExp'].setValue(formatted, { emitEvent: false });
+
+    setTimeout(() => {
+      try {
+        input.setSelectionRange(newCaret, newCaret);
+      } catch (e) {}
+    }, 0);
+  }
+
+  onFechaExpBlur(event: FocusEvent) {
+    const input = event.target as HTMLInputElement;
+
+    const { formatted } = this.formatFecha(input.value, true);
+
+    this.pagoCtrl['fechaExp'].setValue(formatted, { emitEvent: false });
   }
 }

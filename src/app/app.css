@@ -1,0 +1,125 @@
+/* Global responsive helpers and overrides */
+
+/* Make images fluid by default */
+img,
+.img-fluid {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Ensure any fixed-size product/cart images can shrink */
+.cart-item-image,
+.product-image {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Allow wide tables to scroll on small screens */
+.responsive-table {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Generic container padding for small screens */
+.page-container {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Make modals fit better on narrow devices */
+.modal-dialog {
+  max-width: 1140px;
+  margin: 1.75rem auto;
+}
+
+/* Reduce heavy paddings and heights on medium and smaller screens */
+@media (max-width: 991.98px) {
+  .hero-section {
+    min-height: 360px !important;
+  }
+
+  .privacy-container {
+    max-width: 100% !important;
+    margin: 24px 12px !important;
+    padding: 16px !important;
+  }
+
+  .cart-item-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .footer-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .hero-section {
+    min-height: 260px !important;
+  }
+
+  .privacy-container {
+    margin: 16px 10px !important;
+    padding: 12px !important;
+  }
+
+  .cart-item-image {
+    width: 48px;
+    height: 48px;
+  }
+
+  .product-image {
+    aspect-ratio: auto; /* fallback for narrow cards */
+    width: 100%;
+    height: auto;
+  }
+
+  .modal-dialog {
+    max-width: 95%;
+    margin: 1rem auto;
+  }
+
+  /* Buttons and nav compacting can be handled per-component; this keeps a global baseline */
+  .btn {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .hero-section {
+    min-height: 220px !important;
+  }
+
+  .privacy-container {
+    margin: 12px 8px !important;
+    padding: 10px !important;
+  }
+
+  .cart-item-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .text-truncate {
+    max-width: 100%;
+  }
+}
+
+/* Small helper for admin tables/panels */
+.panel-scrollable {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Utility: force full-width forms on very small devices */
+@media (max-width: 575.98px) {
+  form .form-control {
+    width: 100%;
+  }
+}

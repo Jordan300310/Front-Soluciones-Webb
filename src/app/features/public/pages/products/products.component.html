@@ -1,16 +1,5 @@
-<div
-  class="hero-section text-white text-center d-flex flex-column justify-content-center align-items-center rounded-3 m-3"
->
-  <h1 class="display-4 fw-bolder">Tu Seguridad, Nuestra Prioridad</h1>
-  <p class="lead fs-6" style="max-width: 500px">
-    Equipos de protección personal de alta calidad para garantizar tu bienestar en cualquier entorno
-    de trabajo.
-  </p>
-  <a routerLink="/productos" class="btn btn-primary btn-lg mt-3"> Explorar Productos </a>
-</div>
-
 <section class="p-3">
-  <h2 class="text-center fw-bold h3 pt-4 pb-3">Nuestros Productos Destacados</h2>
+  <h2 class="text-center fw-bold h3 pt-4 pb-3">Todos los Productos</h2>
 
   <div class="mb-4 text-center">
     <input
@@ -25,7 +14,7 @@
     <ng-container *ngIf="productos | filter : filtro as productosFiltrados">
       <div *ngIf="productosFiltrados.length > 0; else noResults">
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-          <div class="col" *ngFor="let producto of productosFiltrados | slice : 0 : 5">
+          <div class="col" *ngFor="let producto of productosFiltrados">
             <div class="card h-100 shadow-sm rounded-3">
               <img
                 [src]="producto.imagenUrl || 'assets/default-product.jpg'"

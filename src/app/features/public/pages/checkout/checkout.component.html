@@ -11,18 +11,53 @@
           <div class="card-body">
             <div class="mb-3">
               <label for="direccion" class="form-label">Dirección</label>
-              <input type="text" id="direccion" class="form-control" formControlName="direccion" />
+              <input
+                type="text"
+                id="direccion"
+                class="form-control"
+                formControlName="direccion"
+                [class.is-invalid]="
+                  envioCtrl['direccion'].invalid && envioCtrl['direccion'].touched
+                "
+              />
+              @if (envioCtrl['direccion'].invalid && envioCtrl['direccion'].touched) {
+              <div class="invalid-feedback">
+                @if (envioCtrl['direccion'].errors?.['required']) { La dirección es obligatoria. }
+                @if (envioCtrl['direccion'].errors?.['minlength']) { La dirección debe tener al
+                menos 5 caracteres. }
+              </div>
+              }
             </div>
+
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="ciudad" class="form-label">Ciudad</label>
-                <input type="text" id="ciudad" class="form-control" formControlName="ciudad" />
+                <input
+                  type="text"
+                  id="ciudad"
+                  class="form-control"
+                  formControlName="ciudad"
+                  [class.is-invalid]="envioCtrl['ciudad'].invalid && envioCtrl['ciudad'].touched"
+                />
+                @if (envioCtrl['ciudad'].invalid && envioCtrl['ciudad'].touched) {
+                <div class="invalid-feedback">La ciudad es obligatoria.</div>
+                }
               </div>
               <div class="col-md-6 mb-3">
                 <label for="pais" class="form-label">País</label>
-                <input type="text" id="pais" class="form-control" formControlName="pais" />
+                <input
+                  type="text"
+                  id="pais"
+                  class="form-control"
+                  formControlName="pais"
+                  [class.is-invalid]="envioCtrl['pais'].invalid && envioCtrl['pais'].touched"
+                />
+                @if (envioCtrl['pais'].invalid && envioCtrl['pais'].touched) {
+                <div class="invalid-feedback">El país es obligatorio.</div>
+                }
               </div>
             </div>
+
             <div class="mb-3">
               <label for="codigoPostal" class="form-label">Código Postal</label>
               <input
@@ -30,7 +65,18 @@
                 id="codigoPostal"
                 class="form-control"
                 formControlName="codigoPostal"
+                maxlength="5"
+                [class.is-invalid]="
+                  envioCtrl['codigoPostal'].invalid && envioCtrl['codigoPostal'].touched
+                "
               />
+              @if (envioCtrl['codigoPostal'].invalid && envioCtrl['codigoPostal'].touched) {
+              <div class="invalid-feedback">
+                @if (envioCtrl['codigoPostal'].errors?.['required']) { El código postal es
+                obligatorio. } @if (envioCtrl['codigoPostal'].errors?.['pattern']) { Debe ser un
+                código postal válido (5 dígitos). }
+              </div>
+              }
             </div>
           </div>
         </div>
@@ -48,8 +94,20 @@
                 class="form-control"
                 formControlName="numeroTarjeta"
                 placeholder="1111222233334444"
+                maxlength="16"
+                [class.is-invalid]="
+                  pagoCtrl['numeroTarjeta'].invalid && pagoCtrl['numeroTarjeta'].touched
+                "
               />
+              @if (pagoCtrl['numeroTarjeta'].invalid && pagoCtrl['numeroTarjeta'].touched) {
+              <div class="invalid-feedback">
+                @if (pagoCtrl['numeroTarjeta'].errors?.['required']) { El número de tarjeta es
+                obligatorio. } @if (pagoCtrl['numeroTarjeta'].errors?.['pattern']) { Debe ingresar
+                16 dígitos numéricos. }
+              </div>
+              }
             </div>
+
             <div class="row">
               <div class="col-md-7 mb-3">
                 <label for="fechaExp" class="form-label">Fecha Exp. (MM/AA)</label>
@@ -59,7 +117,17 @@
                   class="form-control"
                   formControlName="fechaExp"
                   placeholder="12/25"
+                  maxlength="5"
+                  [class.is-invalid]="pagoCtrl['fechaExp'].invalid && pagoCtrl['fechaExp'].touched"
+                  (input)="onFechaExpInput($event)"
+                  (blur)="onFechaExpBlur($event)"
                 />
+                @if (pagoCtrl['fechaExp'].invalid && pagoCtrl['fechaExp'].touched) {
+                <div class="invalid-feedback">
+                  @if (pagoCtrl['fechaExp'].errors?.['required']) { La fecha es obligatoria. } @if
+                  (pagoCtrl['fechaExp'].errors?.['pattern']) { Use el formato MM/AA (ej. 12/25). }
+                </div>
+                }
               </div>
               <div class="col-md-5 mb-3">
                 <label for="cvc" class="form-label">CVC</label>
@@ -69,7 +137,15 @@
                   class="form-control"
                   formControlName="cvc"
                   placeholder="123"
+                  maxlength="4"
+                  [class.is-invalid]="pagoCtrl['cvc'].invalid && pagoCtrl['cvc'].touched"
                 />
+                @if (pagoCtrl['cvc'].invalid && pagoCtrl['cvc'].touched) {
+                <div class="invalid-feedback">
+                  @if (pagoCtrl['cvc'].errors?.['required']) { El CVC es obligatorio. } @if
+                  (pagoCtrl['cvc'].errors?.['pattern']) { Debe tener 3 o 4 dígitos. }
+                </div>
+                }
               </div>
             </div>
           </div>
