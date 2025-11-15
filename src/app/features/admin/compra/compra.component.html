@@ -34,11 +34,9 @@
       </table>
     </div>
   </div>
-
-  <!-- (El formulario lateral se eliminó a propósito) -->
 </div>
 
-<!-- MODAL COMPRA (solo HTML, controlado por creando()) -->
+<!-- MODAL COMPRA -->
 <div class="modal-backdrop show" *ngIf="creando()"></div>
 <div class="modal d-block" tabindex="-1" *ngIf="creando()">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -49,16 +47,21 @@
       </div>
       <div class="modal-body">
         <form (ngSubmit)="guardar()">
+          <!-- PROVEEDOR COMO SELECT -->
           <div class="mb-3">
-            <label class="form-label">ID Proveedor</label>
-            <input
-              type="number"
-              class="form-control"
+            <label class="form-label">Proveedor</label>
+            <select
+              class="form-select"
               [ngModel]="idProveedor()"
               (ngModelChange)="idProveedor.set($event ? +$event : null)"
               name="idProveedor"
               required
-            />
+            >
+              <option [ngValue]="null">Seleccione proveedor...</option>
+              <option *ngFor="let p of proveedores()" [ngValue]="p.id">
+                {{ p.nombre }}
+              </option>
+            </select>
           </div>
 
           <div class="mb-2 d-flex justify-content-between align-items-center">
@@ -68,20 +71,49 @@
 
           <div class="border rounded p-2 mb-3" *ngFor="let it of items(); let i = index">
             <div class="row g-2">
+              <!-- PRODUCTO COMO SELECT -->
               <div class="col-4">
-                <input type="number" class="form-control" placeholder="ID Producto"
-                       [(ngModel)]="it.idProducto" name="prod{{i}}">
+                <select
+                  class="form-select"
+                  [(ngModel)]="it.idProducto"
+                  [name]="'prod' + i"
+                >
+                  <option [ngValue]="null">Seleccione producto...</option>
+                  <option *ngFor="let p of productos()" [ngValue]="p.id">
+                    {{ p.nombre }}
+                  </option>
+                </select>
               </div>
+
               <div class="col-3">
-                <input type="number" class="form-control" placeholder="Cant."
-                       [(ngModel)]="it.cantidad" name="cant{{i}}">
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Cant."
+                  [(ngModel)]="it.cantidad"
+                  [name]="'cant' + i"
+                >
               </div>
+
               <div class="col-3">
-                <input type="number" step="0.01" class="form-control" placeholder="Costo"
-                       [(ngModel)]="it.costoUnit" name="cost{{i}}">
+                <input
+                  type="number"
+                  step="0.01"
+                  class="form-control"
+                  placeholder="Costo"
+                  [(ngModel)]="it.costoUnit"
+                  [name]="'cost' + i"
+                >
               </div>
+
               <div class="col-2 text-end">
-                <button type="button" class="btn btn-outline-danger" (click)="removeItem(i)">X</button>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  (click)="removeItem(i)"
+                >
+                  X
+                </button>
               </div>
             </div>
           </div>
