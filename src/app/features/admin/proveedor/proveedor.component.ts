@@ -26,15 +26,11 @@ export class ProveedorComponent {
   loading = signal<boolean>(false);
   error   = signal<string | null>(null);
 
-  // ===== helpers =====
-
   private isValidRuc(ruc: string): boolean {
-    // 11 dígitos
     if (!/^\d{11}$/.test(ruc)) return false;
 
-    // algoritmo SUNAT (dígito verificador)
     const nums = ruc.split('').map(d => Number(d));
-    const factors = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]; // 10 primeros
+    const factors = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]; 
     let sum = 0;
     for (let i = 0; i < 10; i++) {
       sum += nums[i] * factors[i];
@@ -44,8 +40,6 @@ export class ProveedorComponent {
     const dv = check === 10 ? 0 : (check === 11 ? 1 : check);
     return dv === nums[10];
   }
-
-  // ===== CRUD =====
 
   editar(p: Proveedor) {
     this.api.get$(p.id).subscribe(v => {
