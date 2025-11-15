@@ -1,229 +1,305 @@
 <div class="container my-4">
-  <h2 class="mb-3">Mi perfil</h2>
-
-  <p class="text-muted">
-    Sesión iniciada como <strong>{{ username }}</strong>
-  </p>
-
-  <!-- Tabs -->
-  <ul class="nav nav-tabs">
-    <li class="nav-item">
-      <button
-        class="nav-link"
-        [class.active]="activeTab === 'datos'"
-        type="button"
-        (click)="cambiarTab('datos')"
+  <!-- HEADER PERFIL -->
+  <div class="bg-light rounded-4 shadow-sm p-4 mb-4 d-flex flex-wrap align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <div
+        class="rounded-circle d-flex align-items-center justify-content-center me-3"
+        style="width: 56px; height: 56px; background: linear-gradient(135deg, #0d6efd, #20c997); color: #fff; font-size: 1.6rem;"
       >
-        Datos personales
-      </button>
-    </li>
-    <li class="nav-item">
-      <button
-        class="nav-link"
-        [class.active]="activeTab === 'password'"
-        type="button"
-        (click)="cambiarTab('password')"
-      >
-        Cambiar contraseña
-      </button>
-    </li>
-    <li class="nav-item">
-      <button
-        class="nav-link"
-        [class.active]="activeTab === 'pedidos'"
-        type="button"
-        (click)="cambiarTab('pedidos')"
-      >
-        Mis pedidos
-      </button>
-    </li>
-  </ul>
-
-  <div class="tab-content mt-3">
-    <!-- DATOS PERSONALES (SOLO LECTURA + BOTÓN ACTUALIZAR) -->
-    <div [hidden]="activeTab !== 'datos'">
-      <div *ngIf="mensajePerfil" class="alert alert-success">
-        {{ mensajePerfil }}
+        <span>{{ (username || 'U') | slice:0:1 | uppercase }}</span>
       </div>
-
-      <div *ngIf="errorPerfil" class="alert alert-danger">
-        {{ errorPerfil }}
-      </div>
-
-      <div class="row g-3">
-        <div class="col-md-4">
-          <label class="form-label">Nombres</label>
-          <p class="form-control-plaintext">
-            {{ perfil?.nombres || '-' }}
-          </p>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Apellido paterno</label>
-          <p class="form-control-plaintext">
-            {{ perfil?.apellidoPaterno || '-' }}
-          </p>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Apellido materno</label>
-          <p class="form-control-plaintext">
-            {{ perfil?.apellidoMaterno || '-' }}
-          </p>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">DNI</label>
-          <p class="form-control-plaintext">
-            {{ perfil?.dni || '-' }}
-          </p>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Celular</label>
-          <p class="form-control-plaintext">
-            {{ perfil?.celular || '-' }}
-          </p>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Email</label>
-          <p class="form-control-plaintext">
-            {{ perfil?.email || '-' }}
-          </p>
-        </div>
-
-        <div class="col-md-4">
-          <label class="form-label">Fecha de nacimiento</label>
-          <p class="form-control-plaintext">
-            {{ perfil?.fechaNacimiento || '-' }}
-          </p>
-        </div>
-      </div>
-
-      <div class="mt-3">
-        <button class="btn btn-outline-primary" type="button" (click)="abrirModalDatos()">
-          Actualizar datos
-        </button>
+      <div>
+        <h2 class="h4 mb-1">Mi perfil</h2>
+        <p class="text-muted mb-0">
+          Sesión iniciada como
+          <strong class="text-primary">{{ username }}</strong>
+        </p>
       </div>
     </div>
 
-    <!-- CAMBIAR CONTRASEÑA -->
-    <div [hidden]="activeTab !== 'password'">
-      <div *ngIf="mensajePassword" class="alert alert-success">
-        {{ mensajePassword }}
-      </div>
+    <div class="mt-3 mt-md-0 text-md-end">
+      <span class="badge rounded-pill text-bg-primary px-3 py-2">
+        Cliente FYJ Multiservicios
+      </span>
+    </div>
+  </div>
 
-      <div *ngIf="errorPassword" class="alert alert-danger">
-        {{ errorPassword }}
-      </div>
-
-      <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPassword()">
-        <div class="row g-3">
-          <div class="col-md-4">
-            <label class="form-label">Contraseña actual</label>
-            <input
-              type="password"
-              class="form-control"
-              formControlName="currentPassword"
-            />
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Nueva contraseña</label>
-            <input type="password" class="form-control" formControlName="newPassword" />
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Confirmar nueva contraseña</label>
-            <input
-              type="password"
-              class="form-control"
-              formControlName="confirmPassword"
-            />
-          </div>
-        </div>
-
-        <div class="mt-3">
+  <!-- TABS -->
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-header bg-white border-0 pt-3 pb-0">
+      <ul class="nav nav-pills gap-2 flex-wrap">
+        <li class="nav-item">
           <button
-            class="btn btn-primary"
-            type="submit"
-            [disabled]="passwordForm.invalid"
+            class="nav-link d-flex align-items-center"
+            [class.active]="activeTab === 'datos'"
+            type="button"
+            (click)="cambiarTab('datos')"
           >
+            <i class="bi bi-person-circle me-2"></i>
+            Datos personales
+          </button>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link d-flex align-items-center"
+            [class.active]="activeTab === 'password'"
+            type="button"
+            (click)="cambiarTab('password')"
+          >
+            <i class="bi bi-shield-lock me-2"></i>
             Cambiar contraseña
           </button>
-        </div>
-      </form>
+        </li>
+        <li class="nav-item">
+          <button
+            class="nav-link d-flex align-items-center"
+            [class.active]="activeTab === 'pedidos'"
+            type="button"
+            (click)="cambiarTab('pedidos')"
+          >
+            <i class="bi bi-bag-check me-2"></i>
+            Mis pedidos
+          </button>
+        </li>
+      </ul>
     </div>
 
-    <!-- MIS PEDIDOS -->
-    <div [hidden]="activeTab !== 'pedidos'">
-      <div *ngIf="errorPedidos" class="alert alert-danger">
-        {{ errorPedidos }}
-      </div>
+    <div class="card-body border-top">
+      <div class="tab-content mt-3">
+        <!-- DATOS PERSONALES (SOLO LECTURA + BOTÓN ACTUALIZAR) -->
+        <div [hidden]="activeTab !== 'datos'">
+          <div *ngIf="mensajePerfil" class="alert alert-success d-flex align-items-center">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span>{{ mensajePerfil }}</span>
+          </div>
 
-      <div *ngIf="!errorPedidos && pedidos.length === 0">
-        <p class="text-muted">No tienes pedidos registrados.</p>
-      </div>
+          <div *ngIf="errorPerfil" class="alert alert-danger d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span>{{ errorPerfil }}</span>
+          </div>
 
-      <div *ngIf="pedidos.length > 0" class="row g-3">
-        <div class="col-md-6" *ngFor="let pedido of pedidos">
-          <div class="card h-100">
-            <div class="card-body">
-              <h6 class="card-title mb-2">
-                Pedido #{{ pedido.idVenta }}
-                <span *ngIf="pedido.numeroComprobante">
-                  - {{ pedido.numeroComprobante }}
-                </span>
-              </h6>
+          <h5 class="mb-3">Información personal</h5>
 
-              <p class="mb-1">
-                <strong>Fecha:</strong>
-                {{ pedido.fechaVenta | date: 'short' }}
-              </p>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label text-muted small mb-1">Nombres</label>
+              <div class="form-control bg-light-subtle">
+                {{ perfil?.nombres || '-' }}
+              </div>
+            </div>
 
-              <p class="mb-1">
-                <strong>Entrega:</strong>
-                {{ pedido.direccion }},
-                {{ pedido.ciudad }},
-                {{ pedido.pais }}
-              </p>
+            <div class="col-md-4">
+              <label class="form-label text-muted small mb-1">Apellido paterno</label>
+              <div class="form-control bg-light-subtle">
+                {{ perfil?.apellidoPaterno || '-' }}
+              </div>
+            </div>
 
-              <p class="mb-2" *ngIf="pedido.total != null">
-                <strong>Total del pedido:</strong>
-                S/ {{ pedido.total | number: '1.2-2' }}
-              </p>
+            <div class="col-md-4">
+              <label class="form-label text-muted small mb-1">Apellido materno</label>
+              <div class="form-control bg-light-subtle">
+                {{ perfil?.apellidoMaterno || '-' }}
+              </div>
+            </div>
 
-              <hr class="my-2" />
+            <div class="col-md-4">
+              <label class="form-label text-muted small mb-1">DNI</label>
+              <div class="form-control bg-light-subtle">
+                {{ perfil?.dni || '-' }}
+              </div>
+            </div>
 
-              <!-- Productos -->
-              <div *ngFor="let prod of pedido.productos" class="d-flex mb-2">
-                <div class="me-2" style="width: 80px;">
-                  <img
-                    [src]="prod.imagenUrl || 'assets/no-image.png'"
-                    class="img-fluid rounded"
-                    alt="{{ prod.nombreProducto }}"
-                  />
-                </div>
-                <div class="flex-grow-1">
-                  <div class="fw-semibold">
-                    {{ prod.nombreProducto }}
+            <div class="col-md-4">
+              <label class="form-label text-muted small mb-1">Celular</label>
+              <div class="form-control bg-light-subtle">
+                {{ perfil?.celular || '-' }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label text-muted small mb-1">Email</label>
+              <div class="form-control bg-light-subtle">
+                {{ perfil?.email || '-' }}
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label text-muted small mb-1">Fecha de nacimiento</label>
+              <div class="form-control bg-light-subtle">
+                {{ perfil?.fechaNacimiento || '-' }}
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 d-flex justify-content-between flex-wrap gap-2">
+            <small class="text-muted">
+              Mantén tus datos actualizados para una mejor experiencia de compra.
+            </small>
+            <button
+              class="btn btn-outline-primary d-flex align-items-center"
+              type="button"
+              (click)="abrirModalDatos()"
+            >
+              <i class="bi bi-pencil-square me-2"></i>
+              Actualizar datos
+            </button>
+          </div>
+        </div>
+
+        <!-- CAMBIAR CONTRASEÑA -->
+        <div [hidden]="activeTab !== 'password'">
+          <div *ngIf="mensajePassword" class="alert alert-success d-flex align-items-center">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span>{{ mensajePassword }}</span>
+          </div>
+
+          <div *ngIf="errorPassword" class="alert alert-danger d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span>{{ errorPassword }}</span>
+          </div>
+
+          <h5 class="mb-3">Seguridad de la cuenta</h5>
+          <p class="text-muted small mb-4">
+            Te recomendamos cambiar tu contraseña periódicamente para mantener tu cuenta protegida.
+          </p>
+
+          <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPassword()">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">Contraseña actual</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  formControlName="currentPassword"
+                  placeholder="Ingresa tu contraseña actual"
+                />
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Nueva contraseña</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  formControlName="newPassword"
+                  placeholder="Mínimo 8 caracteres"
+                />
+              </div>
+
+              <div class="col-md-4">
+                <label class="form-label">Confirmar nueva contraseña</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  formControlName="confirmPassword"
+                  placeholder="Repite la nueva contraseña"
+                />
+              </div>
+            </div>
+
+            <div class="mt-4 d-flex justify-content-end">
+              <button
+                class="btn btn-primary px-4"
+                type="submit"
+                [disabled]="passwordForm.invalid"
+              >
+                <i class="bi bi-arrow-repeat me-2"></i>
+                Cambiar contraseña
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- MIS PEDIDOS -->
+        <div [hidden]="activeTab !== 'pedidos'">
+          <h5 class="mb-3">Historial de pedidos</h5>
+
+          <div *ngIf="errorPedidos" class="alert alert-danger d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span>{{ errorPedidos }}</span>
+          </div>
+
+          <div *ngIf="!errorPedidos && pedidos.length === 0">
+            <div class="text-center py-5 text-muted">
+              <i class="bi bi-bag-x fs-1 d-block mb-2"></i>
+              <p class="mb-1">No tienes pedidos registrados.</p>
+              <small>Cuando compres, verás aquí el resumen de tus pedidos.</small>
+            </div>
+          </div>
+
+          <div *ngIf="pedidos.length > 0" class="row g-3">
+            <div class="col-md-6" *ngFor="let pedido of pedidos">
+              <div class="card h-100 border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div>
+                      <h6 class="card-title mb-1">
+                        Pedido #{{ pedido.idVenta }}
+                        <span *ngIf="pedido.numeroComprobante" class="text-muted small">
+                          · {{ pedido.numeroComprobante }}
+                        </span>
+                      </h6>
+                      <p class="mb-1 small text-muted">
+                        <i class="bi bi-calendar-event me-1"></i>
+                        {{ pedido.fechaVenta | date: 'short' }}
+                      </p>
+                    </div>
+                    <div *ngIf="pedido.total != null" class="text-end">
+                      <span class="small text-muted d-block">Total</span>
+                      <span class="fw-bold">
+                        S/ {{ pedido.total | number: '1.2-2' }}
+                      </span>
+                    </div>
                   </div>
-                  <div class="small">
-                    Cantidad: {{ prod.cantidad }} |
-                    P. unitario: S/
-                    {{ prod.precioUnitario | number: '1.2-2' }} |
-                    Subtotal: S/
-                    {{ prod.subtotal | number: '1.2-2' }}
+
+                  <p class="mb-2 small">
+                    <i class="bi bi-geo-alt me-1 text-primary"></i>
+                    <strong>Entrega:</strong>
+                    {{ pedido.direccion }}, {{ pedido.ciudad }}, {{ pedido.pais }}
+                  </p>
+
+                  <hr class="my-2" />
+
+                  <!-- Productos -->
+                  <div
+                    *ngFor="let prod of pedido.productos"
+                    class="d-flex mb-2 pb-2 border-bottom small"
+                  >
+                    <div class="me-3" style="width: 70px;">
+                      <div class="ratio ratio-1x1">
+                        <img
+                          [src]="prod.imagenUrl || 'assets/no-image.png'"
+                          class="img-fluid rounded object-fit-cover"
+                          alt="{{ prod.nombreProducto }}"
+                        />
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <div class="fw-semibold">
+                        {{ prod.nombreProducto }}
+                      </div>
+                      <div class="text-muted">
+                        Cantidad: {{ prod.cantidad }} ·
+                        P. unitario: S/
+                        {{ prod.precioUnitario | number: '1.2-2' }} ·
+                        Subtotal: S/
+                        {{ prod.subtotal | number: '1.2-2' }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="text-end mt-2">
+                    <small class="text-muted">
+                      Gracias por comprar en FYJ Multiservicios
+                    </small>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
+      </div><!-- tab-content -->
+    </div><!-- card-body -->
+  </div><!-- card -->
 
   <!-- MODAL PARA EDITAR DATOS PERSONALES -->
   <div
@@ -233,11 +309,16 @@
     *ngIf="showEditModal"
     style="background: rgba(0,0,0,0.5);"
   >
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content rounded-4 shadow-lg">
         <form [formGroup]="personalForm" (ngSubmit)="onSubmitDatos()">
-          <div class="modal-header">
-            <h5 class="modal-title">Actualizar datos personales</h5>
+          <div class="modal-header border-0 pb-0">
+            <div>
+              <h5 class="modal-title mb-1">Actualizar datos personales</h5>
+              <p class="text-muted small mb-0">
+                Usa esta sección para mantener tu información siempre al día.
+              </p>
+            </div>
             <button
               type="button"
               class="btn-close"
@@ -290,7 +371,7 @@
                 <label class="form-label">Email</label>
                 <input type="email" class="form-control" formControlName="email" />
                 <div
-                  class="text-danger small"
+                  class="text-danger small mt-1"
                   *ngIf="
                     personalForm.get('email')?.invalid &&
                     personalForm.get('email')?.touched
@@ -312,19 +393,20 @@
             </div>
           </div>
 
-          <div class="modal-footer">
+          <div class="modal-footer border-0 pt-0 d-flex justify-content-between">
             <button
               type="button"
-              class="btn btn-secondary"
+              class="btn btn-outline-secondary"
               (click)="cerrarModalDatos()"
             >
               Cancelar
             </button>
             <button
-              class="btn btn-primary"
+              class="btn btn-primary px-4"
               type="submit"
               [disabled]="personalForm.invalid"
             >
+              <i class="bi bi-save me-2"></i>
               Guardar cambios
             </button>
           </div>

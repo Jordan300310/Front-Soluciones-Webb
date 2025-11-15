@@ -1,12 +1,26 @@
 <div class="container my-5">
+  <!-- Paso / breadcrumb simple -->
+  <div class="mb-4">
+    <span class="badge rounded-pill text-bg-primary me-2">1</span>
+    <span class="text-muted small">Datos de envío y pago</span>
+    <span class="mx-2 text-muted">›</span>
+  </div>
+
   <div class="row g-5">
     <div class="col-md-7">
-      <h2 class="h4 fw-bold mb-4">Finalizar Compra</h2>
+      <h2 class="h4 fw-bold mb-4 d-flex align-items-center gap-2">
+        <i class="bi bi-bag-check"></i>
+        Finalizar Compra
+      </h2>
 
       <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
-        <div formGroupName="envio" class="card shadow-sm rounded-3 mb-4">
+        <!-- ENVÍO -->
+        <div formGroupName="envio" class="card shadow-sm rounded-3 mb-4 border-0">
           <div class="card-header bg-light">
-            <h5 class="mb-0">Dirección de Envío</h5>
+            <h5 class="mb-0 d-flex align-items-center gap-2">
+              <i class="bi bi-geo-alt"></i>
+              Dirección de Envío
+            </h5>
           </div>
           <div class="card-body">
             <div class="mb-3">
@@ -23,8 +37,8 @@
               @if (envioCtrl['direccion'].invalid && envioCtrl['direccion'].touched) {
               <div class="invalid-feedback">
                 @if (envioCtrl['direccion'].errors?.['required']) { La dirección es obligatoria. }
-                @if (envioCtrl['direccion'].errors?.['minlength']) { La dirección debe tener al
-                menos 5 caracteres. }
+                @if (envioCtrl['direccion'].errors?.['minlength']) {
+                La dirección debe tener al menos 5 caracteres. }
               </div>
               }
             </div>
@@ -58,7 +72,7 @@
               </div>
             </div>
 
-            <div class="mb-3">
+            <div class="mb-0">
               <label for="codigoPostal" class="form-label">Código Postal</label>
               <input
                 type="text"
@@ -72,18 +86,22 @@
               />
               @if (envioCtrl['codigoPostal'].invalid && envioCtrl['codigoPostal'].touched) {
               <div class="invalid-feedback">
-                @if (envioCtrl['codigoPostal'].errors?.['required']) { El código postal es
-                obligatorio. } @if (envioCtrl['codigoPostal'].errors?.['pattern']) { Debe ser un
-                código postal válido (5 dígitos). }
+                @if (envioCtrl['codigoPostal'].errors?.['required']) {
+                El código postal es obligatorio. } @if (envioCtrl['codigoPostal'].errors?.['pattern'])
+                { Debe ser un código postal válido (5 dígitos). }
               </div>
               }
             </div>
           </div>
         </div>
 
-        <div formGroupName="pago" class="card shadow-sm rounded-3">
+        <!-- PAGO -->
+        <div formGroupName="pago" class="card shadow-sm rounded-3 border-0">
           <div class="card-header bg-light">
-            <h5 class="mb-0">Datos de Pago</h5>
+            <h5 class="mb-0 d-flex align-items-center gap-2">
+              <i class="bi bi-credit-card"></i>
+              Datos de Pago
+            </h5>
           </div>
           <div class="card-body">
             <div class="mb-3">
@@ -101,9 +119,10 @@
               />
               @if (pagoCtrl['numeroTarjeta'].invalid && pagoCtrl['numeroTarjeta'].touched) {
               <div class="invalid-feedback">
-                @if (pagoCtrl['numeroTarjeta'].errors?.['required']) { El número de tarjeta es
-                obligatorio. } @if (pagoCtrl['numeroTarjeta'].errors?.['pattern']) { Debe ingresar
-                16 dígitos numéricos. }
+                @if (pagoCtrl['numeroTarjeta'].errors?.['required']) {
+                El número de tarjeta es obligatorio. }
+                @if (pagoCtrl['numeroTarjeta'].errors?.['pattern']) {
+                Debe ingresar 16 dígitos numéricos. }
               </div>
               }
             </div>
@@ -118,14 +137,17 @@
                   formControlName="fechaExp"
                   placeholder="12/25"
                   maxlength="5"
-                  [class.is-invalid]="pagoCtrl['fechaExp'].invalid && pagoCtrl['fechaExp'].touched"
+                  [class.is-invalid]="
+                    pagoCtrl['fechaExp'].invalid && pagoCtrl['fechaExp'].touched
+                  "
                   (input)="onFechaExpInput($event)"
                   (blur)="onFechaExpBlur($event)"
                 />
                 @if (pagoCtrl['fechaExp'].invalid && pagoCtrl['fechaExp'].touched) {
                 <div class="invalid-feedback">
-                  @if (pagoCtrl['fechaExp'].errors?.['required']) { La fecha es obligatoria. } @if
-                  (pagoCtrl['fechaExp'].errors?.['pattern']) { Use el formato MM/AA (ej. 12/25). }
+                  @if (pagoCtrl['fechaExp'].errors?.['required']) { La fecha es obligatoria. }
+                  @if (pagoCtrl['fechaExp'].errors?.['pattern']) {
+                  Use el formato MM/AA (ej. 12/25). }
                 </div>
                 }
               </div>
@@ -142,8 +164,8 @@
                 />
                 @if (pagoCtrl['cvc'].invalid && pagoCtrl['cvc'].touched) {
                 <div class="invalid-feedback">
-                  @if (pagoCtrl['cvc'].errors?.['required']) { El CVC es obligatorio. } @if
-                  (pagoCtrl['cvc'].errors?.['pattern']) { Debe tener 3 o 4 dígitos. }
+                  @if (pagoCtrl['cvc'].errors?.['required']) { El CVC es obligatorio. }
+                  @if (pagoCtrl['cvc'].errors?.['pattern']) { Debe tener 3 o 4 dígitos. }
                 </div>
                 }
               </div>
@@ -159,33 +181,38 @@
 
         <button
           type="submit"
-          class="btn btn-primary w-100 btn-lg mt-4"
+          class="btn btn-primary w-100 btn-lg mt-4 d-flex justify-content-center align-items-center gap-2"
           [disabled]="checkoutForm.invalid || isSubmitting || cartStore.items().length === 0"
         >
           @if (isSubmitting) {
           <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-          Procesando... } @else { Pagar S/ {{ cartStore.subtotal() | number : '1.2-2' }}
+          Procesando...
+          } @else {
+          <i class="bi bi-lock-fill"></i>
+          Pagar S/ {{ cartStore.subtotal() | number : '1.2-2' }}
           }
         </button>
       </form>
     </div>
 
+    <!-- RESUMEN PEDIDO -->
     <div class="col-md-5">
-      <div class="card shadow-sm rounded-3 position-sticky" style="top: 2rem">
-        <div class="card-header bg-light">
-          <h5 class="mb-0">Resumen de tu Pedido ({{ cartStore.totalItems() }})</h5>
+      <div class="card shadow-sm rounded-3 position-sticky border-0" style="top: 2rem">
+        <div class="card-header bg-light d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Resumen de tu Pedido</h5>
+          <span class="badge text-bg-primary">{{ cartStore.totalItems() }} ítem(s)</span>
         </div>
         <div class="card-body">
-          <ul class="list-group list-group-flush">
+          <ul class="list-group list-group-flush mb-3">
             @for (item of cartStore.items(); track item.producto.id) {
             <li class="list-group-item d-flex justify-content-between align-items-center px-0">
               <div>
                 <h6 class="my-0">{{ item.producto.nombre }}</h6>
                 <small class="text-muted">Cantidad: {{ item.cantidad }}</small>
               </div>
-              <span class="text-muted"
-                >S/ {{ item.producto.precio * item.cantidad | number : '1.2-2' }}</span
-              >
+              <span class="text-muted">
+                S/ {{ item.producto.precio * item.cantidad | number : '1.2-2' }}
+              </span>
             </li>
             }
           </ul>
