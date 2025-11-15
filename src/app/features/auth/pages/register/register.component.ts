@@ -37,8 +37,6 @@ export class RegisterComponent {
     if (this.loading) return;
 
     this.error = '';
-
-    // ====== VALIDACIONES FRONT ======
     if (!this.f.nombres || !this.f.apat || !this.f.amat || !this.f.username || !this.f.password) {
       this.error = 'Completa todos los campos obligatorios.';
       return;
@@ -66,7 +64,7 @@ export class RegisterComponent {
     }
 
     this.loading = true;
-    this.cdr.detectChanges();   // 👈 fuerza que aparezca “Procesando…”
+    this.cdr.detectChanges();
 
     try {
       await this.auth.register(this.f);   // 409 cae al catch
@@ -90,10 +88,10 @@ export class RegisterComponent {
         this.error = 'No se pudo registrar.';
       }
 
-      this.cdr.detectChanges(); // 👈 fuerza que se vea el mensaje rojo
+      this.cdr.detectChanges();
     } finally {
       this.loading = false;
-      this.cdr.detectChanges(); // 👈 fuerza que desaparezca “Procesando…”
+      this.cdr.detectChanges(); 
     }
   }
 }

@@ -25,17 +25,11 @@ export class EmpleadoComponent {
     switchMap(() => this.api.list$())
   );
 
-  // empleado seleccionado en el modal
   selected: (EmpleadoAdminDTO & { password?: string }) | null = null;
-
-  // modo creación / edición
   creando = false;
-
-  // estado UI (mismo estilo que RegisterComponent)
   loading = false;
   error = '';
 
-  // ====== LISTA ======
 
   editar(e: EmpleadoAdminDTO) {
     this.api.get$(e.idEmpleado).subscribe(v => {
@@ -78,15 +72,11 @@ export class EmpleadoComponent {
     this.api.delete$(e.idEmpleado).subscribe(() => this.refresh$.next());
   }
 
-  // ====== GUARDAR (CREAR / EDITAR) ======
-
   async guardar() {
     const s = this.selected;
     if (!s) return;
 
     this.error = '';
-
-    // ---------- VALIDACIONES FRONT, estilo RegisterComponent ----------
 
     if (!s.nom || !s.apat || !s.amat || !s.username || (this.creando && !s.password)) {
       this.error = 'Completa todos los campos obligatorios.';
@@ -133,8 +123,6 @@ export class EmpleadoComponent {
           username: s.username || '',
           password: s.password || ''
         };
-
-        // 👇 igual que en tu register: await al observable
         await firstValueFrom(this.api.create$(body));
       } else {
         const body: UpdateEmpleadoRequest = {

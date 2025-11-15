@@ -77,14 +77,12 @@
       </div>
       <div class="modal-body">
 
-        <!-- Mensaje de error general (front + status backend) -->
         <div *ngIf="error" class="alert alert-danger py-2">
           {{ error }}
         </div>
 
         <form (ngSubmit)="guardar()">
           <div class="row g-3">
-            <!-- Nombres -->
             <div class="col-md-6">
               <label class="form-label">Nombres</label>
               <input class="form-control"
@@ -92,8 +90,6 @@
                      name="nom"
                      required>
             </div>
-
-            <!-- Apellido paterno -->
             <div class="col-md-3">
               <label class="form-label">A. paterno</label>
               <input class="form-control"
@@ -101,8 +97,6 @@
                      name="apat"
                      required>
             </div>
-
-            <!-- Apellido materno -->
             <div class="col-md-3">
               <label class="form-label">A. materno</label>
               <input class="form-control"
@@ -110,8 +104,6 @@
                      name="amat"
                      required>
             </div>
-
-            <!-- DNI -->
             <div class="col-md-4">
               <label class="form-label">DNI</label>
               <input class="form-control"
@@ -119,8 +111,6 @@
                      name="dni"
                      maxlength="8">
             </div>
-
-            <!-- Celular -->
             <div class="col-md-4">
               <label class="form-label">Celular</label>
               <input class="form-control"
@@ -154,8 +144,6 @@
                      name="username"
                      required>
             </div>
-
-            <!-- Password solo al crear -->
             <div class="col-md-4" *ngIf="creando">
               <label class="form-label">Password</label>
               <input class="form-control"
