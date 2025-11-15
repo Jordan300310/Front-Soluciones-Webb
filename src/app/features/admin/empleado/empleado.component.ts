@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject, startWith, switchMap, firstValueFrom } from 'rxjs';
@@ -18,6 +18,7 @@ import {
 })
 export class EmpleadoComponent {
   private api = inject(AdminEmpleadosService);
+  private cdr = inject(ChangeDetectorRef); 
 
   private refresh$ = new Subject<void>();
   data$ = this.refresh$.pipe(
@@ -30,12 +31,14 @@ export class EmpleadoComponent {
   loading = false;
   error = '';
 
+  // ====== LISTA ======
 
   editar(e: EmpleadoAdminDTO) {
     this.api.get$(e.idEmpleado).subscribe(v => {
       this.creando = false;
       this.error = '';
       this.selected = { ...v };
+      this.cdr.detectChanges(); 
     });
   }
 
@@ -59,18 +62,25 @@ export class EmpleadoComponent {
       usuarioEstado: true,
       password: ''
     };
+    this.cdr.detectChanges();
   }
 
   cancelar() {
     this.selected = null;
     this.error = '';
     this.loading = false;
+    this.cdr.detectChanges();
   }
 
   eliminar(e: EmpleadoAdminDTO) {
     if (!confirm('Eliminar?')) return;
-    this.api.delete$(e.idEmpleado).subscribe(() => this.refresh$.next());
+    this.api.delete$(e.idEmpleado).subscribe(() => {
+      this.refresh$.next();
+      this.cdr.detectChanges();
+    });
   }
+
+  // ====== GUARDAR (CREAR / EDITAR) ======
 
   async guardar() {
     const s = this.selected;
@@ -80,16 +90,19 @@ export class EmpleadoComponent {
 
     if (!s.nom || !s.apat || !s.amat || !s.username || (this.creando && !s.password)) {
       this.error = 'Completa todos los campos obligatorios.';
+      this.cdr.detectChanges();
       return;
     }
 
     if (s.dni && !/^\d{8}$/.test(s.dni)) {
       this.error = 'El DNI debe tener 8 dígitos numéricos.';
+      this.cdr.detectChanges();
       return;
     }
 
     if (s.cel && !/^\d{9}$/.test(s.cel)) {
       this.error = 'El celular debe tener 9 dígitos numéricos.';
+      this.cdr.detectChanges();
       return;
     }
 
@@ -97,16 +110,19 @@ export class EmpleadoComponent {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(s.email)) {
         this.error = 'Ingresa un email válido.';
+        this.cdr.detectChanges();
         return;
       }
     }
 
     if (this.creando && s.password && s.password.length < 6) {
       this.error = 'La contraseña debe tener al menos 6 caracteres.';
+      this.cdr.detectChanges();
       return;
     }
 
     this.loading = true;
+    this.cdr.detectChanges(); // 👈 muestra spinner/botón deshabilitado
 
     try {
       if (this.creando) {
@@ -141,9 +157,9 @@ export class EmpleadoComponent {
         await firstValueFrom(this.api.update$(s.idEmpleado, body));
       }
 
-      // si todo salió bien
       this.cancelar();
       this.refresh$.next();
+      this.cdr.detectChanges();
     } catch (err) {
       const e = err as HttpErrorResponse;
 
@@ -154,8 +170,11 @@ export class EmpleadoComponent {
       } else {
         this.error = 'No se pudo guardar el empleado.';
       }
+
+      this.cdr.detectChanges(); 
     } finally {
       this.loading = false;
+      this.cdr.detectChanges();
     }
   }
 }
