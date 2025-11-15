@@ -1,14 +1,14 @@
 import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';   // 👈 importa RouterModule
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../../../core/services/auth/auth.service';
 import { LoginRequest } from '../../../../core/models/auth/LoginRequest';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],     // 👈 agrega RouterModule aquí
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
@@ -31,7 +31,7 @@ export class LoginComponent {
     }
 
     this.loading = true;
-    this.cdr.detectChanges(); 
+    this.cdr.detectChanges();
 
     try {
       const body: LoginRequest = { username: this.username, password: this.password };
@@ -43,7 +43,7 @@ export class LoginComponent {
       } else {
         this.router.navigate(['/']);
       }
-      } catch (err) {
+    } catch (err) {
       const e = err as HttpErrorResponse;
 
       if (e.status === 0) {
@@ -63,7 +63,7 @@ export class LoginComponent {
       this.cdr.detectChanges();
     } finally {
       this.loading = false;
-      this.cdr.detectChanges(); // habilita el botón
+      this.cdr.detectChanges();
     }
   }
 }
