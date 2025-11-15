@@ -9,7 +9,8 @@ import { LoginRequest } from '../../../../core/models/auth/LoginRequest';
 @Component({
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],     // 👈 agrega RouterModule aquí
-  templateUrl: './login.component.html'
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   private auth = inject(AuthService);

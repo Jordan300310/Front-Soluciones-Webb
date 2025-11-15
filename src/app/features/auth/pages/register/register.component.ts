@@ -10,7 +10,8 @@ import { RegisterRequest } from '../../../../core/models/auth/RegisterRequest';
 @Component({
   standalone: true,
   imports: [CommonModule, FormsModule,RouterModule],
-  templateUrl: './register.component.html'
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent {
   private auth = inject(AuthService);

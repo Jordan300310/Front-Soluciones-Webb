@@ -1,15 +1,16 @@
-<h5>Compras</h5>
+<div class="card shadow-sm border-0">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">Compras</h5>
+    <button class="btn btn-sm btn-primary" (click)="nuevo()">
+      <i class="bi bi-bag-plus me-1"></i>
+      Registrar compra
+    </button>
+  </div>
 
-<div class="d-flex gap-4">
-  <!-- LISTA -->
-  <div class="flex-grow-1">
-    <div class="mb-2 text-end">
-      <button class="btn btn-sm btn-primary" (click)="nuevo()">Registrar compra</button>
-    </div>
-
+  <div class="card-body">
     <div class="table-responsive">
-      <table class="table table-sm">
-        <thead>
+      <table class="table table-sm table-hover align-middle">
+        <thead class="table-light">
           <tr>
             <th>ID</th>
             <th>Proveedor</th>
@@ -22,13 +23,13 @@
         </thead>
         <tbody>
           <tr *ngFor="let c of data$ | async">
-            <td>{{ c.idCompra }}</td>
+            <td class="text-muted">#{{ c.idCompra }}</td>
             <td>{{ c.proveedor || ('#' + c.idProveedor) }}</td>
             <td>{{ c.fecha }}</td>
             <td>{{ c.productos }}</td>
-            <td>{{ c.subtotal }}</td>
-            <td>{{ c.igv }}</td>
-            <td>{{ c.total }}</td>
+            <td>S/ {{ c.subtotal }}</td>
+            <td>S/ {{ c.igv }}</td>
+            <td class="fw-semibold">S/ {{ c.total }}</td>
           </tr>
         </tbody>
       </table>
@@ -47,7 +48,6 @@
       </div>
       <div class="modal-body">
         <form (ngSubmit)="guardar()">
-          <!-- PROVEEDOR COMO SELECT -->
           <div class="mb-3">
             <label class="form-label">Proveedor</label>
             <select
@@ -66,12 +66,16 @@
 
           <div class="mb-2 d-flex justify-content-between align-items-center">
             <strong>Items</strong>
-            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="addItem()">+ Item</button>
+            <button type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    (click)="addItem()">
+              + Item
+            </button>
           </div>
 
-          <div class="border rounded p-2 mb-3" *ngFor="let it of items(); let i = index">
-            <div class="row g-2">
-              <!-- PRODUCTO COMO SELECT -->
+          <div class="border rounded p-2 mb-2 bg-light-subtle"
+               *ngFor="let it of items(); let i = index">
+            <div class="row g-2 align-items-center">
               <div class="col-4">
                 <select
                   class="form-select"
@@ -109,7 +113,7 @@
               <div class="col-2 text-end">
                 <button
                   type="button"
-                  class="btn btn-outline-danger"
+                  class="btn btn-outline-danger btn-sm"
                   (click)="removeItem(i)"
                 >
                   X
@@ -118,9 +122,13 @@
             </div>
           </div>
 
-          <div class="d-flex gap-2">
+          <div class="d-flex gap-2 mt-3 justify-content-end">
             <button class="btn btn-primary">Guardar</button>
-            <button type="button" class="btn btn-outline-secondary" (click)="cancelar()">Cancelar</button>
+            <button type="button"
+                    class="btn btn-outline-secondary"
+                    (click)="cancelar()">
+              Cancelar
+            </button>
           </div>
         </form>
       </div>

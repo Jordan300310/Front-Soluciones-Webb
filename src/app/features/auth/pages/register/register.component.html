@@ -1,142 +1,140 @@
-<div class="container py-5" style="max-width: 720px;">
-  <div class="card shadow-sm rounded-4 border-0">
-    <div class="card-body p-4 p-md-5">
-      <div class="mb-4 text-center">
-        <h3 class="mb-1">Crear cuenta</h3>
-        <p class="text-muted small mb-0">
-          Regístrate como <strong>cliente</strong> para comprar más rápido y ver tus pedidos.
-        </p>
-      </div>
+<div class="auth-wrapper">
+  <div class="auth-card auth-card-wide">
+    <div class="auth-header mb-4">
+      <h3>Crear cuenta</h3>
+      <p>
+        Regístrate como <strong>cliente</strong> para comprar más rápido y revisar tus pedidos.
+      </p>
+    </div>
 
-      <form (ngSubmit)="onSubmit()">
-        <div class="row g-3">
-          <!-- Nombres y apellidos -->
-          <div class="col-md-6">
-            <label class="form-label">Nombres</label>
-            <input
-              class="form-control"
-              [(ngModel)]="f.nombres"
-              name="nombres"
-              required
-              placeholder="Ej. Juan Carlos"
-            />
-          </div>
-
-          <div class="col-md-3">
-            <label class="form-label">Apellido paterno</label>
-            <input
-              class="form-control"
-              [(ngModel)]="f.apat"
-              name="apat"
-              required
-              placeholder="Ej. Pérez"
-            />
-          </div>
-
-          <div class="col-md-3">
-            <label class="form-label">Apellido materno</label>
-            <input
-              class="form-control"
-              [(ngModel)]="f.amat"
-              name="amat"
-              required
-              placeholder="Ej. Gómez"
-            />
-          </div>
-
-          <!-- Documento y contacto -->
-          <div class="col-md-4">
-            <label class="form-label">DNI</label>
-            <input
-              class="form-control"
-              [(ngModel)]="f.dni"
-              name="dni"
-              required
-              maxlength="8"
-              placeholder="Ej. 12345678"
-            />
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Celular</label>
-            <input
-              class="form-control"
-              [(ngModel)]="f.cel"
-              name="cel"
-              placeholder="Ej. 987654321"
-            />
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Email</label>
-            <input
-              type="email"
-              class="form-control"
-              [(ngModel)]="f.email"
-              name="email"
-              placeholder="tu@correo.com"
-            />
-          </div>
-
-          <!-- Fecha y credenciales -->
-          <div class="col-md-4">
-            <label class="form-label">Fecha de nacimiento</label>
-            <input
-              type="date"
-              class="form-control"
-              [(ngModel)]="f.fen"
-              name="fen"
-              required
-            />
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Usuario</label>
-            <input
-              class="form-control"
-              [(ngModel)]="f.username"
-              name="username"
-              required
-              placeholder="Nombre de usuario"
-            />
-          </div>
-
-          <div class="col-md-4">
-            <label class="form-label">Contraseña</label>
-            <input
-              type="password"
-              class="form-control"
-              [(ngModel)]="f.password"
-              name="password"
-              required
-              placeholder="Mínimo 8 caracteres"
-            />
-          </div>
+    <form (ngSubmit)="onSubmit()">
+      <div class="row g-3">
+        <!-- Nombres y apellidos -->
+        <div class="col-md-6">
+          <label class="form-label">Nombres</label>
+          <input
+            class="form-control"
+            [(ngModel)]="f.nombres"
+            name="nombres"
+            required
+            placeholder="Ej. Juan Carlos"
+          />
         </div>
 
-        <button
-          class="btn btn-primary mt-4 w-100 d-flex justify-content-center align-items-center gap-2"
-          [disabled]="loading"
-          type="submit"
-        >
-          <span *ngIf="!loading; else loadingTpl">
-            Crear cuenta
-          </span>
-          <ng-template #loadingTpl>
-            <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-            Procesando...
-          </ng-template>
-        </button>
-      </form>
+        <div class="col-md-3">
+          <label class="form-label">Apellido paterno</label>
+          <input
+            class="form-control"
+            [(ngModel)]="f.apat"
+            name="apat"
+            required
+            placeholder="Ej. Pérez"
+          />
+        </div>
 
-      <div class="text-danger mt-3" *ngIf="error">
-        {{ error }}
+        <div class="col-md-3">
+          <label class="form-label">Apellido materno</label>
+          <input
+            class="form-control"
+            [(ngModel)]="f.amat"
+            name="amat"
+            required
+            placeholder="Ej. Gómez"
+          />
+        </div>
+
+        <!-- Documento y contacto -->
+        <div class="col-md-4">
+          <label class="form-label">DNI</label>
+          <input
+            class="form-control"
+            [(ngModel)]="f.dni"
+            name="dni"
+            required
+            maxlength="8"
+            placeholder="Ej. 12345678"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Celular</label>
+          <input
+            class="form-control"
+            [(ngModel)]="f.cel"
+            name="cel"
+            placeholder="Ej. 987654321"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            [(ngModel)]="f.email"
+            name="email"
+            placeholder="tu@correo.com"
+          />
+        </div>
+
+        <!-- Fecha y credenciales -->
+        <div class="col-md-4">
+          <label class="form-label">Fecha de nacimiento</label>
+          <input
+            type="date"
+            class="form-control"
+            [(ngModel)]="f.fen"
+            name="fen"
+            required
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Usuario</label>
+          <input
+            class="form-control"
+            [(ngModel)]="f.username"
+            name="username"
+            required
+            placeholder="Nombre de usuario"
+          />
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">Contraseña</label>
+          <input
+            type="password"
+            class="form-control"
+            [(ngModel)]="f.password"
+            name="password"
+            required
+            placeholder="Mínimo 8 caracteres"
+          />
+        </div>
       </div>
 
-      <div class="text-center text-muted small mt-3">
-        ¿Ya tienes una cuenta?
-        <a routerLink="/auth/login">Inicia sesión</a>
-      </div>
+      <button
+        class="btn btn-primary w-100 auth-btn"
+        [disabled]="loading"
+        type="submit"
+      >
+        <span *ngIf="!loading; else loadingTpl">
+          Crear cuenta
+        </span>
+        <ng-template #loadingTpl>
+          <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+          Procesando...
+        </ng-template>
+      </button>
+    </form>
+
+    <div class="text-danger mt-3" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <div class="auth-footer">
+      ¿Ya tienes una cuenta?
+      <a routerLink="/auth/login">Inicia sesión</a>
     </div>
   </div>
 </div>

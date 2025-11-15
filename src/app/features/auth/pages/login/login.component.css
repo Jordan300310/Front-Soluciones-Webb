@@ -1,0 +1,52 @@
+/* Centrar tarjeta de login en pantalla */
+.auth-wrapper {
+  min-height: calc(100vh - 56px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: #f5f7fb;
+}
+
+/* Card principal */
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  padding: 2.2rem 2rem;
+}
+
+/* Título + subtítulo */
+.auth-header h3 {
+  text-align: center;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+
+.auth-header p {
+  text-align: center;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* Botón principal */
+.auth-btn {
+  margin-top: 0.75rem;
+  border-radius: 999px;
+}
+
+/* Footer pequeño */
+.auth-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.auth-footer a {
+  text-decoration: none;
+  font-weight: 500;
+}

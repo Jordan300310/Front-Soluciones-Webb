@@ -1,18 +1,49 @@
-<div class="d-flex" style="min-height: calc(100vh - 56px);">
-  <aside class="p-3 border-end" style="width:320px;">
-    <h5 class="mb-3">Panel Admin</h5>
-    <nav class="nav flex-column gap-2">
-      <a [routerLink]="['clientes']" class="nav-link" routerLinkActive="active">Clientes</a>
-      <a [routerLink]="['empleados']" class="nav-link" routerLinkActive="active">Empleados</a>
-      <a [routerLink]="['productos']" class="nav-link" routerLinkActive="active">Productos</a>
-      <a [routerLink]="['proveedores']" class="nav-link" routerLinkActive="active">Proveedores</a>
-      <a [routerLink]="['compras']" class="nav-link" routerLinkActive="active">Compras</a>
-      <a [routerLink]="['dashboard']" class="nav-link" routerLinkActive="active">Dashboard</a>
-      <a [routerLink]="['ticket']" class="nav-link" routerLinkActive="active">Ticket</a>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <h5 class="admin-sidebar-title">
+      <i class="bi bi-speedometer2 me-2"></i> Panel Admin
+    </h5>
+
+    <nav class="nav nav-pills flex-column gap-1 small">
+      <a [routerLink]="['dashboard']"
+         routerLinkActive="active"
+         class="nav-link admin-nav-link">
+        <i class="bi bi-graph-up me-2"></i> Dashboard
+      </a>
+      <a [routerLink]="['clientes']"
+         routerLinkActive="active"
+         class="nav-link admin-nav-link">
+        <i class="bi bi-people me-2"></i> Clientes
+      </a>
+      <a [routerLink]="['empleados']"
+         routerLinkActive="active"
+         class="nav-link admin-nav-link">
+        <i class="bi bi-person-badge me-2"></i> Empleados
+      </a>
+      <a [routerLink]="['productos']"
+         routerLinkActive="active"
+         class="nav-link admin-nav-link">
+        <i class="bi bi-box-seam me-2"></i> Productos
+      </a>
+      <a [routerLink]="['proveedores']"
+         routerLinkActive="active"
+         class="nav-link admin-nav-link">
+        <i class="bi bi-truck me-2"></i> Proveedores
+      </a>
+      <a [routerLink]="['compras']"
+         routerLinkActive="active"
+         class="nav-link admin-nav-link">
+        <i class="bi bi-bag-plus me-2"></i> Compras
+      </a>
+      <a [routerLink]="['ticket']"
+         routerLinkActive="active"
+         class="nav-link admin-nav-link">
+        <i class="bi bi-life-preserver me-2"></i> Ticket
+      </a>
     </nav>
   </aside>
 
-  <main class="flex-grow-1 p-4">
-    <router-outlet />
+  <main class="admin-main">
+    <router-outlet></router-outlet>
   </main>
 </div>
