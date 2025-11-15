@@ -4,27 +4,29 @@ import { FormsModule } from '@angular/forms';
 import { Subject, startWith, switchMap } from 'rxjs';
 import { AdminCompraService } from '../../../core/services/admin/admin-compra.service';
 import { CompraReq } from '../../../core/models/admin/compra.models';
+import { AdminProductosService } from '../../../core/services/admin/admin-producto.service';
+import { AdminProveedoresService } from '../../../core/services/admin/admin-proveedor.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgSelectModule], 
   templateUrl: './compra.component.html'
 })
 export class CompraComponent implements OnInit {
   private api = inject(AdminCompraService);
+  private productosApi = inject(AdminProductosService);
+  private proveedoresApi = inject(AdminProveedoresService);
 
-  // Lista de compras
   private refresh$ = new Subject<void>();
   data$ = this.refresh$.pipe(
     startWith(void 0),
     switchMap(() => this.api.list$())
   );
 
-  // Combos (proveedores y productos activos)
   proveedores = signal<{ id: number; nombre: string }[]>([]);
   productos   = signal<{ id: number; nombre: string }[]>([]);
 
-  // Formulario
   idProveedor = signal<number | null>(null);
   items = signal<{ idProducto: number | null; cantidad: number | null; costoUnit: number | null; }[]>([
     { idProducto: null, cantidad: null, costoUnit: null }
@@ -32,11 +34,8 @@ export class CompraComponent implements OnInit {
   creando = signal<boolean>(false);
 
   ngOnInit(): void {
-    // cargar combos al inicio
-    this.api.proveedoresActivos$().subscribe(p => this.proveedores.set(p));
-    this.api.productosActivos$().subscribe(p => this.productos.set(p));
-
-    // refrescar lista de compras inicial
+    this.proveedoresApi.proveedoresActivos$().subscribe(p => this.proveedores.set(p));
+    this.productosApi.productosActivos$().subscribe(p => this.productos.set(p));
     this.refresh$.next();
   }
 

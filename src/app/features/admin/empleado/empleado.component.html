@@ -65,8 +65,8 @@
 </div>
 
 <!-- MODAL EMPLEADO -->
-<div class="modal-backdrop show" *ngIf="selected()"></div>
-<div class="modal d-block" tabindex="-1" *ngIf="selected() as s">
+<div class="modal-backdrop show" *ngIf="selected"></div>
+<div class="modal d-block" tabindex="-1" *ngIf="selected as s">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -76,8 +76,15 @@
         <button type="button" class="btn-close" (click)="cancelar()" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+
+        <!-- Mensaje de error general (front + status backend) -->
+        <div *ngIf="error" class="alert alert-danger py-2">
+          {{ error }}
+        </div>
+
         <form (ngSubmit)="guardar()">
           <div class="row g-3">
+            <!-- Nombres -->
             <div class="col-md-6">
               <label class="form-label">Nombres</label>
               <input class="form-control"
@@ -85,6 +92,8 @@
                      name="nom"
                      required>
             </div>
+
+            <!-- Apellido paterno -->
             <div class="col-md-3">
               <label class="form-label">A. paterno</label>
               <input class="form-control"
@@ -92,6 +101,8 @@
                      name="apat"
                      required>
             </div>
+
+            <!-- Apellido materno -->
             <div class="col-md-3">
               <label class="form-label">A. materno</label>
               <input class="form-control"
@@ -100,25 +111,33 @@
                      required>
             </div>
 
+            <!-- DNI -->
             <div class="col-md-4">
               <label class="form-label">DNI</label>
               <input class="form-control"
                      [(ngModel)]="s.dni"
-                     name="dni">
+                     name="dni"
+                     maxlength="8">
             </div>
+
+            <!-- Celular -->
             <div class="col-md-4">
               <label class="form-label">Celular</label>
               <input class="form-control"
                      [(ngModel)]="s.cel"
                      name="cel">
             </div>
+
+            <!-- Email -->
             <div class="col-md-4">
               <label class="form-label">Email</label>
               <input class="form-control"
+                     type="email"
                      [(ngModel)]="s.email"
                      name="email">
             </div>
 
+            <!-- Fecha nacimiento -->
             <div class="col-md-4">
               <label class="form-label">Fecha de nacimiento</label>
               <input type="date"
@@ -126,6 +145,8 @@
                      [(ngModel)]="s.fen"
                      name="fen">
             </div>
+
+            <!-- Usuario -->
             <div class="col-md-4">
               <label class="form-label">Usuario</label>
               <input class="form-control"
@@ -134,14 +155,17 @@
                      required>
             </div>
 
-            <div class="col-md-4" *ngIf="creando()">
+            <!-- Password solo al crear -->
+            <div class="col-md-4" *ngIf="creando">
               <label class="form-label">Password</label>
               <input class="form-control"
+                     type="password"
                      [(ngModel)]="s.password"
                      name="password"
                      required>
             </div>
 
+            <!-- Cargo -->
             <div class="col-md-6">
               <label class="form-label">Cargo</label>
               <select class="form-select"
@@ -151,6 +175,8 @@
                 <option value="ADMIN">ADMIN</option>
               </select>
             </div>
+
+            <!-- Sueldo -->
             <div class="col-md-6">
               <label class="form-label">Sueldo</label>
               <input type="number"
@@ -161,10 +187,13 @@
           </div>
 
           <div class="d-flex gap-2 mt-4 justify-content-end">
-            <button class="btn btn-primary">Guardar</button>
+            <button class="btn btn-primary" [disabled]="loading">
+              {{ loading ? 'Guardando...' : 'Guardar' }}
+            </button>
             <button type="button"
                     class="btn btn-outline-secondary"
-                    (click)="cancelar()">
+                    (click)="cancelar()"
+                    [disabled]="loading">
               Cancelar
             </button>
           </div>

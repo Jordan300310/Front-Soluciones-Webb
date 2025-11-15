@@ -20,12 +20,21 @@ export class LandingComponent implements OnInit {
   animatingProducts: { [key: number]: boolean } = {};
   filtro: string = '';
 
-  constructor(private productosService: AdminProductosService, private CartStore: CartStore) {}
+  constructor(
+    private productosService: AdminProductosService,
+    private CartStore: CartStore
+  ) {}
 
   ngOnInit() {
     this.productos$ = this.productosService.listPublic$();
   }
+
   agregarAlCarrito(producto: ProductoAdminDTO, event?: Event) {
+    if (!producto.stock || producto.stock <= 0) {
+      alert('Este producto no tiene stock disponible.');
+      return;
+    }
+
     this.CartStore.agregarProducto(producto);
 
     if (event && event.currentTarget) {

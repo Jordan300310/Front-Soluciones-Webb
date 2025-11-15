@@ -36,8 +36,6 @@
     </div>
   </div>
 </div>
-
-<!-- MODAL COMPRA -->
 <div class="modal-backdrop show" *ngIf="creando()"></div>
 <div class="modal d-block" tabindex="-1" *ngIf="creando()">
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -50,18 +48,19 @@
         <form (ngSubmit)="guardar()">
           <div class="mb-3">
             <label class="form-label">Proveedor</label>
-            <select
-              class="form-select"
+            <ng-select
+              [items]="proveedores()"
+              bindLabel="nombre"
+              bindValue="id"
               [ngModel]="idProveedor()"
-              (ngModelChange)="idProveedor.set($event ? +$event : null)"
+              (ngModelChange)="idProveedor.set($event ?? null)"
               name="idProveedor"
+              [searchable]="true"
+              [clearable]="true"
+              placeholder="Seleccione o escriba para buscar..."
               required
             >
-              <option [ngValue]="null">Seleccione proveedor...</option>
-              <option *ngFor="let p of proveedores()" [ngValue]="p.id">
-                {{ p.nombre }}
-              </option>
-            </select>
+            </ng-select>
           </div>
 
           <div class="mb-2 d-flex justify-content-between align-items-center">
@@ -77,16 +76,18 @@
                *ngFor="let it of items(); let i = index">
             <div class="row g-2 align-items-center">
               <div class="col-4">
-                <select
-                  class="form-select"
+                <ng-select
+                  [items]="productos()"
+                  bindLabel="nombre"
+                  bindValue="id"
                   [(ngModel)]="it.idProducto"
+                  [ngModelOptions]="{ standalone: true }"
                   [name]="'prod' + i"
+                  [searchable]="true"
+                  [clearable]="true"
+                  placeholder="Seleccione o escriba producto..."
                 >
-                  <option [ngValue]="null">Seleccione producto...</option>
-                  <option *ngFor="let p of productos()" [ngValue]="p.id">
-                    {{ p.nombre }}
-                  </option>
-                </select>
+                </ng-select>
               </div>
 
               <div class="col-3">

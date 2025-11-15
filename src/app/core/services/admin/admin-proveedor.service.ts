@@ -14,4 +14,10 @@ export class AdminProveedoresService {
   create$(body: any): Observable<Proveedor> { return this.http.post<Proveedor>(this.base, body); }         // body = entidad Proveedor
   update$(id: number, body: any): Observable<Proveedor> { return this.http.patch<Proveedor>(`${this.base}/${id}`, body); }
   delete$(id: number): Observable<void> { return this.http.delete<void>(`${this.base}/${id}`); }
+  proveedoresActivos$(): Observable<{ id: number; nombre: string }[]> {
+    return this.http.get<{ id: number; nombre: string }[]>(
+      `${environment.api}/admin/proveedores/activos`
+    );
+  }
+
 }

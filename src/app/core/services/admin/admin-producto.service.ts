@@ -29,4 +29,10 @@ export class AdminProductosService {
     const publicBase = `${environment.api}/publico/productos`;
     return this.http.get<ProductoAdminDTO[]>(publicBase);
   }
+  productosActivos$(): Observable<{ id: number; nombre: string }[]> {
+    return this.http.get<{ id: number; nombre: string }[]>(
+      `${environment.api}/admin/productos/activos`
+    );
+  }
+  
 }

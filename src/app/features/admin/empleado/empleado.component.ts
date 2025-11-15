@@ -1,9 +1,15 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Subject, startWith, switchMap } from 'rxjs';
+import { Subject, startWith, switchMap, firstValueFrom } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+
 import { AdminEmpleadosService } from '../../../core/services/admin/admin-empleado.service';
-import { EmpleadoAdminDTO, CrearEmpleadoRequest, UpdateEmpleadoRequest } from '../../../core/models/admin/empleado.models';
+import {
+  EmpleadoAdminDTO,
+  CrearEmpleadoRequest,
+  UpdateEmpleadoRequest
+} from '../../../core/models/admin/empleado.models';
 
 @Component({
   standalone: true,
@@ -14,21 +20,35 @@ export class EmpleadoComponent {
   private api = inject(AdminEmpleadosService);
 
   private refresh$ = new Subject<void>();
-  data$ = this.refresh$.pipe(startWith(void 0), switchMap(() => this.api.list$()));
+  data$ = this.refresh$.pipe(
+    startWith(void 0),
+    switchMap(() => this.api.list$())
+  );
 
-  selected = signal<(EmpleadoAdminDTO & { password?: string }) | null>(null);
-  creando = signal<boolean>(false); 
+  // empleado seleccionado en el modal
+  selected: (EmpleadoAdminDTO & { password?: string }) | null = null;
+
+  // modo creación / edición
+  creando = false;
+
+  // estado UI (mismo estilo que RegisterComponent)
+  loading = false;
+  error = '';
+
+  // ====== LISTA ======
 
   editar(e: EmpleadoAdminDTO) {
     this.api.get$(e.idEmpleado).subscribe(v => {
-      this.creando.set(false);
-      this.selected.set({ ...v });
+      this.creando = false;
+      this.error = '';
+      this.selected = { ...v };
     });
   }
 
   nuevo() {
-    this.creando.set(true);
-    this.selected.set({
+    this.creando = true;
+    this.error = '';
+    this.selected = {
       idEmpleado: 0,
       idUsuario: 0,
       username: '',
@@ -44,55 +64,110 @@ export class EmpleadoComponent {
       empleadoEstado: true,
       usuarioEstado: true,
       password: ''
-    });
+    };
   }
 
-  cancelar() { this.selected.set(null); }
-
-  guardar() {
-    const s = this.selected();
-    if (!s) return;
-
-    if (this.creando()) {
-      const b: CrearEmpleadoRequest = {
-        nom: s.nom || '',
-        apat: s.apat || '',
-        amat: s.amat || '',
-        dni: s.dni || '',
-        cel: s.cel || '',
-        email: s.email || '',
-        fen: s.fen || '',
-        cargo: s.cargo || '',
-        sueldo: Number(s.sueldo) || 0,
-        username: s.username || '',
-        password: s.password || ''
-      };
-      this.api.create$(b).subscribe(() => {
-        this.cancelar();
-        this.refresh$.next();
-      });
-    } else {
-      const b: UpdateEmpleadoRequest = {
-        nom: s.nom || '',
-        apat: s.apat || '',
-        amat: s.amat || '',
-        dni: s.dni || '',
-        cel: s.cel || '',
-        email: s.email || '',
-        fen: s.fen || '',
-        cargo: s.cargo || '',
-        sueldo: Number(s.sueldo) || 0,
-        username: s.username || ''
-      };
-      this.api.update$(s.idEmpleado, b).subscribe(() => {
-        this.cancelar();
-        this.refresh$.next();
-      });
-    }
+  cancelar() {
+    this.selected = null;
+    this.error = '';
+    this.loading = false;
   }
 
   eliminar(e: EmpleadoAdminDTO) {
     if (!confirm('Eliminar?')) return;
     this.api.delete$(e.idEmpleado).subscribe(() => this.refresh$.next());
+  }
+
+  // ====== GUARDAR (CREAR / EDITAR) ======
+
+  async guardar() {
+    const s = this.selected;
+    if (!s) return;
+
+    this.error = '';
+
+    // ---------- VALIDACIONES FRONT, estilo RegisterComponent ----------
+
+    if (!s.nom || !s.apat || !s.amat || !s.username || (this.creando && !s.password)) {
+      this.error = 'Completa todos los campos obligatorios.';
+      return;
+    }
+
+    if (s.dni && !/^\d{8}$/.test(s.dni)) {
+      this.error = 'El DNI debe tener 8 dígitos numéricos.';
+      return;
+    }
+
+    if (s.cel && !/^\d{9}$/.test(s.cel)) {
+      this.error = 'El celular debe tener 9 dígitos numéricos.';
+      return;
+    }
+
+    if (s.email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(s.email)) {
+        this.error = 'Ingresa un email válido.';
+        return;
+      }
+    }
+
+    if (this.creando && s.password && s.password.length < 6) {
+      this.error = 'La contraseña debe tener al menos 6 caracteres.';
+      return;
+    }
+
+    this.loading = true;
+
+    try {
+      if (this.creando) {
+        const body: CrearEmpleadoRequest = {
+          nom: s.nom || '',
+          apat: s.apat || '',
+          amat: s.amat || '',
+          dni: s.dni || '',
+          cel: s.cel || '',
+          email: s.email || '',
+          fen: s.fen || '',
+          cargo: s.cargo || '',
+          sueldo: Number(s.sueldo) || 0,
+          username: s.username || '',
+          password: s.password || ''
+        };
+
+        // 👇 igual que en tu register: await al observable
+        await firstValueFrom(this.api.create$(body));
+      } else {
+        const body: UpdateEmpleadoRequest = {
+          nom: s.nom || '',
+          apat: s.apat || '',
+          amat: s.amat || '',
+          dni: s.dni || '',
+          cel: s.cel || '',
+          email: s.email || '',
+          fen: s.fen || '',
+          cargo: s.cargo || '',
+          sueldo: Number(s.sueldo) || 0,
+          username: s.username || ''
+        };
+
+        await firstValueFrom(this.api.update$(s.idEmpleado, body));
+      }
+
+      // si todo salió bien
+      this.cancelar();
+      this.refresh$.next();
+    } catch (err) {
+      const e = err as HttpErrorResponse;
+
+      if (e.status === 409) {
+        this.error = 'DNI ya registrado.';
+      } else if (e.status === 400) {
+        this.error = 'Datos inválidos. Verifica la información ingresada.';
+      } else {
+        this.error = 'No se pudo guardar el empleado.';
+      }
+    } finally {
+      this.loading = false;
+    }
   }
 }

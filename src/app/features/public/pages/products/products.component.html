@@ -43,12 +43,20 @@
                 <p class="fw-bold product-price mt-auto mb-0 fs-6">
                   S/ {{ producto.precio | number : '1.2-2' }}
                 </p>
+
                 <button
                   class="btn btn-primary mt-2 w-100 add-to-cart-btn d-inline-flex justify-content-center align-items-center gap-2"
                   (click)="agregarAlCarrito(producto, $event)"
+                  [disabled]="!producto.stock || producto.stock <= 0"
                 >
-                  <span class="btn-text">Añadir al carrito</span>
-                  <span class="btn-icon">
+                  <span class="btn-text">
+                    {{
+                      (!producto.stock || producto.stock <= 0)
+                        ? 'Sin stock'
+                        : 'Añadir al carrito'
+                    }}
+                  </span>
+                  <span class="btn-icon" *ngIf="producto.stock && producto.stock > 0">
                     <i class="bi bi-cart-plus"></i>
                   </span>
                 </button>
