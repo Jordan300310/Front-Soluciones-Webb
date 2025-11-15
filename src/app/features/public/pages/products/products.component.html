@@ -27,8 +27,12 @@
                 <p class="fw-bold product-price mt-auto mb-0">
                   S/ {{ producto.precio | number : '1.2-2' }}
                 </p>
-                <button class="btn btn-primary mt-2 w-100" (click)="agregarAlCarrito(producto)">
-                  Añadir al carrito
+                <button
+                  class="btn btn-primary mt-2 w-100 add-to-cart-btn"
+                  (click)="agregarAlCarrito(producto, $event)"
+                >
+                  <span class="btn-text">Añadir al carrito</span>
+                  <span class="btn-icon">✓</span>
                 </button>
               </div>
             </div>

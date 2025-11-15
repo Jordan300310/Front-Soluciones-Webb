@@ -17,6 +17,7 @@ import { CartStore } from '../../../../core/store/cart.store';
 export class ProductsComponent implements OnInit {
   productos$!: Observable<ProductoAdminDTO[]>;
   filtro: string = '';
+  animatingProducts: { [key: number]: boolean } = {};
 
   constructor(private productosService: AdminProductosService, private cartStore: CartStore) {}
 
@@ -24,7 +25,19 @@ export class ProductsComponent implements OnInit {
     this.productos$ = this.productosService.listPublic$();
   }
 
-  agregarAlCarrito(producto: ProductoAdminDTO) {
+  agregarAlCarrito(producto: ProductoAdminDTO, event?: Event) {
     this.cartStore.agregarProducto(producto);
+
+    if (event && event.currentTarget) {
+      const btn = event.currentTarget as HTMLElement;
+      btn.classList.add('animating');
+      setTimeout(() => btn.classList.remove('animating'), 600);
+      return;
+    }
+
+    this.animatingProducts[producto.id] = true;
+    setTimeout(() => {
+      this.animatingProducts[producto.id] = false;
+    }, 600);
   }
 }

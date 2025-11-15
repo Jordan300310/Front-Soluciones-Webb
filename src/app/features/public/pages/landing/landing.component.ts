@@ -17,6 +17,7 @@ import { RouterLink } from '@angular/router';
 })
 export class LandingComponent implements OnInit {
   productos$!: Observable<ProductoAdminDTO[]>;
+  animatingProducts: { [key: number]: boolean } = {};
   filtro: string = '';
 
   constructor(private productosService: AdminProductosService, private CartStore: CartStore) {}
@@ -24,7 +25,19 @@ export class LandingComponent implements OnInit {
   ngOnInit() {
     this.productos$ = this.productosService.listPublic$();
   }
-  agregarAlCarrito(producto: ProductoAdminDTO) {
+  agregarAlCarrito(producto: ProductoAdminDTO, event?: Event) {
     this.CartStore.agregarProducto(producto);
+
+    if (event && event.currentTarget) {
+      const btn = event.currentTarget as HTMLElement;
+      btn.classList.add('animating');
+      setTimeout(() => btn.classList.remove('animating'), 600);
+      return;
+    }
+
+    this.animatingProducts[producto.id] = true;
+    setTimeout(() => {
+      this.animatingProducts[producto.id] = false;
+    }, 600);
   }
 }
