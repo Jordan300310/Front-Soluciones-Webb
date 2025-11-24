@@ -1,0 +1,20 @@
+/* Color oficial de Mercado Pago */
+.btn-mercadopago {
+    background-color: #009EE3;
+    /* Celeste oficial */
+    border-color: #009EE3;
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.btn-mercadopago:hover {
+    background-color: #007eb5;
+    /* Un tono más oscuro para el hover */
+    color: white;
+}
+
+.btn-mercadopago:disabled {
+    background-color: #89dbfcd3;
+    border-color: #89dbfcd3;
+}

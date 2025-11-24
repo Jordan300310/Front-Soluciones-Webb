@@ -29,6 +29,30 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'checkout/success',
+    loadComponent: () =>
+      import('./features/public/pages/checkout-success/checkout-success.component').then(
+        (m) => m.CheckoutSuccessComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'checkout/failure',
+    loadComponent: () =>
+      import('./features/public/pages/checkout-failure/checkout-failure.component').then(
+        (m) => m.CheckoutFailureComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'checkout/pending',
+    loadComponent: () =>
+      import('./features/public/pages/checkout-pending/checkout-pending.component').then(
+        (m) => m.CheckoutPendingComponent
+      ),
+    canActivate: [authGuard],
+  },
+  {
     path: 'compra-exitosa/:id',
     loadComponent: () =>
       import('./features/public/pages/compra-exitosa/compra-exitosa.component').then(

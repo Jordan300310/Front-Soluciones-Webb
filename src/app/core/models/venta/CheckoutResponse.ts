@@ -1,7 +1,6 @@
 export interface CheckoutResponse {
-  ventaId: number;
-  serieComprobante: string;
-  numeroComprobante: string;
-  fechaEmision: string;
+  initPoint: string;
+  preferenceId: string;
   total: number;
+  checkoutPendienteId: number;
 }
