@@ -100,6 +100,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'dashboard/detalle/:categoria',
+        loadComponent: () =>
+          import('./features/admin/dashboard-detalle/dashboard-detalle.component').then(
+            (m) => m.DashboardDetalleComponent
+          ),
+      },
+      // -----------------------------
+      {
         path: 'clientes',
         loadComponent: () =>
           import('./features/admin/cliente/cliente.component').then((m) => m.ClienteComponent),

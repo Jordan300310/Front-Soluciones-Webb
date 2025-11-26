@@ -1,66 +1,182 @@
-<div class="container py-4">
-  <div *ngIf="loading" class="text-center mb-3">
-    <div class="spinner-border" role="status" aria-hidden="true"></div>
-    <div class="mt-2">Cargando dashboard...</div>
+<div class="container-fluid py-4 bg-light min-vh-100">
+
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2 text-muted">Obteniendo métricas...</p>
   </div>
 
-  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+  <div *ngIf="error" class="alert alert-danger shadow-sm">{{ error }}</div>
 
-  <div *ngIf="!loading && !error">
-    <div class="row mb-4">
-      <div class="col-12 col-md-6">
-        <div class="card shadow-sm">
-          <div class="card-body text-center">
-            <h6 class="card-subtitle mb-2 text-muted">Ventas (mes)</h6>
-            <h2 class="mb-0">{{ ventasMes ?? 0 }}</h2>
+  <div *ngIf="!loading && !error" class="fade-in">
+    
+    <div class="row g-3 mb-4">
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h6 class="text-muted text-uppercase small fw-bold">Ventas (Mes)</h6>
+            <div class="d-flex align-items-center justify-content-between">
+              <h3 class="mb-0 text-primary fw-bold">{{ ventasMes }}</h3>
+              <i class="bi bi-cart-check fs-2 text-primary opacity-25"></i>
+            </div>
+            <small class="text-success"><i class="bi bi-arrow-up-short"></i> Transacciones</small>
           </div>
         </div>
       </div>
-      <div class="col-12 col-md-6 mt-3 mt-md-0">
-        <div class="card shadow-sm">
-          <div class="card-body text-center">
-            <h6 class="card-subtitle mb-2 text-muted">Ganancias (mes)</h6>
-            <h2 class="mb-0">S/{{ gananciasMes | number : '1.2-2' }}</h2>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h6 class="text-muted text-uppercase small fw-bold">Ganancias (Mes)</h6>
+            <div class="d-flex align-items-center justify-content-between">
+              <h3 class="mb-0 text-success fw-bold">S/ {{ gananciasMes | number:'1.2-2' }}</h3>
+              <i class="bi bi-currency-dollar fs-2 text-success opacity-25"></i>
+            </div>
+            <small class="text-muted">Ingreso Neto</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <h6 class="text-muted text-uppercase small fw-bold">Ticket Promedio</h6>
+            <div class="d-flex align-items-center justify-content-between">
+              <h3 class="mb-0 text-dark fw-bold">S/ {{ ticketPromedio | number:'1.2-2' }}</h3>
+              <i class="bi bi-receipt fs-2 text-dark opacity-25"></i>
+            </div>
+            <small class="text-muted">Promedio por venta</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-6 col-xl-3">
+        <div class="card border-0 shadow-sm h-100" [ngClass]="{'border-start border-4 border-danger': productosBajoStock.length > 0}">
+          <div class="card-body">
+            <h6 class="text-muted text-uppercase small fw-bold">Alertas Stock</h6>
+            <div class="d-flex align-items-center justify-content-between">
+              <h3 class="mb-0 fw-bold" [class.text-danger]="productosBajoStock.length > 0">{{ productosBajoStock.length }}</h3>
+              <i class="bi bi-exclamation-triangle fs-2 opacity-25" [class.text-danger]="productosBajoStock.length > 0"></i>
+            </div>
+            <small class="text-danger fw-bold" *ngIf="productosBajoStock.length > 0">Acción requerida</small>
+            <small class="text-success" *ngIf="productosBajoStock.length === 0">Stock saludable</small>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header">Top productos vendidos</div>
-      <div class="card-body p-0">
-        <div class="row p-3">
-          <div class="col-12 col-lg-6" style="height: 300px">
-            <canvas #barCanvas></canvas>
+    <div class="row g-3 mb-4">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white py-3">
+            <h6 class="m-0 fw-bold">Tendencia de Ventas (Últimos 7 días)</h6>
           </div>
-          <div class="col-12 col-lg-6" style="height: 300px">
-            <canvas #doughnutCanvas></canvas>
+          <div class="card-body">
+            <div style="height: 300px; width: 100%;">
+              <canvas #lineCanvas></canvas>
+            </div>
           </div>
-        </div>
-        <div *ngIf="topProductos.length === 0" class="p-3 text-muted">
-          No hay productos vendidos en el periodo.
-        </div>
-        <div *ngIf="topProductos.length > 0" class="table-responsive">
-          <table class="table mb-0">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Total Ganancia</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let p of topProductos; index as i">
-                <td>{{ i + 1 }}</td>
-                <td>{{ p.nombre }}</td>
-                <td>{{ p.cantidadVendida }}</td>
-                <td>S/{{ p.totalVenta | number : '1.2-2' }}</td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
+
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white py-3">
+            <h6 class="m-0 fw-bold">Ventas por Categoría</h6>
+          </div>
+          <div class="card-body d-flex flex-column justify-content-center">
+            <div style="height: 250px; width: 100%;">
+              <canvas #pieCanvas></canvas>
+            </div>
+            <div class="text-center mt-3 small text-muted fst-italic">
+              <i class="bi bi-hand-index-thumb"></i> Haz click en un segmento para ver detalles
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white py-3 border-bottom-0">
+            <h6 class="m-0 fw-bold text-primary"><i class="bi bi-trophy-fill me-2"></i>Top Productos</h6>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light small text-uppercase">
+                <tr>
+                  <th>Producto</th>
+                  <th class="text-end">Cant.</th>
+                  <th class="text-end">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of topProductos">
+                  <td class="small">{{ p.nombre }}</td>
+                  <td class="text-end fw-bold">{{ p.cantidadVendida }}</td>
+                  <td class="text-end text-muted small">S/{{ p.totalVenta | number:'1.0-0' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white py-3 border-bottom-0">
+            <h6 class="m-0 fw-bold text-danger"><i class="bi bi-shield-exclamation me-2"></i>Stock Bajo (< 10)</h6>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light small text-uppercase">
+                <tr>
+                  <th>Producto</th>
+                  <th class="text-end">Stock</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of productosBajoStock">
+                  <td class="small">{{ p.nombre }}</td>
+                  <td class="text-end text-danger fw-bold">{{ p.stock }}</td>
+                </tr>
+                <tr *ngIf="productosBajoStock.length === 0">
+                  <td colspan="2" class="text-center py-4 text-muted small">¡Todo en orden!</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-header bg-white py-3 border-bottom-0">
+            <h6 class="m-0 fw-bold text-secondary"><i class="bi bi-hourglass-bottom me-2"></i>Sin Movimiento (30d)</h6>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light small text-uppercase">
+                <tr>
+                  <th>Producto</th>
+                  <th class="text-end">Stock</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let p of productosZombies">
+                  <td class="small text-muted">{{ p.nombre }}</td>
+                  <td class="text-end text-muted">{{ p.stock }}</td>
+                </tr>
+                <tr *ngIf="productosZombies.length === 0">
+                  <td colspan="2" class="text-center py-4 text-muted small">Sin productos estancados</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
