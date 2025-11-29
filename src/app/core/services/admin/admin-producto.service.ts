@@ -17,7 +17,7 @@ export class AdminProductosService {
   }
   create$(body: any): Observable<ProductoAdminDTO> {
     return this.http.post<ProductoAdminDTO>(this.base, body);
-  } // body = entidad Producto
+  } 
   update$(id: number, body: any): Observable<ProductoAdminDTO> {
     return this.http.patch<ProductoAdminDTO>(`${this.base}/${id}`, body);
   }
@@ -25,14 +25,11 @@ export class AdminProductosService {
     return this.http.delete<void>(`${this.base}/${id}`);
   }
 
-  listPublic$(): Observable<ProductoAdminDTO[]> {
-    const publicBase = `${environment.api}/publico/productos`;
-    return this.http.get<ProductoAdminDTO[]>(publicBase);
-  }
-  productosActivos$(): Observable<{ id: number; nombre: string }[]> {
+  productosCombo$(): Observable<{ id: number; nombre: string }[]> {
     return this.http.get<{ id: number; nombre: string }[]>(
-      `${environment.api}/admin/productos/activos`
+      `${this.base}/activos`
     );
   }
+  
   
 }

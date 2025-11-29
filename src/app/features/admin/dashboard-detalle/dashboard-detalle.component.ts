@@ -78,10 +78,9 @@ export class DashboardDetalleComponent implements OnInit, OnDestroy {
   }
 
   private initDetailCharts(): void {
-    const labels = this.productos.map(p => p.nombre.length > 20 ? p.nombre.substring(0, 20) + '...' : p.nombre);
+    const labels = this.productos.map(p => p.nombre.length > 25 ? p.nombre.substring(0, 25) + '...' : p.nombre);
     const cantidades = this.productos.map(p => p.cantidadVendida);
     const totales = this.productos.map(p => p.totalVenta);
-
     if (this.barCanvas) {
       this.barChart = new Chart(this.barCanvas.nativeElement, {
         type: 'bar',
@@ -90,23 +89,26 @@ export class DashboardDetalleComponent implements OnInit, OnDestroy {
           datasets: [{
             label: 'Unidades Vendidas',
             data: cantidades,
-            backgroundColor: 'rgba(54, 162, 235, 0.7)',
-            borderColor: 'rgba(54, 162, 235, 1)',
+            backgroundColor: 'rgba(67, 97, 238, 0.7)',
+            borderColor: 'rgba(67, 97, 238, 1)',
             borderWidth: 1,
-            borderRadius: 4
+            borderRadius: 6,
+            barThickness: 20
           }]
         },
         options: {
-          indexAxis: 'y', // 'y' hace que las barras sean horizontales
+          indexAxis: 'y', 
           responsive: true,
           maintainAspectRatio: false,
           plugins: { legend: { display: false } },
-          scales: { x: { beginAtZero: true } }
+          scales: { 
+            x: { beginAtZero: true, grid: { display: true } },
+            y: { grid: { display: false } } 
+          }
         }
       });
     }
 
-    // --- GRÁFICO 2: DONA (Dinero) ---
     if (this.doughnutCanvas) {
       this.doughnutChart = new Chart(this.doughnutCanvas.nativeElement, {
         type: 'doughnut',
@@ -115,16 +117,18 @@ export class DashboardDetalleComponent implements OnInit, OnDestroy {
           datasets: [{
             data: totales,
             backgroundColor: [
-              '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'
+              '#4361ee', '#3f37c9', '#4895ef', '#4cc9f0', '#f72585', '#7209b7'
             ],
-            hoverOffset: 4
+            borderWidth: 0,
+            hoverOffset: 10
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          cutout: '70%', 
           plugins: {
-            legend: { display: false }, // Ocultamos leyenda si son muchos productos
+            legend: { display: false }, 
             tooltip: {
               callbacks: {
                 label: (context) => {

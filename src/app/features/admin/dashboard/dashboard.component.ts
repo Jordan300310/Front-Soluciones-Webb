@@ -89,6 +89,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   private initCharts(dias: VentaDiaria[], cats: VentaCategoria[]): void {
+    
     if (this.lineCanvas && dias.length > 0) {
       this.lineChart = new Chart(this.lineCanvas.nativeElement, {
         type: 'line',
@@ -105,7 +106,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false,
+          maintainAspectRatio: false, 
           plugins: { legend: { display: false } },
           scales: {
             y: { beginAtZero: true, grid: { display: true } },
@@ -130,7 +131,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false,
+          maintainAspectRatio: false, 
           plugins: {
             legend: { position: 'right', labels: { boxWidth: 12, usePointStyle: true } },
             tooltip: {
@@ -150,7 +151,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             if (elements.length > 0) {
               const index = elements[0].index;
               const categoria = cats[index].categoria;
-      
               this.router.navigate(['/admin/dashboard/detalle', encodeURIComponent(categoria)]);
             }
           }

@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 
-// --- Interfaces ---
 export interface VentaDiaria {
   fecha: string;
   total: number;

@@ -1,77 +1,111 @@
-<div class="container-fluid py-4 bg-light min-vh-100">
+<div class="container-fluid py-5 min-vh-100">
 
   <div *ngIf="loading" class="text-center py-5">
-    <div class="spinner-border text-primary" role="status"></div>
-    <p class="mt-2 text-muted">Obteniendo métricas...</p>
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+    <p class="mt-3 text-secondary fw-bold">Procesando datos...</p>
   </div>
 
-  <div *ngIf="error" class="alert alert-danger shadow-sm">{{ error }}</div>
+  <div *ngIf="error" class="alert alert-danger border-0 shadow-sm d-flex align-items-center rounded-3">
+    <i class="bi bi-exclamation-octagon-fill me-3 fs-3"></i>
+    <div>{{ error }}</div>
+  </div>
 
   <div *ngIf="!loading && !error" class="fade-in">
     
-    <div class="row g-3 mb-4">
+    <div class="row g-4 mb-5">
+      
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card h-100 kpi-card kpi-primary">
           <div class="card-body">
-            <h6 class="text-muted text-uppercase small fw-bold">Ventas (Mes)</h6>
-            <div class="d-flex align-items-center justify-content-between">
-              <h3 class="mb-0 text-primary fw-bold">{{ ventasMes }}</h3>
-              <i class="bi bi-cart-check fs-2 text-primary opacity-25"></i>
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h6 class="text-muted text-uppercase small fw-bold mb-1">Ventas Totales</h6>
+                <h2 class="mb-0 fw-bolder display-6 text-dark">{{ ventasMes }}</h2>
+              </div>
+              <div class="icon-box shadow-sm">
+                <i class="bi bi-bag-check-fill"></i>
+              </div>
             </div>
-            <small class="text-success"><i class="bi bi-arrow-up-short"></i> Transacciones</small>
+            <div class="d-flex align-items-center">
+              <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2">
+                <i class="bi bi-graph-up"></i> Mes Actual
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card h-100 kpi-card kpi-success">
           <div class="card-body">
-            <h6 class="text-muted text-uppercase small fw-bold">Ganancias (Mes)</h6>
-            <div class="d-flex align-items-center justify-content-between">
-              <h3 class="mb-0 text-success fw-bold">S/ {{ gananciasMes | number:'1.2-2' }}</h3>
-              <i class="bi bi-currency-dollar fs-2 text-success opacity-25"></i>
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h6 class="text-muted text-uppercase small fw-bold mb-1">Ganancias</h6>
+                <h2 class="mb-0 fw-bolder display-6 text-dark">S/ {{ gananciasMes | number:'1.2-2' }}</h2>
+              </div>
+              <div class="icon-box shadow-sm">
+                <i class="bi bi-cash-coin"></i>
+              </div>
             </div>
-            <small class="text-muted">Ingreso Neto</small>
+            <div class="d-flex align-items-center">
+              <span class="badge rounded-pill bg-success bg-opacity-10 text-success px-3 py-2">
+                <i class="bi bi-wallet2"></i> Neto
+              </span>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100">
+        <div class="card h-100 kpi-card kpi-info">
           <div class="card-body">
-            <h6 class="text-muted text-uppercase small fw-bold">Ticket Promedio</h6>
-            <div class="d-flex align-items-center justify-content-between">
-              <h3 class="mb-0 text-dark fw-bold">S/ {{ ticketPromedio | number:'1.2-2' }}</h3>
-              <i class="bi bi-receipt fs-2 text-dark opacity-25"></i>
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h6 class="text-muted text-uppercase small fw-bold mb-1">Ticket Promedio</h6>
+                <h2 class="mb-0 fw-bolder display-6 text-dark">S/ {{ ticketPromedio | number:'1.2-2' }}</h2>
+              </div>
+              <div class="icon-box shadow-sm">
+                <i class="bi bi-receipt-cutoff"></i>
+              </div>
             </div>
-            <small class="text-muted">Promedio por venta</small>
+            <div class="d-flex align-items-center">
+              <span class="text-muted small">Promedio por transacción</span>
+            </div>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-md-6 col-xl-3">
-        <div class="card border-0 shadow-sm h-100" [ngClass]="{'border-start border-4 border-danger': productosBajoStock.length > 0}">
+        <div class="card h-100 kpi-card" [ngClass]="productosBajoStock.length > 0 ? 'kpi-danger' : 'kpi-success'">
           <div class="card-body">
-            <h6 class="text-muted text-uppercase small fw-bold">Alertas Stock</h6>
-            <div class="d-flex align-items-center justify-content-between">
-              <h3 class="mb-0 fw-bold" [class.text-danger]="productosBajoStock.length > 0">{{ productosBajoStock.length }}</h3>
-              <i class="bi bi-exclamation-triangle fs-2 opacity-25" [class.text-danger]="productosBajoStock.length > 0"></i>
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h6 class="text-muted text-uppercase small fw-bold mb-1">Stock Crítico</h6>
+                <h2 class="mb-0 fw-bolder display-6 text-dark">{{ productosBajoStock.length }}</h2>
+              </div>
+              <div class="icon-box shadow-sm">
+                <i class="bi" [ngClass]="productosBajoStock.length > 0 ? 'bi-exclamation-diamond-fill' : 'bi-check-circle-fill'"></i>
+              </div>
             </div>
-            <small class="text-danger fw-bold" *ngIf="productosBajoStock.length > 0">Acción requerida</small>
-            <small class="text-success" *ngIf="productosBajoStock.length === 0">Stock saludable</small>
+            <div class="d-flex align-items-center">
+              <span class="fw-bold small" [ngClass]="productosBajoStock.length > 0 ? 'text-danger' : 'text-success'">
+                {{ productosBajoStock.length > 0 ? 'Reponer inventario urgente' : 'Todo bajo control' }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row g-3 mb-4">
+    <div class="row g-4 mb-5">
       <div class="col-lg-8">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-header bg-white py-3">
-            <h6 class="m-0 fw-bold">Tendencia de Ventas (Últimos 7 días)</h6>
+        <div class="card h-100">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="m-0 fw-bold text-secondary">Tendencia de Ingresos</h5>
+            <button class="btn btn-sm btn-light rounded-circle"><i class="bi bi-three-dots-vertical"></i></button>
           </div>
           <div class="card-body">
-            <div style="height: 300px; width: 100%;">
+            <div style="position: relative; height: 320px; width: 100%;">
               <canvas #lineCanvas></canvas>
             </div>
           </div>
@@ -79,43 +113,48 @@
       </div>
 
       <div class="col-lg-4">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-header bg-white py-3">
-            <h6 class="m-0 fw-bold">Ventas por Categoría</h6>
+        <div class="card h-100">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="m-0 fw-bold text-secondary">Por Categoría</h5>
+            <small class="text-muted">Top Ventas</small>
           </div>
-          <div class="card-body d-flex flex-column justify-content-center">
-            <div style="height: 250px; width: 100%;">
+          <div class="card-body d-flex flex-column align-items-center justify-content-center">
+            <div style="position: relative; height: 260px; width: 100%;">
               <canvas #pieCanvas></canvas>
             </div>
-            <div class="text-center mt-3 small text-muted fst-italic">
-              <i class="bi bi-hand-index-thumb"></i> Haz click en un segmento para ver detalles
+            <div class="mt-4 text-center text-muted small">
+              <i class="bi bi-hand-index-thumb-fill text-primary me-1"></i> Haz clic en un color para ver detalles
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="row g-3">
+    <div class="row g-4">
       
       <div class="col-lg-4">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-header bg-white py-3 border-bottom-0">
-            <h6 class="m-0 fw-bold text-primary"><i class="bi bi-trophy-fill me-2"></i>Top Productos</h6>
+        <div class="card h-100">
+          <div class="card-header">
+            <h6 class="m-0 fw-bold text-primary"><i class="bi bi-star-fill me-2"></i>Productos Estrella</h6>
           </div>
           <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-              <thead class="table-light small text-uppercase">
+            <table class="table mb-0">
+              <thead>
                 <tr>
                   <th>Producto</th>
-                  <th class="text-end">Cant.</th>
+                  <th class="text-end">Vol.</th>
                   <th class="text-end">Total</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let p of topProductos">
-                  <td class="small">{{ p.nombre }}</td>
-                  <td class="text-end fw-bold">{{ p.cantidadVendida }}</td>
-                  <td class="text-end text-muted small">S/{{ p.totalVenta | number:'1.0-0' }}</td>
+                  <td>
+                    <div class="fw-bold text-truncate" style="max-width: 160px;" title="{{p.nombre}}">{{ p.nombre }}</div>
+                  </td>
+                  <td class="text-end">
+                    <span class="custom-badge badge-soft-primary">{{ p.cantidadVendida }}</span>
+                  </td>
+                  <td class="text-end text-secondary fw-bold small">S/{{ p.totalVenta | number:'1.0-0' }}</td>
                 </tr>
               </tbody>
             </table>
@@ -124,25 +163,32 @@
       </div>
 
       <div class="col-lg-4">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-header bg-white py-3 border-bottom-0">
-            <h6 class="m-0 fw-bold text-danger"><i class="bi bi-shield-exclamation me-2"></i>Stock Bajo (< 10)</h6>
+        <div class="card h-100">
+          <div class="card-header">
+            <h6 class="m-0 fw-bold text-danger"><i class="bi bi-battery-half me-2"></i>Stock Crítico</h6>
           </div>
           <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-              <thead class="table-light small text-uppercase">
+            <table class="table mb-0">
+              <thead>
                 <tr>
                   <th>Producto</th>
-                  <th class="text-end">Stock</th>
+                  <th class="text-end">Quedan</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let p of productosBajoStock">
-                  <td class="small">{{ p.nombre }}</td>
-                  <td class="text-end text-danger fw-bold">{{ p.stock }}</td>
+                  <td>
+                    <div class="text-truncate" style="max-width: 190px;" title="{{p.nombre}}">{{ p.nombre }}</div>
+                  </td>
+                  <td class="text-end">
+                    <span class="fw-bold text-danger">{{ p.stock }} un.</span>
+                  </td>
                 </tr>
                 <tr *ngIf="productosBajoStock.length === 0">
-                  <td colspan="2" class="text-center py-4 text-muted small">¡Todo en orden!</td>
+                  <td colspan="2" class="text-center py-5 text-muted">
+                    <i class="bi bi-shield-check fs-1 d-block mb-2 text-success opacity-50"></i>
+                    Inventario Saludable
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -151,13 +197,13 @@
       </div>
 
       <div class="col-lg-4">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-header bg-white py-3 border-bottom-0">
-            <h6 class="m-0 fw-bold text-secondary"><i class="bi bi-hourglass-bottom me-2"></i>Sin Movimiento (30d)</h6>
+        <div class="card h-100">
+          <div class="card-header">
+            <h6 class="m-0 fw-bold text-secondary"><i class="bi bi-archive me-2"></i>Sin Movimiento</h6>
           </div>
           <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-              <thead class="table-light small text-uppercase">
+            <table class="table mb-0">
+              <thead>
                 <tr>
                   <th>Producto</th>
                   <th class="text-end">Stock</th>
@@ -165,11 +211,15 @@
               </thead>
               <tbody>
                 <tr *ngFor="let p of productosZombies">
-                  <td class="small text-muted">{{ p.nombre }}</td>
+                  <td class="text-muted">
+                    <div class="text-truncate" style="max-width: 190px;" title="{{p.nombre}}">{{ p.nombre }}</div>
+                  </td>
                   <td class="text-end text-muted">{{ p.stock }}</td>
                 </tr>
                 <tr *ngIf="productosZombies.length === 0">
-                  <td colspan="2" class="text-center py-4 text-muted small">Sin productos estancados</td>
+                  <td colspan="2" class="text-center py-5 text-muted">
+                    Todo se vende.
+                  </td>
                 </tr>
               </tbody>
             </table>

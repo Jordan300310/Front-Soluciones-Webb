@@ -3,6 +3,7 @@
   --bs-primary-rgb: 17, 147, 212;
 }
 
+/* --- HERO SECTION --- */
 .hero-section {
   min-height: 480px;
   background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)),
@@ -22,21 +23,38 @@
   padding: 0.75rem 1.25rem;
 }
 
-.product-image {
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 0.5rem 0.5rem 0 0;
+/* --- ESTILOS DE IMAGEN Y ZOOM --- */
+.ratio {
+  overflow: hidden;
+  background-color: #fff;
 }
 
+.product-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  border-radius: 0.5rem 0.5rem 0 0;
+  transition: transform 0.3s ease;
+}
+
+.card:hover .product-image {
+  transform: scale(1.05);
+}
+
+/* --- ESTILOS GENERALES DE TARJETA --- */
 .product-price {
   color: var(--bs-primary);
-  font-size: 0.875rem; /* 14px */
+  font-size: 0.875rem;
 }
 
 .card-title {
   font-weight: 500;
 }
-/* Animación del botón añadir al carrito */
+
+/* --- BOTÓN AÑADIR (ANIMACIÓN) --- */
 .add-to-cart-btn {
   position: relative;
   overflow: hidden;
@@ -78,14 +96,58 @@
 }
 
 @keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(0, 123, 255, 0.6);
-  }
-  100% {
-    transform: scale(1);
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(0, 123, 255, 0.6); }
+  100% { transform: scale(1); }
+}
+
+/* --- CARRUSEL Y SCROLL --- */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.card-wrapper {
+  flex: 0 0 auto; /* Importante para que no se achiquen */
+}
+
+/* --- FLECHAS DE NAVEGACIÓN (CONFIGURACIÓN FLEX) --- */
+
+.nav-btn {
+  /* Al estar en un contenedor FLEX, esto asegura que no se encojan */
+  flex: 0 0 auto; 
+  
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0 10px; /* Un poco de aire a los lados */
+  
+  /* Estilo visual */
+  font-size: 3rem; /* TAMAÑO GRANDE */
+  color: #343a40;
+  opacity: 0.5;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  /* Centrado del ícono */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn:hover {
+  color: var(--bs-primary);
+  opacity: 1;
+  transform: scale(1.2); /* Zoom al pasar el mouse */
+}
+
+/* En móviles ocultamos las flechas para dar más espacio al touch */
+@media (max-width: 576px) {
+  .nav-btn {
+    display: none;
   }
 }

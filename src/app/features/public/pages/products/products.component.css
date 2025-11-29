@@ -1,63 +1,169 @@
-.product-image {
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 0.5rem 0.5rem 0 0;
+:host {
+  --primary-color: #1193d4;
+  --primary-hover: #0e7db5;
+  --text-dark: #343a40;
+  --text-muted: #6c757d;
+  --card-radius: 12px;
+  --transition-speed: 0.3s ease;
 }
 
-.product-price {
-  font-size: 1rem;
+.filter-card {
+  border-radius: var(--card-radius);
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
-/* Animación del botón añadir al carrito */
-.add-to-cart-btn {
-  position: relative;
+.search-group {
+  border-radius: 50px;
   overflow: hidden;
+  border: 1px solid #dee2e6;
+  transition: all 0.3s ease;
+}
+
+.search-group:focus-within {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(17, 147, 212, 0.15);
+}
+
+.search-group .input-group-text,
+.search-group .form-control {
+  background-color: #f8f9fa;
+  border: none;
+}
+
+.search-group .form-control:focus {
+  background-color: #fff;
+  box-shadow: none;
+}
+
+.accordion-item {
+  border: none;
+  background: transparent;
+  margin-bottom: 0.25rem;
+}
+
+.accordion-button {
+  background: transparent;
+  color: var(--text-dark);
+  box-shadow: none !important;
+  padding: 0.75rem 0;
+  font-size: 0.95rem;
+}
+
+.accordion-button:not(.collapsed) {
+  color: var(--primary-color);
+  background: transparent;
+  font-weight: 700;
+}
+
+.accordion-button::after {
+  background-size: 0.8rem;
+  opacity: 0.6;
+}
+
+.form-check-input:checked {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.form-check-label {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.form-check:hover .form-check-label {
+  color: var(--primary-color);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+}
+
+.form-range::-webkit-slider-thumb {
+  background: var(--primary-color);
+}
+
+.product-card {
+  border-radius: var(--card-radius);
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.05);
+  transition: var(--transition-speed);
+  overflow: hidden;
+}
+
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+  border-color: transparent;
+}
+
+.product-card .card-img-top {
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover .card-img-top {
+  transform: scale(1.08);
+}
+
+.stock-badge {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
+  border-radius: 6px;
+  z-index: 20;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.card-title {
+  color: var(--text-dark);
+  transition: color 0.2s;
+}
+
+.product-card:hover .card-title {
+  color: var(--primary-color);
+}
+
+.add-to-cart-btn {
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 0;
+  font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .add-to-cart-btn:hover {
+  background-color: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(17, 147, 212, 0.3);
 }
 
-.add-to-cart-btn .btn-icon {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  opacity: 0;
-  font-size: 1.5rem;
-  transition: all 0.3s ease;
-}
-
-.add-to-cart-btn .btn-text {
-  display: inline-block;
-  transition: all 0.3s ease;
+.add-to-cart-btn:disabled {
+  background-color: #e9ecef;
+  color: #adb5bd;
+  transform: none;
+  box-shadow: none;
 }
 
 .add-to-cart-btn.animating {
-  animation: pulse 0.6s ease;
+  animation: btnPulse 0.4s ease-out;
 }
 
-.add-to-cart-btn.animating .btn-text {
-  opacity: 0;
-  transform: scale(0);
-}
-
-.add-to-cart-btn.animating .btn-icon {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(0, 123, 255, 0.6);
-  }
-  100% {
-    transform: scale(1);
-  }
+@keyframes btnPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
 }

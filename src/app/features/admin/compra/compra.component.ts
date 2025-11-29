@@ -35,7 +35,7 @@ export class CompraComponent implements OnInit {
 
   ngOnInit(): void {
     this.proveedoresApi.proveedoresActivos$().subscribe(p => this.proveedores.set(p));
-    this.productosApi.productosActivos$().subscribe(p => this.productos.set(p));
+    this.productosApi.productosCombo$().subscribe(p => this.productos.set(p));
     this.refresh$.next();
   }
 

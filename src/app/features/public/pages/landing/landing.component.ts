@@ -1,32 +1,37 @@
 import { CartStore } from './../../../../core/store/cart.store';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AdminProductosService } from '../../../../core/services/admin/admin-producto.service';
-import { ProductoAdminDTO } from '../../../../core/models/admin/producto.models';
-import { FiltroPipe } from '../../../../pipes/filtro-pipe';
+import { ProductoAdminDTO } from '../../../../core/models/admin/producto.models'; 
 import { RouterLink } from '@angular/router';
-
+import { PublicService } from '../../../../core/services/public/public.service';
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [CommonModule, FormsModule, FiltroPipe, RouterLink],
+  imports: [CommonModule, RouterLink],
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.css'],
 })
 export class LandingComponent implements OnInit {
   productos$!: Observable<ProductoAdminDTO[]>;
   animatingProducts: { [key: number]: boolean } = {};
-  filtro: string = '';
+  
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
   constructor(
-    private productosService: AdminProductosService,
+    private publicService: PublicService,
     private CartStore: CartStore
   ) {}
 
   ngOnInit() {
-    this.productos$ = this.productosService.listPublic$();
+    this.productos$ = this.publicService.getTop5MasVendidos();
+  }
+
+  scroll(offset: number) {
+    if (this.scrollContainer) {
+      this.scrollContainer.nativeElement.scrollLeft += offset;
+    }
   }
 
   agregarAlCarrito(producto: ProductoAdminDTO, event?: Event) {
@@ -36,7 +41,6 @@ export class LandingComponent implements OnInit {
     }
 
     this.CartStore.agregarProducto(producto);
-
     if (event && event.currentTarget) {
       const btn = event.currentTarget as HTMLElement;
       btn.classList.add('animating');
@@ -44,9 +48,9 @@ export class LandingComponent implements OnInit {
       return;
     }
 
-    this.animatingProducts[producto.id] = true;
+    this.animatingProducts[producto.id!] = true;
     setTimeout(() => {
-      this.animatingProducts[producto.id] = false;
+      this.animatingProducts[producto.id!] = false;
     }, 600);
   }
 }

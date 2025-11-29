@@ -1,117 +1,113 @@
-<!-- HERO -->
-<div
-  class="hero-section text-white d-flex flex-column justify-content-center align-items-center rounded-4 m-3 shadow-sm"
->
-  <div class="text-center p-4 p-md-5" style="max-width: 700px">
-    <span class="badge rounded-pill text-bg-light text-uppercase mb-3 px-3 py-2 small">
-      EPP · Seguridad Industrial
-    </span>
-
-    <h1 class="display-5 fw-bolder mb-3">
-      Tu Seguridad, Nuestra Prioridad
-    </h1>
-
-    <p class="lead fs-6 mb-4">
-      Equipos de protección personal de alta calidad para garantizar tu bienestar en
-      cualquier entorno de trabajo.
-    </p>
-
-    <a
-      routerLink="/productos"
-      class="btn btn-primary btn-lg mt-1 px-4 d-inline-flex align-items-center gap-2"
-    >
-      <i class="bi bi-shield-check"></i>
-      Explorar Productos
-    </a>
+<div class="container mt-3"> 
+  <div class="hero-section text-white d-flex flex-column justify-content-center align-items-center rounded-4 shadow-sm">
+    <div class="text-center p-4 p-md-5" style="max-width: 700px">
+      <span class="badge rounded-pill text-bg-light text-uppercase mb-3 px-3 py-2 small">
+        EPP · Seguridad Industrial
+      </span>
+      <h1 class="display-5 fw-bolder mb-3">
+        Tu Seguridad, Nuestra Prioridad
+      </h1>
+      <p class="lead fs-6 mb-4">
+        Equipos de protección personal de alta calidad para garantizar tu bienestar en
+        cualquier entorno de trabajo.
+      </p>
+      <a routerLink="/productos" class="btn btn-primary btn-lg mt-1 px-4 d-inline-flex align-items-center gap-2">
+        <i class="bi bi-shield-check"></i>
+        Explorar Productos
+      </a>
+    </div>
   </div>
 </div>
 
-<!-- PRODUCTOS DESTACADOS -->
 <section class="p-3">
-  <div class="text-center mb-4">
-    <h2 class="fw-bold h3 mb-1">Nuestros Productos Destacados</h2>
-    <p class="text-muted small mb-0">
-      Descubre los EPP más buscados por nuestros clientes.
-    </p>
-  </div>
+  <div class="container">
+      <div class="text-center mb-4">
+        <h2 class="fw-bold h3 mb-1">Nuestros Productos Destacados</h2>
+        <p class="text-muted small mb-0">
+          Descubre los EPP más buscados por nuestros clientes.
+        </p>
+      </div>
 
-  <div class="mb-4">
-    <div class="input-group w-75 mx-auto">
-      <span class="input-group-text">
-        <i class="bi bi-search"></i>
-      </span>
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Buscar productos..."
-        [(ngModel)]="filtro"
-      />
-    </div>
-  </div>
+      <ng-container *ngIf="productos$ | async as productos; else loading">
+        
+        <div *ngIf="productos.length > 0; else noResults" class="d-flex align-items-center gap-2 position-relative">
+          
+          <button 
+            class="btn nav-btn" 
+            (click)="scroll(-320)"
+            aria-label="Anterior"
+          >
+            <i class="bi bi-chevron-left"></i>
+          </button>
 
-  <ng-container *ngIf="productos$ | async as productos; else loading">
-    <ng-container *ngIf="productos | filter : filtro as productosFiltrados">
-      <div *ngIf="productosFiltrados.length > 0; else noResults">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
-          <div class="col" *ngFor="let producto of productosFiltrados | slice : 0 : 5">
-            <div class="card h-100 shadow-sm rounded-3 border-0">
-              <div class="ratio ratio-4x3">
-                <img
-                  [src]="producto.imagenUrl || 'assets/default-product.jpg'"
-                  class="card-img-top product-image rounded-top object-fit-cover"
-                  alt="{{ producto.nombre }}"
-                />
-              </div>
-              <div class="card-body text-center d-flex flex-column p-3">
-                <h5 class="card-title fs-6 fw-semibold mb-2">
-                  {{ producto.nombre }}
-                </h5>
-                <p class="card-text text-muted small mb-3 flex-grow-1">
-                  {{ producto.descripcion }}
-                </p>
-                <p class="fw-bold product-price mt-auto mb-0 fs-6">
-                  S/ {{ producto.precio | number : '1.2-2' }}
-                </p>
+          <div 
+            #scrollContainer
+            class="d-flex flex-nowrap overflow-auto gap-4 py-3 hide-scrollbar flex-grow-1"
+            style="scroll-behavior: smooth;"
+          >
+            <div 
+              class="card-wrapper" 
+              *ngFor="let producto of productos"
+            >
+              <div class="card h-100 shadow-sm rounded-3 border-0" style="width: 280px;">
+                <div class="ratio ratio-4x3">
+                  <img
+                    [src]="producto.imagenUrl || 'assets/default-product.jpg'"
+                    class="card-img-top product-image rounded-top object-fit-cover w-100 h-100" 
+                    alt="{{ producto.nombre }}"
+                  />
+                </div>
+                <div class="card-body text-center d-flex flex-column p-3">
+                  <h5 class="card-title fs-6 fw-semibold mb-2 text-truncate">
+                    {{ producto.nombre }}
+                  </h5>
+                  <p class="card-text text-muted small mb-3 flex-grow-1">
+                    {{ producto.descripcion }}
+                  </p>
+                  <p class="fw-bold product-price mt-auto mb-0 fs-6">
+                    S/ {{ producto.precio | number : '1.2-2' }}
+                  </p>
 
-                <button
-                  class="btn btn-primary mt-2 w-100 add-to-cart-btn d-inline-flex justify-content-center align-items-center gap-2"
-                  (click)="agregarAlCarrito(producto, $event)"
-                  [disabled]="!producto.stock || producto.stock <= 0"
-                  aria-label="Añadir al carrito"
-                >
-                  <span class="btn-text">
-                    {{
-                      (!producto.stock || producto.stock <= 0)
-                        ? 'Sin stock'
-                        : 'Añadir al carrito'
-                    }}
-                  </span>
-                  <span
-                    class="btn-icon"
-                    aria-hidden="true"
-                    *ngIf="producto.stock && producto.stock > 0"
+                  <button
+                    class="btn btn-primary mt-2 w-100 add-to-cart-btn d-inline-flex justify-content-center align-items-center gap-2"
+                    (click)="agregarAlCarrito(producto, $event)"
+                    [disabled]="!producto.stock || producto.stock <= 0"
                   >
-                    <i class="bi bi-cart-plus"></i>
-                  </span>
-                </button>
+                    <span class="btn-text">
+                      {{ (!producto.stock || producto.stock <= 0) ? 'Sin stock' : 'Añadir' }}
+                    </span>
+                    <span class="btn-icon" *ngIf="producto.stock && producto.stock > 0">
+                      <i class="bi bi-cart-plus"></i>
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+
+          <button 
+            class="btn nav-btn" 
+            (click)="scroll(320)"
+            aria-label="Siguiente"
+          >
+            <i class="bi bi-chevron-right"></i>
+          </button>
+
         </div>
-      </div>
-    </ng-container>
-  </ng-container>
+      </ng-container>
 
-  <ng-template #loading>
-    <div class="text-center mt-5">
-      <div class="spinner-border text-primary" role="status"></div>
-      <p class="mt-3 text-muted">Cargando productos...</p>
-    </div>
-  </ng-template>
+      <ng-template #loading>
+        <div class="text-center mt-5">
+          <div class="spinner-border text-primary" role="status"></div>
+          <p class="mt-3 text-muted">Cargando los mejores productos...</p>
+        </div>
+      </ng-template>
 
-  <ng-template #noResults>
-    <div class="text-center text-muted mt-5">
-      No se encontraron productos que coincidan con "{{ filtro }}".
-    </div>
-  </ng-template>
+      <ng-template #noResults>
+        <div class="text-center text-muted mt-5">
+          No se encontraron productos destacados.
+        </div>
+      </ng-template>
+
+  </div>
 </section>

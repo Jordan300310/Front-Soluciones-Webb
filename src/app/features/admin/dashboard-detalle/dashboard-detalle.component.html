@@ -1,39 +1,46 @@
-<div class="container-fluid py-4 bg-light min-vh-100 fade-in">
+<div class="container-fluid py-5 min-vh-100 fade-in">
   
-  <div class="d-flex align-items-center justify-content-between mb-4">
+  <div class="d-flex align-items-center justify-content-between mb-5">
     <div class="d-flex align-items-center">
-      <button class="btn btn-white border shadow-sm me-3 rounded-circle" (click)="goBack()" style="width: 40px; height: 40px;">
-        <i class="bi bi-arrow-left"></i>
+      <button class="btn btn-light shadow-sm me-3 rounded-circle d-flex align-items-center justify-content-center" (click)="goBack()" style="width: 45px; height: 45px;">
+        <i class="bi bi-arrow-left text-secondary fs-5"></i>
       </button>
       <div>
-        <h6 class="text-muted text-uppercase small mb-0">Categoría</h6>
-        <h2 class="fw-bold text-primary mb-0">{{ categoria }}</h2>
+        <h6 class="text-muted text-uppercase small mb-1 fw-bold ls-1">Categoría Seleccionada</h6>
+        <h2 class="fw-bolder text-primary mb-0 display-6">{{ categoria }}</h2>
       </div>
     </div>
-    <div class="card border-0 shadow-sm bg-primary text-white">
-      <div class="card-body py-2 px-4">
-        <small class="opacity-75">Items Distintos</small>
-        <h4 class="fw-bold mb-0">{{ productos.length }}</h4>
+    
+    <div class="card border-0 shadow-sm bg-primary bg-gradient text-white" style="border-radius: 16px;">
+      <div class="card-body py-2 px-4 d-flex align-items-center">
+        <div class="me-3 text-white-50 fs-1">
+          <i class="bi bi-box-seam"></i>
+        </div>
+        <div>
+          <small class="text-white-50 text-uppercase fw-bold" style="font-size: 0.7rem;">Items Distintos</small>
+          <h3 class="fw-bold mb-0">{{ productos.length }}</h3>
+        </div>
       </div>
     </div>
   </div>
 
   <div *ngIf="loading" class="text-center py-5">
-    <div class="spinner-border text-primary" role="status"></div>
-    <p class="mt-2 text-muted">Analizando datos...</p>
+    <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+    <p class="mt-3 text-muted fw-bold">Analizando datos...</p>
   </div>
 
-  <div *ngIf="!loading && !error && productos.length > 0">
+  <div *ngIf="!loading && !error && productos.length > 0" class="fade-in">
     
-    <div class="row g-4 mb-4">
+    <div class="row g-4 mb-5">
       
       <div class="col-lg-8">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-header bg-white py-3">
-            <h6 class="m-0 fw-bold text-dark">Ranking por Unidades Vendidas</h6>
+        <div class="card h-100 shadow-sm">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="m-0 fw-bold text-secondary">Ranking por Unidades Vendidas</h6>
+            <i class="bi bi-bar-chart-line text-primary"></i>
           </div>
           <div class="card-body">
-            <div style="height: 300px;">
+            <div style="position: relative; height: 320px; width: 100%;">
               <canvas #barCanvas></canvas>
             </div>
           </div>
@@ -41,12 +48,13 @@
       </div>
 
       <div class="col-lg-4">
-        <div class="card border-0 shadow-sm h-100">
-          <div class="card-header bg-white py-3">
-            <h6 class="m-0 fw-bold text-dark">Ingresos por Producto</h6>
+        <div class="card h-100 shadow-sm">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h6 class="m-0 fw-bold text-secondary">Ingresos por Producto</h6>
+            <i class="bi bi-pie-chart text-info"></i>
           </div>
           <div class="card-body d-flex align-items-center justify-content-center">
-            <div style="height: 250px; width: 100%;">
+            <div style="position: relative; height: 260px; width: 100%;">
               <canvas #doughnutCanvas></canvas>
             </div>
           </div>
@@ -54,24 +62,32 @@
       </div>
     </div>
 
-    <div class="card border-0 shadow-sm">
+    <div class="card shadow-sm">
       <div class="card-header bg-white py-3">
-        <h6 class="m-0 fw-bold">Detalle Numérico</h6>
+        <h6 class="m-0 fw-bold text-primary"><i class="bi bi-table me-2"></i>Detalle Numérico</h6>
       </div>
       <div class="table-responsive">
-        <table class="table table-hover align-middle mb-0">
-          <thead class="table-light small text-uppercase">
+        <table class="table mb-0 align-middle">
+          <thead class="bg-light">
             <tr>
-              <th>Producto</th>
-              <th class="text-end">Vendidos</th>
-              <th class="text-end">Total</th>
+              <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-4">Producto</th>
+              <th class="text-end text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Vendidos</th>
+              <th class="text-end text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 pe-4">Total</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let p of productos">
-              <td>{{ p.nombre }}</td>
-              <td class="text-end fw-bold">{{ p.cantidadVendida }}</td>
-              <td class="text-end text-success fw-bold">S/ {{ p.totalVenta | number:'1.2-2' }}</td>
+              <td class="ps-4">
+                <div class="d-flex flex-column justify-content-center">
+                  <h6 class="mb-0 text-sm fw-bold text-dark">{{ p.nombre }}</h6>
+                </div>
+              </td>
+              <td class="text-end">
+                <span class="badge bg-light text-dark border">{{ p.cantidadVendida }} un.</span>
+              </td>
+              <td class="text-end pe-4">
+                <span class="text-success fw-bold">S/ {{ p.totalVenta | number:'1.2-2' }}</span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -79,8 +95,12 @@
     </div>
   </div>
 
-  <div *ngIf="!loading && !error && productos.length === 0" class="alert alert-info mt-4">
-    No hay ventas registradas para esta categoría en el periodo seleccionado.
+  <div *ngIf="!loading && !error && productos.length === 0" class="alert alert-info border-0 shadow-sm mt-4 d-flex align-items-center p-4 rounded-3">
+    <i class="bi bi-info-circle-fill fs-3 me-3"></i>
+    <div>
+      <h6 class="fw-bold mb-1">Sin datos</h6>
+      <span>No hay ventas registradas para esta categoría en el periodo seleccionado.</span>
+    </div>
   </div>
 
 </div>

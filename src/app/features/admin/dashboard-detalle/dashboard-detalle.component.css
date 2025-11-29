@@ -1,0 +1,72 @@
+
+:host {
+  display: block;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  position: relative;
+}
+
+.card {
+  border: none;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.9); 
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+  background-color: transparent;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  padding: 1.25rem 1.5rem;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* === TABLAS === */
+.table thead th {
+  border-top: none;
+  border-bottom: 2px solid #e9ecef;
+  background-color: #f8f9fa;
+  color: #8898aa;
+  font-size: 0.75rem;
+  letter-spacing: 1px;
+  padding: 1rem;
+}
+
+.table td {
+  border-bottom: 1px solid #f0f2f5;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.btn-light {
+  background-color: #fff;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s;
+}
+.btn-light:hover {
+  background-color: #f8f9fa;
+  transform: translateX(-3px);
+}
