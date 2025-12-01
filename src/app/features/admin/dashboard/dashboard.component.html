@@ -1,8 +1,104 @@
 <div class="container-fluid py-5 min-vh-100">
 
+  <!-- BARRA DE FILTROS SUPERIOR -->
+  <div class="card mb-4 border-0 shadow-sm" style="border-radius: 16px;">
+    <div class="card-body py-3">
+      <div class="row align-items-center g-3">
+        
+        <!-- SELECTOR DE MODO -->
+        <div class="col-md-auto">
+          <div class="btn-group shadow-sm" role="group">
+            <input type="radio" class="btn-check" name="filterMode" id="modeMonth" value="month" [(ngModel)]="filterMode" (change)="loadDashboard()">
+            <label class="btn btn-outline-primary px-3" for="modeMonth"><i class="bi bi-calendar-month me-1"></i> Mensual</label>
+        
+            <input type="radio" class="btn-check" name="filterMode" id="modeRange" value="range" [(ngModel)]="filterMode" (change)="loadDashboard()">
+            <label class="btn btn-outline-primary px-3" for="modeRange"><i class="bi bi-sliders me-1"></i> Línea de Tiempo</label>
+          </div>
+        </div>
+
+        <!-- CONTROLES DINÁMICOS -->
+        <div class="col">
+          
+          <!-- MODO 1: MES (Simple) -->
+          <div *ngIf="filterMode === 'month'" class="d-flex align-items-center bg-light rounded-pill px-4 py-2 border w-auto" style="max-width: 300px;">
+            <i class="bi bi-calendar-event text-primary me-2"></i>
+            <span class="text-muted small me-2 fw-bold text-uppercase">Mes:</span>
+            <input type="month" class="form-control form-control-sm border-0 bg-transparent fw-bold text-primary p-0" 
+                   [(ngModel)]="selectedMonth" (change)="loadDashboard()">
+          </div>
+
+          <!-- MODO 2: TIMELINE (KISS & FLUIDO) -->
+          <div *ngIf="filterMode === 'range'" class="px-2 fade-in">
+            
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <div class="d-flex align-items-center me-3">
+                 <span class="text-muted small fw-bold me-2">AÑO BASE:</span>
+                 <select class="form-select form-select-sm border-0 bg-light fw-bold text-primary" style="width: auto;" 
+                         [(ngModel)]="selectedYear" (change)="onYearChange()">
+                    <option [value]="2023">2023</option>
+                    <option [value]="2024">2024</option>
+                    <option [value]="2025">2025</option>
+                    <option [value]="2026">2026</option>
+                 </select>
+              </div>
+
+              <!-- Fechas Texto (Solo lectura) -->
+              <div class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-3 py-2 rounded-pill">
+                <i class="bi bi-calendar-check me-2"></i>
+                {{ displayDateStart | date:'dd MMM yyyy':'':'es-PE' }} 
+                <i class="bi bi-arrow-right mx-2 text-muted"></i> 
+                {{ displayDateEnd | date:'dd MMM yyyy':'':'es-PE' }}
+              </div>
+
+              <button class="btn btn-primary btn-sm rounded-pill px-4 ms-3 shadow-sm" (click)="loadDashboard()">
+                <i class="bi bi-search me-1"></i> Filtrar
+              </button>
+            </div>
+
+            <!-- SLIDER DOBLE -->
+            <div class="timeline-container">
+              <!-- Fondo -->
+              <div class="slider-track"></div>
+              <!-- Barra Azul Dinámica -->
+              <div class="slider-range-highlight" [style.left]="rangeLeft" [style.width]="rangeWidth"></div>
+
+              <!-- Tooltips Dinámicos -->
+              <div class="slider-tooltip" [style.left]="tooltipLeft1">{{ tooltipText1 }}</div>
+              <div class="slider-tooltip" [style.left]="tooltipLeft2">{{ tooltipText2 }}</div>
+              
+              <!-- INPUTS (CORREGIDOS) -->
+              <!-- [value]: Pinta visualmente -->
+              <!-- (input): onDragging (Actualiza solo visual) -->
+              <!-- (change): onDragEnd (Llama a API) -->
+              <input type="range" min="0" [max]="maxDays" step="1" 
+                     [value]="sliderVal1" 
+                     (input)="onDragging($event, 'start')" 
+                     (change)="onDragEnd()"
+                     class="range-input">
+                     
+              <input type="range" min="0" [max]="maxDays" step="1" 
+                     [value]="sliderVal2" 
+                     (input)="onDragging($event, 'end')" 
+                     (change)="onDragEnd()"
+                     class="range-input">
+            </div>
+            
+            <div class="timeline-labels d-none d-lg-flex">
+              <span>Ene</span><span>Feb</span><span>Mar</span><span>Abr</span><span>May</span><span>Jun</span>
+              <span>Jul</span><span>Ago</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dic</span>
+            </div>
+            
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADERS Y ERRORES -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
-    <p class="mt-3 text-secondary fw-bold">Procesando datos...</p>
+    <p class="mt-3 text-secondary fw-bold">Calculando métricas...</p>
   </div>
 
   <div *ngIf="error" class="alert alert-danger border-0 shadow-sm d-flex align-items-center rounded-3">
@@ -10,10 +106,11 @@
     <div>{{ error }}</div>
   </div>
 
+  <!-- CONTENIDO DASHBOARD -->
   <div *ngIf="!loading && !error" class="fade-in">
     
+    <!-- KPIS -->
     <div class="row g-4 mb-5">
-      
       <div class="col-12 col-md-6 col-xl-3">
         <div class="card h-100 kpi-card kpi-primary">
           <div class="card-body">
@@ -22,19 +119,15 @@
                 <h6 class="text-muted text-uppercase small fw-bold mb-1">Ventas Totales</h6>
                 <h2 class="mb-0 fw-bolder display-6 text-dark">{{ ventasMes }}</h2>
               </div>
-              <div class="icon-box shadow-sm">
-                <i class="bi bi-bag-check-fill"></i>
-              </div>
+              <div class="icon-box shadow-sm"><i class="bi bi-bag-check-fill"></i></div>
             </div>
-            <div class="d-flex align-items-center">
-              <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2">
-                <i class="bi bi-graph-up"></i> Mes Actual
-              </span>
-            </div>
+            <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2">
+               Periodo Seleccionado
+            </span>
           </div>
         </div>
       </div>
-
+      
       <div class="col-12 col-md-6 col-xl-3">
         <div class="card h-100 kpi-card kpi-success">
           <div class="card-body">
@@ -43,14 +136,7 @@
                 <h6 class="text-muted text-uppercase small fw-bold mb-1">Ganancias</h6>
                 <h2 class="mb-0 fw-bolder display-6 text-dark">S/ {{ gananciasMes | number:'1.2-2' }}</h2>
               </div>
-              <div class="icon-box shadow-sm">
-                <i class="bi bi-cash-coin"></i>
-              </div>
-            </div>
-            <div class="d-flex align-items-center">
-              <span class="badge rounded-pill bg-success bg-opacity-10 text-success px-3 py-2">
-                <i class="bi bi-wallet2"></i> Neto
-              </span>
+              <div class="icon-box shadow-sm"><i class="bi bi-cash-coin"></i></div>
             </div>
           </div>
         </div>
@@ -61,15 +147,10 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-3">
               <div>
-                <h6 class="text-muted text-uppercase small fw-bold mb-1">Ticket Promedio</h6>
+                <h6 class="text-muted text-uppercase small fw-bold mb-1">Ticket Prom.</h6>
                 <h2 class="mb-0 fw-bolder display-6 text-dark">S/ {{ ticketPromedio | number:'1.2-2' }}</h2>
               </div>
-              <div class="icon-box shadow-sm">
-                <i class="bi bi-receipt-cutoff"></i>
-              </div>
-            </div>
-            <div class="d-flex align-items-center">
-              <span class="text-muted small">Promedio por transacción</span>
+              <div class="icon-box shadow-sm"><i class="bi bi-receipt-cutoff"></i></div>
             </div>
           </div>
         </div>
@@ -80,33 +161,35 @@
           <div class="card-body">
             <div class="d-flex justify-content-between align-items-start mb-3">
               <div>
-                <h6 class="text-muted text-uppercase small fw-bold mb-1">Stock Crítico</h6>
+                <h6 class="text-muted text-uppercase small fw-bold mb-1">Bajo Stock</h6>
                 <h2 class="mb-0 fw-bolder display-6 text-dark">{{ productosBajoStock.length }}</h2>
               </div>
-              <div class="icon-box shadow-sm">
-                <i class="bi" [ngClass]="productosBajoStock.length > 0 ? 'bi-exclamation-diamond-fill' : 'bi-check-circle-fill'"></i>
-              </div>
-            </div>
-            <div class="d-flex align-items-center">
-              <span class="fw-bold small" [ngClass]="productosBajoStock.length > 0 ? 'text-danger' : 'text-success'">
-                {{ productosBajoStock.length > 0 ? 'Reponer inventario urgente' : 'Todo bajo control' }}
-              </span>
+              <div class="icon-box shadow-sm"><i class="bi bi-exclamation-diamond-fill"></i></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- GRÁFICOS -->
     <div class="row g-4 mb-5">
       <div class="col-lg-8">
         <div class="card h-100">
           <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="m-0 fw-bold text-secondary">Tendencia de Ingresos</h5>
-            <button class="btn btn-sm btn-light rounded-circle"><i class="bi bi-three-dots-vertical"></i></button>
+            <h5 class="m-0 fw-bold text-secondary">
+              <i class="bi bi-graph-up-arrow me-2"></i>Evolución de Ventas
+            </h5>
+             <span class="badge bg-light text-secondary border" *ngIf="lineChart">
+                {{ filterMode === 'month' ? 'Diario (Mes)' : 'Línea de Tiempo' }}
+             </span>
           </div>
           <div class="card-body">
-            <div style="position: relative; height: 320px; width: 100%;">
+            <div class="chart-container-fix">
               <canvas #lineCanvas></canvas>
+            </div>
+            <div *ngIf="!lineChart || lineChart.data.labels?.length === 0" class="text-center mt-5 text-muted">
+                <i class="bi bi-calendar-x fs-1"></i>
+                <p>No hay ventas en este periodo.</p>
             </div>
           </div>
         </div>
@@ -115,117 +198,72 @@
       <div class="col-lg-4">
         <div class="card h-100">
           <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="m-0 fw-bold text-secondary">Por Categoría</h5>
-            <small class="text-muted">Top Ventas</small>
+            <h5 class="m-0 fw-bold text-secondary">Categorías</h5>
           </div>
           <div class="card-body d-flex flex-column align-items-center justify-content-center">
-            <div style="position: relative; height: 260px; width: 100%;">
+            <div class="chart-doughnut-fix">
               <canvas #pieCanvas></canvas>
             </div>
             <div class="mt-4 text-center text-muted small">
-              <i class="bi bi-hand-index-thumb-fill text-primary me-1"></i> Haz clic en un color para ver detalles
+              <i class="bi bi-hand-index-thumb-fill text-primary me-1"></i> Haz clic para ver detalle
             </div>
           </div>
         </div>
       </div>
     </div>
 
+    <!-- TABLAS DE DATOS -->
     <div class="row g-4">
-      
-      <div class="col-lg-4">
+       <div class="col-lg-4">
         <div class="card h-100">
-          <div class="card-header">
-            <h6 class="m-0 fw-bold text-primary"><i class="bi bi-star-fill me-2"></i>Productos Estrella</h6>
-          </div>
-          <div class="table-responsive">
-            <table class="table mb-0">
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th class="text-end">Vol.</th>
-                  <th class="text-end">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let p of topProductos">
-                  <td>
-                    <div class="fw-bold text-truncate" style="max-width: 160px;" title="{{p.nombre}}">{{ p.nombre }}</div>
-                  </td>
-                  <td class="text-end">
-                    <span class="custom-badge badge-soft-primary">{{ p.cantidadVendida }}</span>
-                  </td>
-                  <td class="text-end text-secondary fw-bold small">S/{{ p.totalVenta | number:'1.0-0' }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+            <div class="card-header"><h6 class="m-0 fw-bold text-primary">Top Productos</h6></div>
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead><tr><th>Producto</th><th class="text-end">Total</th></tr></thead>
+                    <tbody>
+                        <tr *ngFor="let p of topProductos">
+                            <td><div class="text-truncate" style="max-width: 150px;" title="{{p.nombre}}">{{ p.nombre }}</div></td>
+                            <td class="text-end fw-bold">S/{{ p.totalVenta | number:'1.0-0' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-      </div>
+       </div>
+       
+       <div class="col-lg-4">
+         <div class="card h-100">
+            <div class="card-header"><h6 class="m-0 fw-bold text-danger">Stock Crítico</h6></div>
+             <div class="table-responsive">
+                <table class="table mb-0">
+                    <tbody>
+                        <tr *ngFor="let p of productosBajoStock">
+                            <td><div class="text-truncate" style="max-width: 150px;">{{ p.nombre }}</div></td>
+                            <td class="text-end text-danger fw-bold">{{ p.stock }}</td>
+                        </tr>
+                        <tr *ngIf="productosBajoStock.length === 0"><td colspan="2" class="text-center text-muted small">Todo bien</td></tr>
+                    </tbody>
+                </table>
+             </div>
+         </div>
+       </div>
 
-      <div class="col-lg-4">
-        <div class="card h-100">
-          <div class="card-header">
-            <h6 class="m-0 fw-bold text-danger"><i class="bi bi-battery-half me-2"></i>Stock Crítico</h6>
-          </div>
-          <div class="table-responsive">
-            <table class="table mb-0">
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th class="text-end">Quedan</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let p of productosBajoStock">
-                  <td>
-                    <div class="text-truncate" style="max-width: 190px;" title="{{p.nombre}}">{{ p.nombre }}</div>
-                  </td>
-                  <td class="text-end">
-                    <span class="fw-bold text-danger">{{ p.stock }} un.</span>
-                  </td>
-                </tr>
-                <tr *ngIf="productosBajoStock.length === 0">
-                  <td colspan="2" class="text-center py-5 text-muted">
-                    <i class="bi bi-shield-check fs-1 d-block mb-2 text-success opacity-50"></i>
-                    Inventario Saludable
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-lg-4">
-        <div class="card h-100">
-          <div class="card-header">
-            <h6 class="m-0 fw-bold text-secondary"><i class="bi bi-archive me-2"></i>Sin Movimiento</h6>
-          </div>
-          <div class="table-responsive">
-            <table class="table mb-0">
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th class="text-end">Stock</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let p of productosZombies">
-                  <td class="text-muted">
-                    <div class="text-truncate" style="max-width: 190px;" title="{{p.nombre}}">{{ p.nombre }}</div>
-                  </td>
-                  <td class="text-end text-muted">{{ p.stock }}</td>
-                </tr>
-                <tr *ngIf="productosZombies.length === 0">
-                  <td colspan="2" class="text-center py-5 text-muted">
-                    Todo se vende.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+       <div class="col-lg-4">
+         <div class="card h-100">
+            <div class="card-header"><h6 class="m-0 fw-bold text-secondary">Sin Movimiento (30d)</h6></div>
+             <div class="table-responsive">
+                <table class="table mb-0">
+                    <tbody>
+                        <tr *ngFor="let p of productosZombies">
+                            <td class="text-muted"><div class="text-truncate" style="max-width: 150px;">{{ p.nombre }}</div></td>
+                            <td class="text-end text-muted">{{ p.stock }}</td>
+                        </tr>
+                         <tr *ngIf="productosZombies.length === 0"><td colspan="2" class="text-center text-muted small">Todo se vende</td></tr>
+                    </tbody>
+                </table>
+             </div>
+         </div>
+       </div>
 
     </div>
   </div>

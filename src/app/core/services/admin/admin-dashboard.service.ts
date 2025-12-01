@@ -32,7 +32,7 @@ export interface DashboardResponse {
   ventasMes?: number | null;
   gananciasMes?: number | null;
   topProductos?: TopProducto[] | null;
-  ventasUltimos7Dias?: VentaDiaria[] | null;
+  ventasPorPeriodo?: VentaDiaria[] | null; // Renombrado acorde al backend
   ventasPorCategoria?: VentaCategoria[] | null;
   productosBajoStock?: ProductoResumen[] | null;
   productosSinVentas?: ProductoResumen[] | null;
@@ -54,10 +54,11 @@ export class AdminDashboardService {
 
   constructor(private http: HttpClient) {}
 
-  getDashboard(): Observable<DashboardResponse> {
+  // Acepta parámetros opcionales
+  getDashboard(fechaInicio?: string, fechaFin?: string): Observable<DashboardResponse> {
     const query = `
-      query {
-        adminDashboard {
+      query($fi: String, $ff: String) {
+        adminDashboard(fechaInicio: $fi, fechaFin: $ff) {
           ventasMes
           gananciasMes
           topProductos {
@@ -65,7 +66,7 @@ export class AdminDashboardService {
             cantidadVendida
             totalVenta
           }
-          ventasUltimos7Dias {
+          ventasPorPeriodo {
             fecha
             total
           }
@@ -90,7 +91,10 @@ export class AdminDashboardService {
     `;
 
     return this.http
-      .post<GraphQlResponse>(this.graphqlUrl, { query })
+      .post<GraphQlResponse>(this.graphqlUrl, { 
+        query,
+        variables: { fi: fechaInicio, ff: fechaFin } // Enviamos variables
+      })
       .pipe(
         map((response) => {
           if (response.errors) {
@@ -101,10 +105,10 @@ export class AdminDashboardService {
       );
   }
 
-  getDetalleCategoria(categoria: string): Observable<TopProducto[]> {
+  getDetalleCategoria(categoria: string, fechaInicio?: string, fechaFin?: string): Observable<TopProducto[]> {
     const query = `
-      query($cat: String!) {
-        detalleCategoria(categoria: $cat) {
+      query($cat: String!, $fi: String, $ff: String) {
+        detalleCategoria(categoria: $cat, fechaInicio: $fi, fechaFin: $ff) {
           nombre
           cantidadVendida
           totalVenta
@@ -115,7 +119,7 @@ export class AdminDashboardService {
     return this.http
       .post<GraphQlResponse>(this.graphqlUrl, {
         query,
-        variables: { cat: categoria } 
+        variables: { cat: categoria, fi: fechaInicio, ff: fechaFin } 
       })
       .pipe(
         map((response) => {
