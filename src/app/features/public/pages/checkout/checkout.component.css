@@ -1,20 +1,31 @@
-/* Color oficial de Mercado Pago */
-.btn-mercadopago {
-    background-color: #009EE3;
-    /* Celeste oficial */
-    border-color: #009EE3;
+.btn-mp-modern {
+    background: linear-gradient(135deg, #009EE3 0%, #007eb5 100%);
     color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
     font-weight: 600;
-    transition: background-color 0.3s ease;
+    box-shadow: 0 8px 20px rgba(0, 158, 227, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
-.btn-mercadopago:hover {
-    background-color: #007eb5;
-    /* Un tono más oscuro para el hover */
-    color: white;
+.btn-mp-modern:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(0, 158, 227, 0.45);
 }
 
-.btn-mercadopago:disabled {
-    background-color: #89dbfcd3;
-    border-color: #89dbfcd3;
+.btn-mp-modern:disabled {
+    background: #cbdcf5;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.mp-logo-white {
+    height: 28px;
+    width: auto;
+    filter: brightness(0) invert(1);
 }
