@@ -88,24 +88,28 @@ export class EmpleadoComponent {
 
     this.error = '';
 
+    // 1. Validar campos obligatorios
     if (!s.nom || !s.apat || !s.amat || !s.username || (this.creando && !s.password)) {
       this.error = 'Completa todos los campos obligatorios.';
       this.cdr.detectChanges();
       return;
     }
 
+    // 2. Validar DNI
     if (s.dni && !/^\d{8}$/.test(s.dni)) {
       this.error = 'El DNI debe tener 8 dígitos numéricos.';
       this.cdr.detectChanges();
       return;
     }
 
+    // 3. Validar Celular
     if (s.cel && !/^\d{9}$/.test(s.cel)) {
       this.error = 'El celular debe tener 9 dígitos numéricos.';
       this.cdr.detectChanges();
       return;
     }
 
+    // 4. Validar Email
     if (s.email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(s.email)) {
@@ -115,14 +119,33 @@ export class EmpleadoComponent {
       }
     }
 
+    // 5. Validar Password (solo si se está creando o si se escribió algo)
     if (this.creando && s.password && s.password.length < 6) {
       this.error = 'La contraseña debe tener al menos 6 caracteres.';
       this.cdr.detectChanges();
       return;
     }
 
+    // === 6. NUEVA VALIDACIÓN: FECHA DE NACIMIENTO ===
+    if (s.fen) {
+      const fechaNac = new Date(s.fen);
+      const hoy = new Date();
+      // Reseteamos horas de 'hoy' para comparar solo fechas si es necesario,
+      // aunque comparar directamenmtente > hoy funciona para fechas futuras.
+      hoy.setHours(0, 0, 0, 0); 
+      
+      // new Date(s.fen) interpreta el string YYYY-MM-DD.
+      // Si esa fecha es mayor (futura) a hoy:
+      if (fechaNac > new Date()) { 
+        this.error = 'La fecha de nacimiento no puede ser futura.';
+        this.cdr.detectChanges();
+        return;
+      }
+    }
+    // ===============================================
+
     this.loading = true;
-    this.cdr.detectChanges(); // 👈 muestra spinner/botón deshabilitado
+    this.cdr.detectChanges(); 
 
     try {
       if (this.creando) {
@@ -166,7 +189,11 @@ export class EmpleadoComponent {
       if (e.status === 409) {
         this.error = 'DNI ya registrado.';
       } else if (e.status === 400) {
-        this.error = 'Datos inválidos. Verifica la información ingresada.';
+        // Leemos el mensaje del backend por si falló la validación de fecha allá
+        const msgBackend = e.error && (e.error as any).message 
+            ? (e.error as any).message 
+            : 'Datos inválidos. Verifica la información ingresada.';
+        this.error = msgBackend;
       } else {
         this.error = 'No se pudo guardar el empleado.';
       }

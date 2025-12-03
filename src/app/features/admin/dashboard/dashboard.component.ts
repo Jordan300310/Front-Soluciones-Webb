@@ -105,23 +105,20 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.pieChart) this.pieChart.destroy();
   }
 
-  // --- 1. LÓGICA DE ARRASTRE (Fluidez Visual) ---
-  // Se ejecuta MIENTRAS mueves el mouse. NO llama a la API.
   onDragging(event: any, thumb: 'start' | 'end'): void {
     const val = parseInt(event.target.value, 10);
-    const minGap = 1; // Mínimo 1 día de separación
 
     if (thumb === 'start') {
-      if (val > this.sliderVal2 - minGap) {
-        this.sliderVal1 = this.sliderVal2 - minGap;
-        event.target.value = this.sliderVal1; // Bloqueo físico
+      if (val > this.sliderVal2) {
+        this.sliderVal1 = this.sliderVal2;
+        event.target.value = this.sliderVal1; 
       } else {
         this.sliderVal1 = val;
       }
     } else {
-      if (val < this.sliderVal1 + minGap) {
-        this.sliderVal2 = this.sliderVal1 + minGap;
-        event.target.value = this.sliderVal2; // Bloqueo físico
+      if (val < this.sliderVal1) {
+        this.sliderVal2 = this.sliderVal1;
+        event.target.value = this.sliderVal2; 
       } else {
         this.sliderVal2 = val;
       }

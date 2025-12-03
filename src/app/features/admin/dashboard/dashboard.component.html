@@ -66,10 +66,6 @@
               <div class="slider-tooltip" [style.left]="tooltipLeft1">{{ tooltipText1 }}</div>
               <div class="slider-tooltip" [style.left]="tooltipLeft2">{{ tooltipText2 }}</div>
               
-              <!-- INPUTS (CORREGIDOS) -->
-              <!-- [value]: Pinta visualmente -->
-              <!-- (input): onDragging (Actualiza solo visual) -->
-              <!-- (change): onDragEnd (Llama a API) -->
               <input type="range" min="0" [max]="maxDays" step="1" 
                      [value]="sliderVal1" 
                      (input)="onDragging($event, 'start')" 

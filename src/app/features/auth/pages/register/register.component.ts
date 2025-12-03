@@ -37,31 +37,49 @@ export class RegisterComponent {
     if (this.loading) return;
 
     this.error = '';
+    
+    // 1. Validar campos vacíos
     if (!this.f.nombres || !this.f.apat || !this.f.amat || !this.f.username || !this.f.password) {
       this.error = 'Completa todos los campos obligatorios.';
       return;
     }
 
+    // 2. Validar DNI
     if (!/^\d{8}$/.test(this.f.dni)) {
       this.error = 'El DNI debe tener 8 dígitos numéricos.';
       return;
     }
 
+    // 3. Validar Celular
     if (this.f.cel && !/^\d{9}$/.test(this.f.cel)) {
       this.error = 'El celular debe tener 9 dígitos numéricos.';
       return;
     }
 
+    // 4. Validar Email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(this.f.email)) {
       this.error = 'Ingresa un email válido.';
       return;
     }
 
+    // 5. Validar Password
     if (this.f.password.length < 6) {
       this.error = 'La contraseña debe tener al menos 6 caracteres.';
       return;
     }
+
+    // === 6. NUEVA VALIDACIÓN: FECHA DE NACIMIENTO ===
+    if (this.f.fen) {
+      const fechaNac = new Date(this.f.fen);
+      const hoy = new Date();
+      // Comparación simple: si la fecha de nacimiento es mayor al momento actual
+      if (fechaNac > hoy) {
+        this.error = 'La fecha de nacimiento no puede ser futura.';
+        return;
+      }
+    }
+    // ===============================================
 
     this.loading = true;
     this.cdr.detectChanges();
