@@ -7,6 +7,8 @@ import { PerfilResponse } from '../../models/perfil/PerfilResponse';
 import { PerfilUpdateRequest } from '../../models/perfil/PerfilUpdateRequest';
 import { ChangePasswordRequest } from '../../models/perfil/ChangePasswordRequest';
 import { Pedido } from '../../models/perfil/Pedido';
+import { Reembolso } from '../../models/perfil/Reembolso';
+import { SolicitudReembolso } from '../../models/perfil/SolicitudReembolso';
 @Injectable({ providedIn: 'root' })
 export class PerfilService {
   private http = inject(HttpClient);
@@ -38,8 +40,20 @@ export class PerfilService {
       headers: this.authHeaders(),
     });
   }
-   getPedidos(): Observable<Pedido[]> {
+  getPedidos(): Observable<Pedido[]> {
     return this.http.get<Pedido[]>(`${this.base}/pedidos`, {
+      headers: this.authHeaders(),
+    });
+  }
+
+  solicitarReembolso(body: SolicitudReembolso): Observable<Reembolso> {
+    return this.http.post<Reembolso>(`${environment.api}/api/v1/reembolsos/solicitar`, body, {
+      headers: this.authHeaders(),
+    });
+  }
+
+  getMisSolicitudes(): Observable<Reembolso[]> {
+    return this.http.get<Reembolso[]>(`${environment.api}/api/v1/reembolsos/mis-solicitudes`, {
       headers: this.authHeaders(),
     });
   }

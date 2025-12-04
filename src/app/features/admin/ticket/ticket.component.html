@@ -1,22 +1,180 @@
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-12 col-md-8 col-lg-6">
-      <div class="card shadow-sm text-center">
-        <img
-          class="card-img-top img-fluid"
-          src="https://sgame.etsisi.upm.es/pictures/28835.gif?1688259376"
-          alt="Componente en construcción (GIF)">
-        <div class="card-body">
-            <div class="mb-3">
-            <div class="spinner-border" role="status" aria-hidden="true"></div>
+<div class="refund-container">
+  <div class="refund-header">
+    <h1 class="refund-title">
+      <i class="bi bi-receipt-cutoff"></i>
+      Gestión de Reembolsos
+    </h1>
+    <p class="refund-subtitle">Administra las solicitudes de reembolso de los clientes</p>
+  </div>
+
+  <div class="filter-tabs">
+    <button class="filter-tab" [class.active]="filterMode === 'pending'" (click)="setFilter('pending')">
+      <i class="bi bi-clock-history"></i>
+      Pendientes
+    </button>
+    <button class="filter-tab" [class.active]="filterMode === 'all'" (click)="setFilter('all')">
+      <i class="bi bi-list-ul"></i>
+      Todas
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="loading-text">Cargando reembolsos...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="alert alert-danger" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && !error && reembolsos.length === 0" class="empty-state">
+    <i class="bi bi-inbox"></i>
+    <h3>No hay reembolsos {{ filterMode === 'pending' ? 'pendientes' : '' }}</h3>
+    <p>{{ filterMode === 'pending' ? 'Todas las solicitudes han sido procesadas' : 'No se han recibido solicitudes de
+      reembolso' }}</p>
+  </div>
+
+  <!-- Refund List -->
+  <div *ngIf="!loading && !error && reembolsos.length > 0" class="refund-list">
+    <div *ngFor="let reembolso of reembolsos" class="refund-card">
+      <!-- Card Header -->
+      <div class="card-header-section">
+        <div class="card-title-section">
+          <h3 class="card-title">Venta #{{ reembolso.idVenta }}</h3>
+          <span class="badge" [ngClass]="getEstadoBadgeClass(reembolso.estado)">
+            {{ reembolso.estado }}
+          </span>
+        </div>
+        <div class="card-amount">{{ formatCurrency(reembolso.totalVenta) }}</div>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body-section">
+        <div class="info-row">
+          <div class="info-item">
+            <i class="bi bi-person-fill"></i>
+            <div class="info-content">
+              <span class="info-label">Cliente</span>
+              <span class="info-value">{{ reembolso.nombreCliente }}</span>
+            </div>
           </div>
-          <h5 class="card-title mb-2">Componente en construcción</h5>
-          <p class="card-text text-muted mb-0">
-            Estamos trabajando para habilitar esta funcionalidad. Vuelve más tarde.
-          </p>
-          <!-- <a routerLink="/" class="btn btn-primary mt-3">Volver al inicio</a> -->
+          <div class="info-item">
+            <i class="bi bi-envelope-fill"></i>
+            <div class="info-content">
+              <span class="info-label">Email</span>
+              <span class="info-value">{{ reembolso.emailCliente }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-item full-width">
+            <i class="bi bi-chat-left-text-fill"></i>
+            <div class="info-content">
+              <span class="info-label">Motivo</span>
+              <span class="info-value">{{ reembolso.motivo }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-item">
+            <i class="bi bi-calendar-event"></i>
+            <div class="info-content">
+              <span class="info-label">Fecha de Solicitud</span>
+              <span class="info-value">{{ formatDate(reembolso.fechaSolicitud) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Processing Info (if processed) -->
+        <div *ngIf="reembolso.estado !== 'PENDIENTE'" class="processing-info">
+          <div class="processing-header">
+            <i class="bi bi-info-circle-fill"></i>
+            <span>Información de Procesamiento</span>
+          </div>
+          <div class="info-row">
+            <div class="info-item">
+              <i class="bi bi-person-badge"></i>
+              <div class="info-content">
+                <span class="info-label">Procesado por</span>
+                <span class="info-value">{{ reembolso.nombreEmpleadoProceso || 'N/A' }}</span>
+              </div>
+            </div>
+            <div class="info-item">
+              <i class="bi bi-calendar-check"></i>
+              <div class="info-content">
+                <span class="info-label">Fecha de Procesamiento</span>
+                <span class="info-value">{{ formatDate(reembolso.fechaProcesamiento) }}</span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="reembolso.comentarioEmpleado" class="info-row">
+            <div class="info-item full-width">
+              <i class="bi bi-chat-square-quote"></i>
+              <div class="info-content">
+                <span class="info-label">Comentario</span>
+                <span class="info-value">{{ reembolso.comentarioEmpleado }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      <!-- Card Actions (only for pending) -->
+      <div *ngIf="reembolso.estado === 'PENDIENTE'" class="card-actions">
+        <button class="btn btn-success" (click)="openProcessModal(reembolso.id, 'aprobar')">
+          <i class="bi bi-check-circle-fill"></i>
+          Aprobar
+        </button>
+        <button class="btn btn-danger" (click)="openProcessModal(reembolso.id, 'rechazar')">
+          <i class="bi bi-x-circle-fill"></i>
+          Rechazar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Processing Modal -->
+<div *ngIf="processingId !== null" class="modal-overlay" (click)="closeProcessModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">
+        <i
+          [class]="processingAction === 'aprobar' ? 'bi bi-check-circle-fill text-success' : 'bi bi-x-circle-fill text-danger'"></i>
+        {{ processingAction === 'aprobar' ? 'Aprobar Reembolso' : 'Rechazar Reembolso' }}
+      </h2>
+      <button class="modal-close" (click)="closeProcessModal()">
+        <i class="bi bi-x-lg"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-description">
+        {{ processingAction === 'aprobar'
+        ? '¿Estás seguro de que deseas aprobar este reembolso?'
+        : '¿Estás seguro de que deseas rechazar este reembolso?' }}
+      </p>
+      <div class="form-group">
+        <label for="comentario" class="form-label">
+          Comentario {{ processingAction === 'rechazar' ? '(recomendado)' : '(opcional)' }}
+        </label>
+        <textarea id="comentario" class="form-control" rows="3" [(ngModel)]="processingComment"
+          placeholder="Escribe un comentario sobre esta decisión..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="closeProcessModal()">
+        Cancelar
+      </button>
+      <button class="btn" [class.btn-success]="processingAction === 'aprobar'"
+        [class.btn-danger]="processingAction === 'rechazar'" (click)="confirmProcess()">
+        <i [class]="processingAction === 'aprobar' ? 'bi bi-check-circle-fill' : 'bi bi-x-circle-fill'"></i>
+        {{ processingAction === 'aprobar' ? 'Confirmar Aprobación' : 'Confirmar Rechazo' }}
+      </button>
     </div>
   </div>
 </div>

@@ -7,6 +7,8 @@ import { PerfilResponse } from '../../../../core/models/perfil/PerfilResponse';
 import { PerfilUpdateRequest } from '../../../../core/models/perfil/PerfilUpdateRequest';
 import { ChangePasswordRequest } from '../../../../core/models/perfil/ChangePasswordRequest';
 import { Pedido } from '../../../../core/models/perfil/Pedido';
+import { Reembolso } from '../../../../core/models/perfil/Reembolso';
+import { SolicitudReembolso } from '../../../../core/models/perfil/SolicitudReembolso';
 
 @Component({
   selector: 'app-perfil',
@@ -18,7 +20,7 @@ export class PerfilComponent implements OnInit {
   private perfilService = inject(PerfilService);
   private fb = inject(FormBuilder);
   private cdr = inject(ChangeDetectorRef);
-  activeTab: 'datos' | 'password' | 'pedidos' = 'datos';
+  activeTab: 'datos' | 'password' | 'pedidos' | 'reembolsos' = 'datos';
 
   perfil: PerfilResponse | null = null;
 
@@ -31,8 +33,14 @@ export class PerfilComponent implements OnInit {
   pedidos: Pedido[] = [];
   errorPedidos: string | null = null;
 
-  // NUEVO: controlar la visibilidad del modal de edición
+  reembolsos: Reembolso[] = [];
+  errorReembolsos: string | null = null;
+  mensajeReembolso: string | null = null;
+
+  selectedPedidoId: number | null = null;
+
   showEditModal = false;
+  showRefundModal = false;
 
   personalForm = this.fb.group({
     nombres: [''],
@@ -50,13 +58,24 @@ export class PerfilComponent implements OnInit {
     confirmPassword: ['', Validators.required],
   });
 
+  refundForm = this.fb.group({
+    motivo: ['', [Validators.required, Validators.minLength(10)]],
+  });
+
   get username(): string | null {
     return localStorage.getItem('username');
+  }
+
+  get pedidosSinReembolso(): Pedido[] {
+    return this.pedidos.filter(pedido =>
+      !this.reembolsos.some(reembolso => reembolso.idVenta === pedido.idVenta)
+    );
   }
 
   ngOnInit(): void {
     this.cargarPerfil();
     this.cargarPedidos();
+    this.cargarReembolsos();
   }
 
   private cargarPerfil() {
@@ -93,19 +112,33 @@ export class PerfilComponent implements OnInit {
     });
   }
 
-  cambiarTab(tab: 'datos' | 'password' | 'pedidos') {
+  private cargarReembolsos() {
+    this.perfilService.getMisSolicitudes().subscribe({
+      next: (res) => {
+        this.reembolsos = res;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        this.errorReembolsos = err?.error || 'Error al cargar las solicitudes de reembolso';
+        this.cdr.detectChanges();
+      },
+    });
+  }
+
+  cambiarTab(tab: 'datos' | 'password' | 'pedidos' | 'reembolsos') {
     this.activeTab = tab;
     this.mensajePerfil = null;
     this.errorPerfil = null;
     this.mensajePassword = null;
     this.errorPassword = null;
     this.errorPedidos = null;
+    this.mensajeReembolso = null;
+    this.errorReembolsos = null;
 
-    // Cerrar el modal si estaba abierto
     this.showEditModal = false;
+    this.showRefundModal = false;
   }
 
-  // NUEVO: abrir/cerrar popup de edición
   abrirModalDatos() {
     this.showEditModal = true;
   }
@@ -137,7 +170,6 @@ export class PerfilComponent implements OnInit {
       next: (res) => {
         this.perfil = res;
         this.mensajePerfil = 'Datos personales actualizados correctamente.';
-        // OPCIONAL: repatch por si el backend modifica algo
         this.personalForm.patchValue({
           nombres: res.nombres ?? '',
           apellidoPaterno: res.apellidoPaterno ?? '',
@@ -147,7 +179,6 @@ export class PerfilComponent implements OnInit {
           email: res.email ?? '',
           fechaNacimiento: res.fechaNacimiento ?? '',
         });
-        // Cerrar el modal al guardar correctamente
         this.showEditModal = false;
         this.cdr.detectChanges();
       },
@@ -186,6 +217,54 @@ export class PerfilComponent implements OnInit {
       },
       error: (err) => {
         this.errorPassword = err?.error || 'Error al cambiar la contraseña';
+      },
+    });
+  }
+
+  // Métodos para reembolsos
+  abrirModalReembolso(idVenta: number) {
+    this.selectedPedidoId = idVenta;
+    this.showRefundModal = true;
+    this.refundForm.reset();
+  }
+
+  cerrarModalReembolso() {
+    this.showRefundModal = false;
+    this.selectedPedidoId = null;
+    this.refundForm.reset();
+    this.cdr.detectChanges();
+  }
+
+  onSubmitReembolso() {
+    if (this.refundForm.invalid || this.selectedPedidoId === null) {
+      this.refundForm.markAllAsTouched();
+      return;
+    }
+
+    const motivo = this.refundForm.value.motivo || '';
+    const body: SolicitudReembolso = {
+      idVenta: this.selectedPedidoId,
+      motivo: motivo,
+    };
+
+    this.mensajeReembolso = null;
+    this.errorReembolsos = null;
+
+    this.perfilService.solicitarReembolso(body).subscribe({
+      next: (res) => {
+        this.mensajeReembolso = 'Solicitud de reembolso enviada correctamente.';
+        this.reembolsos.unshift(res); // Agregar al inicio de la lista
+        this.cerrarModalReembolso();
+        this.cdr.detectChanges();
+
+        // Cambiar automáticamente a la pestaña de reembolsos
+        setTimeout(() => {
+          this.cambiarTab('reembolsos');
+        }, 1500);
+      },
+      error: (err) => {
+        this.errorReembolsos = err?.error || 'Error al solicitar el reembolso';
+        this.cdr.detectChanges();
       },
     });
   }

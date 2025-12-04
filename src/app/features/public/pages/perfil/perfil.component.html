@@ -2,10 +2,8 @@
   <!-- HEADER PERFIL -->
   <div class="bg-light rounded-4 shadow-sm p-4 mb-4 d-flex flex-wrap align-items-center justify-content-between">
     <div class="d-flex align-items-center">
-      <div
-        class="rounded-circle d-flex align-items-center justify-content-center me-3"
-        style="width: 56px; height: 56px; background: linear-gradient(135deg, #0d6efd, #20c997); color: #fff; font-size: 1.6rem;"
-      >
+      <div class="rounded-circle d-flex align-items-center justify-content-center me-3"
+        style="width: 56px; height: 56px; background: linear-gradient(135deg, #0d6efd, #20c997); color: #fff; font-size: 1.6rem;">
         <span>{{ (username || 'U') | slice:0:1 | uppercase }}</span>
       </div>
       <div>
@@ -29,36 +27,31 @@
     <div class="card-header bg-white border-0 pt-3 pb-0">
       <ul class="nav nav-pills gap-2 flex-wrap">
         <li class="nav-item">
-          <button
-            class="nav-link d-flex align-items-center"
-            [class.active]="activeTab === 'datos'"
-            type="button"
-            (click)="cambiarTab('datos')"
-          >
+          <button class="nav-link d-flex align-items-center" [class.active]="activeTab === 'datos'" type="button"
+            (click)="cambiarTab('datos')">
             <i class="bi bi-person-circle me-2"></i>
             Datos personales
           </button>
         </li>
         <li class="nav-item">
-          <button
-            class="nav-link d-flex align-items-center"
-            [class.active]="activeTab === 'password'"
-            type="button"
-            (click)="cambiarTab('password')"
-          >
+          <button class="nav-link d-flex align-items-center" [class.active]="activeTab === 'password'" type="button"
+            (click)="cambiarTab('password')">
             <i class="bi bi-shield-lock me-2"></i>
             Cambiar contraseña
           </button>
         </li>
         <li class="nav-item">
-          <button
-            class="nav-link d-flex align-items-center"
-            [class.active]="activeTab === 'pedidos'"
-            type="button"
-            (click)="cambiarTab('pedidos')"
-          >
+          <button class="nav-link d-flex align-items-center" [class.active]="activeTab === 'pedidos'" type="button"
+            (click)="cambiarTab('pedidos')">
             <i class="bi bi-bag-check me-2"></i>
             Mis pedidos
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link d-flex align-items-center" [class.active]="activeTab === 'reembolsos'" type="button"
+            (click)="cambiarTab('reembolsos')">
+            <i class="bi bi-arrow-counterclockwise me-2"></i>
+            Reembolsos
           </button>
         </li>
       </ul>
@@ -135,11 +128,7 @@
             <small class="text-muted">
               Mantén tus datos actualizados para una mejor experiencia de compra.
             </small>
-            <button
-              class="btn btn-outline-primary d-flex align-items-center"
-              type="button"
-              (click)="abrirModalDatos()"
-            >
+            <button class="btn btn-outline-primary d-flex align-items-center" type="button" (click)="abrirModalDatos()">
               <i class="bi bi-pencil-square me-2"></i>
               Actualizar datos
             </button>
@@ -167,41 +156,25 @@
             <div class="row g-3">
               <div class="col-md-4">
                 <label class="form-label">Contraseña actual</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  formControlName="currentPassword"
-                  placeholder="Ingresa tu contraseña actual"
-                />
+                <input type="password" class="form-control" formControlName="currentPassword"
+                  placeholder="Ingresa tu contraseña actual" />
               </div>
 
               <div class="col-md-4">
                 <label class="form-label">Nueva contraseña</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  formControlName="newPassword"
-                  placeholder="Mínimo 8 caracteres"
-                />
+                <input type="password" class="form-control" formControlName="newPassword"
+                  placeholder="Mínimo 8 caracteres" />
               </div>
 
               <div class="col-md-4">
                 <label class="form-label">Confirmar nueva contraseña</label>
-                <input
-                  type="password"
-                  class="form-control"
-                  formControlName="confirmPassword"
-                  placeholder="Repite la nueva contraseña"
-                />
+                <input type="password" class="form-control" formControlName="confirmPassword"
+                  placeholder="Repite la nueva contraseña" />
               </div>
             </div>
 
             <div class="mt-4 d-flex justify-content-end">
-              <button
-                class="btn btn-primary px-4"
-                type="submit"
-                [disabled]="passwordForm.invalid"
-              >
+              <button class="btn btn-primary px-4" type="submit" [disabled]="passwordForm.invalid">
                 <i class="bi bi-arrow-repeat me-2"></i>
                 Cambiar contraseña
               </button>
@@ -218,16 +191,16 @@
             <span>{{ errorPedidos }}</span>
           </div>
 
-          <div *ngIf="!errorPedidos && pedidos.length === 0">
+          <div *ngIf="!errorPedidos && pedidosSinReembolso.length === 0">
             <div class="text-center py-5 text-muted">
               <i class="bi bi-bag-x fs-1 d-block mb-2"></i>
-              <p class="mb-1">No tienes pedidos registrados.</p>
-              <small>Cuando compres, verás aquí el resumen de tus pedidos.</small>
+              <p class="mb-1">No tienes pedidos disponibles.</p>
+              <small>Los pedidos con solicitudes de reembolso se muestran en la pestaña "Reembolsos".</small>
             </div>
           </div>
 
-          <div *ngIf="pedidos.length > 0" class="row g-3">
-            <div class="col-md-6" *ngFor="let pedido of pedidos">
+          <div *ngIf="pedidosSinReembolso.length > 0" class="row g-3">
+            <div class="col-md-6" *ngFor="let pedido of pedidosSinReembolso">
               <div class="card h-100 border-0 shadow-sm rounded-4">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-start mb-2">
@@ -260,17 +233,11 @@
                   <hr class="my-2" />
 
                   <!-- Productos -->
-                  <div
-                    *ngFor="let prod of pedido.productos"
-                    class="d-flex mb-2 pb-2 border-bottom small"
-                  >
+                  <div *ngFor="let prod of pedido.productos" class="d-flex mb-2 pb-2 border-bottom small">
                     <div class="me-3" style="width: 70px;">
                       <div class="ratio ratio-1x1">
-                        <img
-                          [src]="prod.imagenUrl || 'assets/no-image.png'"
-                          class="img-fluid rounded object-fit-cover"
-                          alt="{{ prod.nombreProducto }}"
-                        />
+                        <img [src]="prod.imagenUrl || 'assets/no-image.png'" class="img-fluid rounded object-fit-cover"
+                          alt="{{ prod.nombreProducto }}" />
                       </div>
                     </div>
                     <div class="flex-grow-1">
@@ -287,10 +254,91 @@
                     </div>
                   </div>
 
-                  <div class="text-end mt-2">
+                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
                     <small class="text-muted">
                       Gracias por comprar en FYJ Multiservicios
                     </small>
+                    <button class="btn btn-sm btn-outline-warning d-flex align-items-center" type="button"
+                      (click)="abrirModalReembolso(pedido.idVenta)">
+                      <i class="bi bi-arrow-counterclockwise me-1"></i>
+                      Solicitar reembolso
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- REEMBOLSOS -->
+        <div [hidden]="activeTab !== 'reembolsos'">
+          <h5 class="mb-3">Solicitudes de reembolso</h5>
+
+          <div *ngIf="mensajeReembolso" class="alert alert-success d-flex align-items-center">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <span>{{ mensajeReembolso }}</span>
+          </div>
+
+          <div *ngIf="errorReembolsos" class="alert alert-danger d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span>{{ errorReembolsos }}</span>
+          </div>
+
+          <div *ngIf="!errorReembolsos && reembolsos.length === 0">
+            <div class="text-center py-5 text-muted">
+              <i class="bi bi-arrow-counterclockwise fs-1 d-block mb-2"></i>
+              <p class="mb-1">No tienes solicitudes de reembolso.</p>
+              <small>Cuando solicites un reembolso, aparecerá aquí.</small>
+            </div>
+          </div>
+
+          <div *ngIf="reembolsos.length > 0" class="row g-3">
+            <div class="col-md-6" *ngFor="let reembolso of reembolsos">
+              <div class="card h-100 border-0 shadow-sm rounded-4">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                      <h6 class="card-title mb-1">
+                        Pedido #{{ reembolso.idVenta }}
+                      </h6>
+                      <p class="mb-1 small text-muted">
+                        <i class="bi bi-calendar-event me-1"></i>
+                        {{ reembolso.fechaSolicitud | date: 'short' }}
+                      </p>
+                    </div>
+                    <div>
+                      <span class="badge rounded-pill px-3 py-2"
+                        [class.text-bg-warning]="reembolso.estado === 'PENDIENTE'"
+                        [class.text-bg-success]="reembolso.estado === 'APROBADO'"
+                        [class.text-bg-danger]="reembolso.estado === 'RECHAZADO'">
+                        {{ reembolso.estado }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="mb-2">
+                    <span class="small text-muted d-block mb-1">Total de la venta:</span>
+                    <span class="fw-bold">S/ {{ reembolso.totalVenta | number: '1.2-2' }}</span>
+                  </div>
+
+                  <div class="mb-2">
+                    <span class="small text-muted d-block mb-1">Motivo:</span>
+                    <p class="mb-0 small">{{ reembolso.motivo }}</p>
+                  </div>
+
+                  <div *ngIf="reembolso.estado !== 'PENDIENTE'" class="mt-3 pt-3 border-top">
+                    <div class="mb-2">
+                      <span class="small text-muted d-block mb-1">Procesado por:</span>
+                      <span class="small">{{ reembolso.nombreEmpleadoProceso || '-' }}</span>
+                    </div>
+                    <div class="mb-2">
+                      <span class="small text-muted d-block mb-1">Fecha de procesamiento:</span>
+                      <span class="small">{{ reembolso.fechaProcesamiento | date: 'short' }}</span>
+                    </div>
+                    <div *ngIf="reembolso.comentarioEmpleado">
+                      <span class="small text-muted d-block mb-1">Comentario:</span>
+                      <p class="mb-0 small">{{ reembolso.comentarioEmpleado }}</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -301,13 +349,8 @@
     </div>
   </div>
 
-  <div
-    class="modal fade show d-block"
-    tabindex="-1"
-    role="dialog"
-    *ngIf="showEditModal"
-    style="background: rgba(0,0,0,0.5);"
-  >
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" *ngIf="showEditModal"
+    style="background: rgba(0,0,0,0.5);">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content rounded-4 shadow-lg">
         <form [formGroup]="personalForm" (ngSubmit)="onSubmitDatos()">
@@ -318,12 +361,7 @@
                 Usa esta sección para mantener tu información siempre al día.
               </p>
             </div>
-            <button
-              type="button"
-              class="btn-close"
-              aria-label="Close"
-              (click)="cerrarModalDatos()"
-            ></button>
+            <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModalDatos()"></button>
           </div>
 
           <div class="modal-body">
@@ -335,30 +373,17 @@
 
               <div class="col-md-4">
                 <label class="form-label">Apellido paterno</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="apellidoPaterno"
-                />
+                <input type="text" class="form-control" formControlName="apellidoPaterno" />
               </div>
 
               <div class="col-md-4">
                 <label class="form-label">Apellido materno</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="apellidoMaterno"
-                />
+                <input type="text" class="form-control" formControlName="apellidoMaterno" />
               </div>
 
               <div class="col-md-4">
                 <label class="form-label">DNI</label>
-                <input
-                  type="text"
-                  class="form-control bg-light"
-                  formControlName="dni"
-                  readonly
-                />
+                <input type="text" class="form-control bg-light" formControlName="dni" readonly />
               </div>
 
               <div class="col-md-4">
@@ -369,44 +394,79 @@
               <div class="col-md-4">
                 <label class="form-label">Email</label>
                 <input type="email" class="form-control" formControlName="email" />
-                <div
-                  class="text-danger small mt-1"
-                  *ngIf="
+                <div class="text-danger small mt-1" *ngIf="
                     personalForm.get('email')?.invalid &&
                     personalForm.get('email')?.touched
-                  "
-                >
+                  ">
                   Email inválido.
                 </div>
               </div>
 
               <div class="col-md-4">
                 <label class="form-label">Fecha de nacimiento</label>
-                <input
-                  type="date"
-                  class="form-control bg-light"
-                  formControlName="fechaNacimiento"
-                  readonly
-                />
+                <input type="date" class="form-control bg-light" formControlName="fechaNacimiento" readonly />
               </div>
             </div>
           </div>
 
           <div class="modal-footer border-0 pt-0 d-flex justify-content-between">
-            <button
-              type="button"
-              class="btn btn-outline-secondary"
-              (click)="cerrarModalDatos()"
-            >
+            <button type="button" class="btn btn-outline-secondary" (click)="cerrarModalDatos()">
               Cancelar
             </button>
-            <button
-              class="btn btn-primary px-4"
-              type="submit"
-              [disabled]="personalForm.invalid"
-            >
+            <button class="btn btn-primary px-4" type="submit" [disabled]="personalForm.invalid">
               <i class="bi bi-save me-2"></i>
               Guardar cambios
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL SOLICITAR REEMBOLSO -->
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" *ngIf="showRefundModal"
+    style="background: rgba(0,0,0,0.5);">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content rounded-4 shadow-lg">
+        <form [formGroup]="refundForm" (ngSubmit)="onSubmitReembolso()">
+          <div class="modal-header border-0 pb-0">
+            <div>
+              <h5 class="modal-title mb-1">Solicitar reembolso</h5>
+              <p class="text-muted small mb-0">
+                Pedido #{{ selectedPedidoId }}
+              </p>
+            </div>
+            <button type="button" class="btn-close" aria-label="Close" (click)="cerrarModalReembolso()"></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Motivo del reembolso <span class="text-danger">*</span></label>
+              <textarea class="form-control" formControlName="motivo" rows="4"
+                placeholder="Describe el motivo de tu solicitud de reembolso (mínimo 10 caracteres)"></textarea>
+              <div class="text-danger small mt-1" *ngIf="
+                  refundForm.get('motivo')?.invalid &&
+                  refundForm.get('motivo')?.touched
+                ">
+                El motivo debe tener al menos 10 caracteres.
+              </div>
+            </div>
+
+            <div class="alert alert-info d-flex align-items-start small">
+              <i class="bi bi-info-circle me-2 mt-1"></i>
+              <div>
+                Tu solicitud será revisada por nuestro equipo. Te notificaremos cuando sea procesada.
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer border-0 pt-0 d-flex justify-content-between">
+            <button type="button" class="btn btn-outline-secondary" (click)="cerrarModalReembolso()">
+              Cancelar
+            </button>
+            <button class="btn btn-warning px-4" type="submit" [disabled]="refundForm.invalid">
+              <i class="bi bi-send me-2"></i>
+              Enviar solicitud
             </button>
           </div>
         </form>
