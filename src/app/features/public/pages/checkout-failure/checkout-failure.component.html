@@ -1,45 +1,50 @@
-<div class="container my-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-sm border-0 text-center py-5">
-                <div class="card-body">
-                    <div class="mb-4">
-                        <i class="bi bi-x-circle-fill text-danger" style="font-size: 5rem"></i>
-                    </div>
-                    <h2 class="h3 mb-3">Pago no procesado</h2>
-                    <p class="text-muted mb-4">
-                        Tu pago no pudo ser procesado. Esto puede deberse a varias razones:
-                    </p>
+<div class="container my-5 animate__animated animate__shakeX">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow border-0 text-center py-5 rounded-4 overflow-hidden">
+        <div class="bg-danger py-2 position-absolute top-0 w-100"></div>
 
-                    <div class="alert alert-light text-start mb-4">
-                        <ul class="mb-0">
-                            <li>Fondos insuficientes en tu cuenta</li>
-                            <li>Datos de pago incorrectos</li>
-                            <li>Cancelación del pago</li>
-                            <li>Problemas con tu banco o entidad financiera</li>
-                        </ul>
-                    </div>
-
-                    <p class="text-muted mb-4">
-                        No te preocupes, no se realizó ningún cargo a tu cuenta.
-                    </p>
-
-                    <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
-                        <a routerLink="/checkout" class="btn btn-primary">
-                            <i class="bi bi-arrow-clockwise me-2"></i>
-                            Reintentar pago
-                        </a>
-                        <a routerLink="/carrito" class="btn btn-outline-secondary">
-                            <i class="bi bi-cart me-2"></i>
-                            Volver al carrito
-                        </a>
-                        <a routerLink="/" class="btn btn-outline-secondary">
-                            <i class="bi bi-house-door me-2"></i>
-                            Ir al inicio
-                        </a>
-                    </div>
-                </div>
+        <div class="card-body mt-3">
+          <div class="mb-4">
+            <div class="bg-danger bg-opacity-10 d-inline-block p-4 rounded-circle">
+              <i class="bi bi-x-circle-fill text-danger" style="font-size: 5rem"></i>
             </div>
+          </div>
+
+          <h2 class="h3 mb-3 fw-bold text-dark">Pago no procesado</h2>
+          <p class="text-muted mb-4 px-3">
+            Lo sentimos, tu transacción con <strong>Stripe</strong> no pudo completarse.
+            No se ha realizado ningún cargo a tu cuenta.
+          </p>
+
+          <div class="alert alert-light text-start mb-4 border-dashed">
+            <h6 class="fw-bold mb-3"><i class="bi bi-question-circle me-2"></i>Posibles causas:</h6>
+            <ul class="mb-0 small text-muted">
+              <li class="mb-2">Fondos insuficientes o límite de tarjeta excedido.</li>
+              <li class="mb-2">Los datos de la tarjeta (CVV o fecha) son incorrectos.</li>
+              <li class="mb-2">La operación fue cancelada manualmente.</li>
+              <li>Tu banco rechazó la conexión por seguridad.</li>
+            </ul>
+          </div>
+
+          <div class="d-grid gap-3 d-md-flex justify-content-center px-3">
+            <a routerLink="/checkout" class="btn btn-primary px-4 py-2 rounded-pill shadow">
+              <i class="bi bi-arrow-clockwise me-2"></i>
+              Reintentar pago
+            </a>
+            <a routerLink="/carrito" class="btn btn-outline-secondary px-4 py-2 rounded-pill">
+              <i class="bi bi-cart me-2"></i>
+              Revisar carrito
+            </a>
+          </div>
+
+          <div class="mt-4 pt-3 border-top">
+            <a routerLink="/" class="text-decoration-none text-muted small">
+              <i class="bi bi-house-door me-1"></i> Volver a la tienda
+            </a>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>

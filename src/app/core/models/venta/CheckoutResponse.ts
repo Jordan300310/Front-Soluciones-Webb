@@ -1,6 +1,6 @@
 export interface CheckoutResponse {
-  initPoint: string;
-  preferenceId: string;
+  checkoutUrl: string;       // La URL de Stripe
+  sessionId: string;         // El ID de sesión (cs_test_...)
   total: number;
   checkoutPendienteId: number;
 }

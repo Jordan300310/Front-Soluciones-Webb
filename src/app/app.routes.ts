@@ -44,14 +44,7 @@ export const routes: Routes = [
       ),
     canActivate: [authGuard],
   },
-  {
-    path: 'checkout/pending',
-    loadComponent: () =>
-      import('./features/public/pages/checkout-pending/checkout-pending.component').then(
-        (m) => m.CheckoutPendingComponent
-      ),
-    canActivate: [authGuard],
-  },
+  // La ruta 'checkout/pending' se elimina ya que Stripe no la requiere para este flujo
   {
     path: 'compra-exitosa/:id',
     loadComponent: () =>

@@ -1,106 +1,96 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { CheckoutService } from '../../../../core/services/venta/checkout.service';
 import { CartStore } from '../../../../core/store/cart.store';
+import { CheckoutService } from '../../../../core/services/venta/checkout.service';
+import { ComprobanteDTO } from '../../../../core/models/venta/Comprobante.models';
+import { Subscription, interval } from 'rxjs';
+import { takeWhile } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-checkout-success',
-    standalone: true,
-    imports: [CommonModule, RouterLink],
-    templateUrl: './checkout-success.component.html',
-    styleUrl: './checkout-success.component.css',
+  selector: 'app-checkout-success',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: './checkout-success.component.html',
+  styleUrl: './checkout-success.component.css',
 })
-export class CheckoutSuccessComponent implements OnInit {
-    loading = true;
-    error: string | null = null;
-    paymentId: string | null = null;
-    status: string | null = null;
-    preferenceId: string | null = null;
-    retryCount = 0;
-    maxRetries = 5;
+export class CheckoutSuccessComponent implements OnInit, OnDestroy {
+  loading = true;
+  error: string | null = null;
+  sessionId: string | null = null;
+  comprobante?: ComprobanteDTO;
 
-    constructor(
-        private route: ActivatedRoute,
-        private router: Router,
-        private checkoutService: CheckoutService,
-        private cartStore: CartStore
-    ) { }
+  retryCount = 0;
+  maxRetries = 10;
+  private timerSubscription?: Subscription;
 
-    ngOnInit(): void {
-        if (window.location.hostname.includes('ngrok')) {
-            const newUrl = window.location.href.replace(window.location.host, 'localhost:4200').replace('https:', 'http:');
-            window.location.href = newUrl;
-            return; // Detener ejecución para que redirija
-        }
-        // Leer parámetros de Mercado Pago
-        this.route.queryParams.subscribe((params) => {
-            this.paymentId = params['payment_id'];
-            this.status = params['status'];
-            this.preferenceId = params['preference_id'];
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private cartStore: CartStore,
+    private checkoutService: CheckoutService,
+    private cdr: ChangeDetectorRef
+  ) { }
 
-            if (this.status === 'approved') {
-                // Esperar un poco para que el webhook procese
-                setTimeout(() => {
-                    this.buscarVenta();
-                }, 2000);
-            } else {
-                this.error = 'El pago no fue aprobado.';
-                this.loading = false;
-            }
-        });
+  ngOnInit(): void {
+    if (window.location.hostname.includes('ngrok')) {
+      const newUrl = window.location.href.replace(window.location.host, 'localhost:4200').replace('https:', 'http:');
+      window.location.href = newUrl;
+      return;
     }
 
-    buscarVenta(): void {
-        const checkoutPendienteId = localStorage.getItem('lastCheckoutPendienteId');
+    this.route.queryParams.subscribe((params) => {
+      this.sessionId = params['session_id'];
+      if (this.sessionId) {
+        this.iniciarProcesoFinal();
+      } else {
+        this.error = 'No se encontró una sesión de pago válida.';
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
 
-        if (!checkoutPendienteId) {
-            this.error = 'No se encontró información del checkout.';
-            this.loading = false;
-            return;
-        }
+  iniciarProcesoFinal(): void {
+    this.cartStore.limpiarCarrito();
 
-        // Intentar obtener la venta
-        // Nota: Necesitamos un endpoint que busque por checkoutPendienteId
-        // Por ahora, usaremos un enfoque de polling simple
-        this.pollForVenta(parseInt(checkoutPendienteId));
+    this.timerSubscription = interval(200)
+      .pipe(takeWhile(() => this.retryCount < this.maxRetries))
+      .subscribe({
+        next: () => {
+          this.retryCount++;
+          this.cdr.detectChanges();
+        },
+        complete: () => this.cargarBoleta()
+      });
+  }
+
+  cargarBoleta(): void {
+    if (!this.sessionId) return;
+
+    this.checkoutService.getResumenPorSessionId(this.sessionId).subscribe({
+      next: (res) => {
+        console.log('Respuesta recibida:', res);
+        this.comprobante = res;
+        this.loading = false;
+
+        this.cdr.detectChanges();
+
+        localStorage.removeItem('lastCheckoutPendienteId');
+        localStorage.removeItem('stripeSessionId');
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        this.error = 'Pago confirmado. Si la boleta no aparece, refresca la página.';
+        this.loading = false;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.timerSubscription) {
+      this.timerSubscription.unsubscribe();
     }
-
-    pollForVenta(checkoutPendienteId: number): void {
-        // Implementar polling con retry
-        // Como no tenemos un endpoint específico para buscar por checkoutPendienteId,
-        // asumiremos que el backend crea la venta con el ID secuencial
-        // Esta es una simplificación - en producción necesitarías un endpoint específico
-
-        this.retryCount++;
-
-        if (this.retryCount > this.maxRetries) {
-            this.error =
-                'No se pudo obtener el comprobante. Por favor, revisa tu historial de compras.';
-            this.loading = false;
-            return;
-        }
-
-        // Esperar antes de reintentar
-        setTimeout(() => {
-            // Aquí deberías llamar a un endpoint que busque la venta por checkoutPendienteId
-            // Por ahora, simplemente redirigimos después de un tiempo
-            // En una implementación real, necesitarías:
-            // this.checkoutService.buscarVentaPorCheckoutId(checkoutPendienteId).subscribe(...)
-
-            // Simulación: después de algunos reintentos, asumimos que la venta fue creada
-            if (this.retryCount >= 3) {
-                // Limpiar carrito y datos temporales
-                this.cartStore.limpiarCarrito();
-                localStorage.removeItem('lastPreferenceId');
-                localStorage.removeItem('lastCheckoutPendienteId');
-
-                // Redirigir a una página de confirmación genérica
-                // En producción, deberías tener el ventaId del backend
-                this.router.navigate(['/perfil']); // O a historial de compras
-            } else {
-                this.pollForVenta(checkoutPendienteId);
-            }
-        }, 2000);
-    }
+  }
 }

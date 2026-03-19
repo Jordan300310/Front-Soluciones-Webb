@@ -1,23 +1,27 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import * as L from 'leaflet';
 import { CartStore } from '../../../../core/store/cart.store';
 import { CheckoutService } from '../../../../core/services/venta/checkout.service';
-import { Router } from '@angular/router';
-import { VentaItemRequest } from '../../../../core/models/venta/VentaItemRequest';
 import { CheckoutRequest } from '../../../../core/models/venta/CheckoutRequest';
+import { LeafletModule } from '@bluehalo/ngx-leaflet';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,LeafletModule],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css',
 })
 export class CheckoutComponent implements OnInit {
   checkoutForm: FormGroup;
+  lat: number = -12.0464;
+  lng: number = -77.0428;
   errorMessage: string | null = null;
   isSubmitting = false;
+  userEmail: string = 'jordan.estudiante@upn.pe';
 
   constructor(
     public cartStore: CartStore,
@@ -30,60 +34,100 @@ export class CheckoutComponent implements OnInit {
       ciudad: ['', [Validators.required]],
       pais: ['', [Validators.required]],
       codigoPostal: ['', [Validators.required, Validators.pattern('^[0-9]{5}$')]],
+      emailOption: ['principal'],
+      emailAlternativo: ['', [Validators.email]]
+    });
+    this.checkoutForm.get('emailOption')?.valueChanges.subscribe(value => {
+      const emailAltControl = this.checkoutForm.get('emailAlternativo');
+      if (value === 'otro') {
+        emailAltControl?.setValidators([Validators.required, Validators.email]);
+      } else {
+        emailAltControl?.clearValidators();
+      }
+      emailAltControl?.updateValueAndValidity();
     });
   }
 
-  ngOnInit(): void { }
+  options: L.MapOptions = {
+    layers: [
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap'
+      })
+    ],
+    zoom: 13,
+    center: L.latLng(this.lat, this.lng)
+  };
 
-  // --- GETTERS para acceso fácil en el HTML ---
+  mainMarker: L.Marker = L.marker([this.lat, this.lng], {
+    draggable: true,
+    icon : L.icon({
+      iconSize: [25, 41],
+      iconAnchor: [13, 41],
+      iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png'
+    })
+
+  });
+
+  ngOnInit(): void {
+    if (this.cartStore.items().length === 0) {
+      this.router.navigate(['/']);
+    }
+    this.mainMarker.on('dragend', () => {
+      const position = this.mainMarker.getLatLng();
+      this.lat = position.lat;
+      this.lng = position.lng;
+      console.log(`Nueva posición del marcador: ${this.lat}, ${this.lng}`);
+    });
+  }
+
   get formCtrl() {
     return this.checkoutForm.controls;
   }
 
-  onSubmit() {
+ onSubmit() {
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
-      this.errorMessage = 'Por favor, completa todos los campos requeridos correctamente.';
-      return;
-    }
-
-    if (this.cartStore.items().length === 0) {
-      this.errorMessage = 'Tu carrito está vacío.';
+      this.errorMessage = 'Por favor, completa todos los campos requeridos.';
       return;
     }
 
     this.isSubmitting = true;
-    this.errorMessage = null;
-
     const formValues = this.checkoutForm.value;
 
-    const itemsRequest: VentaItemRequest[] = this.cartStore.items().map((item) => ({
-      productoId: item.producto.id,
-      cantidad: item.cantidad,
-    }));
+    const emailFinal = formValues.emailOption === 'principal'
+                        ? this.userEmail
+                        : formValues.emailAlternativo;
 
     const request: CheckoutRequest = {
-      items: itemsRequest,
+      items: this.cartStore.items().map(item => ({
+        productoId: item.producto.id,
+        cantidad: item.cantidad
+      })),
       direccion: formValues.direccion,
+      latitud: this.lat,
+      longitud: this.lng,
       ciudad: formValues.ciudad,
       pais: formValues.pais,
       codigoPostal: formValues.codigoPostal,
+      emailEnvioComprobante: emailFinal
     };
 
     this.checkoutService.realizarCheckout(request).subscribe({
       next: (response) => {
-        // Guardar datos para recuperar después del pago
-        localStorage.setItem('lastPreferenceId', response.preferenceId);
-        localStorage.setItem('lastCheckoutPendienteId', response.checkoutPendienteId.toString());
-
-        // Redirigir a Mercado Pago
-        window.location.href = response.initPoint;
+        if (response.checkoutPendienteId) {
+          localStorage.setItem('lastCheckoutPendienteId', response.checkoutPendienteId.toString());
+          console.log('ID de checkout guardado:', response.checkoutPendienteId);
+        }
+        if (response.checkoutUrl) {
+          window.location.href = response.checkoutUrl;
+        }
       },
       error: (err) => {
-        this.errorMessage =
-          err.error?.message || err.error || 'Ocurrió un error al procesar el pago.';
+        this.errorMessage = 'Error al procesar el pago.';
         this.isSubmitting = false;
-      },
+      }
     });
   }
 }
