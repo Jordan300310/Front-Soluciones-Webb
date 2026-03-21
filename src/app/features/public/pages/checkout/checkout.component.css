@@ -1,22 +1,98 @@
-.btn-stripe-payment {
+/* --- BOTÓN ESTILO STRIPE --- */
+.btn-primary {
     background-color: #635bff;
     color: white;
     border: none;
     border-radius: 8px;
-    transition: all 0.2s ease-in-out;
+    padding: 14px 28px;
+    font-weight: 600;
+    transition: all 0.25s cubic-bezier(0.02, 0.01, 0.47, 1);
+    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-.btn-stripe-payment:hover {
-    background-color: #0a2540;
+.btn-primary:hover:not(:disabled) {
+    background-color: #0a2540; /* El azul oscuro característico de Stripe */
     color: white;
     transform: translateY(-2px);
+    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
 }
 
-.btn-stripe-payment:disabled {
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled {
     background-color: #a3acb9;
+    border-color: #a3acb9;
     cursor: not-allowed;
+    opacity: 0.7;
 }
 
-.x-small {
+/* --- TARJETAS Y CONTENEDORES --- */
+.card {
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.05) !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+    font-weight: 600;
+}
+
+/* --- MAPA LEAFLET --- */
+#map, [leaflet] {
+    z-index: 10; /* Asegura que no tape dropdowns si los hubiera */
+    border-radius: 8px;
+}
+
+/* --- TEXTOS Y TIPOGRAFÍA --- */
+.small {
+    font-size: 0.875rem;
+}
+
+.extra-small {
     font-size: 0.75rem;
+}
+
+.tracking-wider {
+    letter-spacing: 0.05em;
+}
+
+/* --- FORMULARIOS --- */
+.form-control, .form-select {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #e6ebf1;
+    transition: border-color 0.15s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #635bff;
+    box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.2);
+    outline: none;
+}
+
+/* --- ANIMACIONES --- */
+.animate__fadeInUp {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+/* --- STICKY SUMMARY --- */
+@media (min-width: 768px) {
+    .sticky-top {
+        z-index: 1000;
+        margin-bottom: 2rem;
+    }
 }

@@ -1,129 +1,219 @@
-<div class="container my-5">
+<div class="container my-5 animate__animated animate__fadeIn">
   <div class="mb-4">
-    <span class="badge rounded-pill text-bg-primary me-2">1</span>
-    <span class="text-muted small">Datos de envío y pago</span>
+    <span class="badge rounded-pill bg-primary me-2 px-3">1</span>
+    <span class="fw-bold text-dark small text-uppercase tracking-wider">Datos de envío y pago</span>
     <span class="mx-2 text-muted">›</span>
+    <span class="badge rounded-pill bg-light text-muted border px-3">2</span>
+    <span class="text-muted small text-uppercase tracking-wider">Confirmación</span>
   </div>
 
   <div class="row g-5">
     <div class="col-md-7">
       <h2 class="h4 fw-bold mb-4 d-flex align-items-center gap-2">
-        <i class="bi bi-shield-check"></i>
+        <i class="bi bi-shield-check text-primary"></i>
         Finalizar Compra
       </h2>
 
       <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+
         <div class="card shadow-sm rounded-3 mb-4 border-0">
-          <div class="card-header bg-light">
+          <div class="card-header bg-light py-3">
             <h5 class="mb-0 d-flex align-items-center gap-2">
-              <i class="bi bi-truck"></i>
-              Dirección de Envío
+              <i class="bi bi-geo-alt-fill text-primary"></i>
+              Destino de Entrega
             </h5>
           </div>
-          <div class="card-body">
-            <div class="mb-3">
-              <label for="direccion" class="form-label">Dirección</label>
-              <input type="text" id="direccion" class="form-control" formControlName="direccion"
-                [class.is-invalid]="formCtrl['direccion'].invalid && formCtrl['direccion'].touched"
-                placeholder="Ej. Av. Sáenz Peña 123"/>
+          <div class="card-body p-4">
+
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label fw-semibold small">Departamento</label>
+                <select class="form-select" formControlName="departamento" (change)="onDepartamentoChange($event)"
+                  [class.is-invalid]="formCtrl['departamento'].invalid && formCtrl['departamento'].touched">
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let dep of departamentos" [value]="dep.id">{{ dep.nombre }}</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label fw-semibold small">Provincia</label>
+                <select class="form-select" formControlName="ciudad" (change)="onProvinciaChange($event)"
+                  [class.is-invalid]="formCtrl['ciudad'].invalid && formCtrl['ciudad'].touched">
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let prov of provincias" [value]="prov.id">{{ prov.nombre }}</option>
+                </select>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label fw-semibold small">Distrito</label>
+                <select class="form-select" formControlName="distrito" (change)="onDistritoChange($event)"
+                  [class.is-invalid]="formCtrl['distrito'].invalid && formCtrl['distrito'].touched">
+                  <option value="">Seleccione</option>
+                  <option *ngFor="let dist of distritos" [value]="dist.nombre">{{ dist.nombre }}</option>
+                </select>
+              </div>
             </div>
 
             <div class="mb-3">
-              <label class="form-label d-flex justify-content-between">
-                <span>Ubícate en el mapa</span>
-                <small class="text-primary"><i class="bi bi-info-circle"></i> Arrastra el pin a tu puerta</small>
+              <label for="direccion" class="form-label fw-semibold small">Dirección Exacta</label>
+              <input type="text" id="direccion" class="form-control" formControlName="direccion"
+                [class.is-invalid]="formCtrl['direccion'].invalid && formCtrl['direccion'].touched"
+                placeholder="Av. Principal 123, Dpto 402..."/>
+            </div>
+
+            <div class="mb-4">
+              <label for="referencia" class="form-label fw-semibold small">Referencia para el repartidor</label>
+              <textarea id="referencia" class="form-control" formControlName="referencia" rows="2"
+                [class.is-invalid]="formCtrl['referencia'].invalid && formCtrl['referencia'].touched"
+                placeholder="Ej: Portón negro, frente al parque..."></textarea>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label d-flex justify-content-between align-items-center">
+                <span class="fw-semibold small">Confirmación en Mapa</span>
+                <span class="badge bg-info-subtle text-info border border-info-subtle">
+                  <i class="bi bi-cursor-fill me-1"></i> Arrastra el pin a tu puerta
+                </span>
               </label>
               <div class="rounded-3 border overflow-hidden shadow-sm"
-                   style="height: 300px;"
+                   style="height: 320px;"
                    leaflet
-                   [leafletOptions]="options">
-                <div [leafletLayer]="mainMarker"></div>
+                   [leafletOptions]="options"
+                   (leafletMapReady)="onMapReady($event)">
               </div>
-              <div class="d-flex gap-3 mt-2 small text-muted">
-                <span><strong>Lat:</strong> {{ lat | number:'1.6-6' }}</span>
-                <span><strong>Long:</strong> {{ lng | number:'1.6-6' }}</span>
+              <div class="d-flex gap-3 mt-2 px-2 py-1 bg-light rounded-bottom border border-top-0 x-small text-muted justify-content-end">
+                <span><strong>Lat:</strong> {{ lat | number:'1.4-4' }}</span>
+                <span><strong>Lon:</strong> {{ lng | number:'1.4-4' }}</span>
               </div>
             </div>
 
             <div class="row">
               <div class="col-md-6 mb-3">
-                <label for="ciudad" class="form-label">Ciudad</label>
-                <input type="text" id="ciudad" class="form-control" formControlName="ciudad"
-                  [class.is-invalid]="formCtrl['ciudad'].invalid && formCtrl['ciudad'].touched" />
+                <label class="form-label fw-semibold small">País</label>
+                <input type="text" class="form-control bg-light" formControlName="pais" readonly />
               </div>
-              <div class="col-md-6 mb-3">
-                <label for="pais" class="form-label">País</label>
-                <input type="text" id="pais" class="form-control" formControlName="pais"
-                  [class.is-invalid]="formCtrl['pais'].invalid && formCtrl['pais'].touched" />
+              <div class="col-md-6 mb-0">
+                <label class="form-label fw-semibold small">Código Postal</label>
+                <input type="text" class="form-control" formControlName="codigoPostal" maxlength="6"
+                  [class.is-invalid]="formCtrl['codigoPostal'].invalid && formCtrl['codigoPostal'].touched" />
               </div>
-            </div>
-
-            <div class="mb-0">
-              <label for="codigoPostal" class="form-label">Código Postal</label>
-              <input type="text" id="codigoPostal" class="form-control" formControlName="codigoPostal" maxlength="5"
-                [class.is-invalid]="formCtrl['codigoPostal'].invalid && formCtrl['codigoPostal'].touched" />
             </div>
           </div>
         </div>
 
         <div class="card shadow-sm rounded-3 mb-4 border-0 overflow-hidden">
           <div class="card-header bg-light py-3">
-            <h6 class="fw-bold mb-0"><i class="bi bi-envelope-at me-2 text-primary"></i>¿Dónde enviamos tu comprobante?</h6>
+            <h6 class="fw-bold mb-0 text-dark">
+              <i class="bi bi-receipt me-2 text-primary"></i>Envío de Comprobante Electrónico
+            </h6>
           </div>
-          <div class="card-body bg-white">
+          <div class="card-body p-4 bg-white">
             <div class="form-check mb-3">
               <input class="form-check-input" type="radio" name="emailOption" id="useMain"
                      formControlName="emailOption" value="principal">
               <label class="form-check-label" for="useMain">
-                Usar mi correo de cuenta: <span class="fw-semibold text-dark">{{ userEmail }}</span>
+                Enviar a mi correo: <span class="fw-bold">{{ userEmail }}</span>
               </label>
             </div>
 
             <div class="form-check mb-2">
               <input class="form-check-input" type="radio" name="emailOption" id="useOther"
                      formControlName="emailOption" value="otro">
-              <label class="form-check-label" for="useOther">
-                Enviar a un correo distinto
-              </label>
+              <label class="form-check-label" for="useOther">Usar otro correo electrónico</label>
             </div>
 
             @if (checkoutForm.get('emailOption')?.value === 'otro') {
-              <div class="mt-3 animate__animated animate__fadeIn">
+              <div class="mt-3 animate__animated animate__fadeInUp">
                 <input type="email" class="form-control" formControlName="emailAlternativo"
                        placeholder="ejemplo@correo.com"
                        [class.is-invalid]="formCtrl['emailAlternativo'].invalid && formCtrl['emailAlternativo'].touched">
-                <div class="invalid-feedback text-xs">Por favor, ingresa un correo electrónico válido.</div>
+                <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
               </div>
             }
           </div>
         </div>
 
-        <div class="alert alert-info d-flex align-items-center gap-3 mb-4 border-0 shadow-sm">
-          <i class="bi bi-lock-fill fs-3"></i>
+        <div class="alert alert-light border d-flex align-items-center gap-3 mb-4 shadow-sm">
+          <div class="bg-primary bg-opacity-10 p-3 rounded-circle">
+            <i class="bi bi-shield-lock-fill text-primary fs-4"></i>
+          </div>
           <div>
-            <h6 class="mb-1 fw-bold">Pago Seguro con Stripe</h6>
-            <small class="d-block text-muted">Serás redirigido a la pasarela cifrada de Stripe.</small>
+            <h6 class="mb-0 fw-bold">Pago Procesado por Stripe</h6>
+            <p class="mb-0 small text-muted">Tu conexión es segura y tus datos bancarios nunca se guardan en nuestro servidor.</p>
           </div>
         </div>
 
         @if (errorMessage) {
-          <div class="alert alert-danger mt-4">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errorMessage }}
+          <div class="alert alert-danger border-0 shadow-sm animate__animated animate__shakeX">
+            <i class="bi bi-exclamation-octagon-fill me-2"></i> {{ errorMessage }}
           </div>
         }
 
-        <button type="submit" class="btn btn-stripe-payment w-100 py-3 shadow"
+        <button type="submit" class="btn btn-primary btn-lg w-100 py-3 shadow-lg fw-bold mb-5"
           [disabled]="checkoutForm.invalid || isSubmitting || cartStore.items().length === 0">
           @if (isSubmitting) {
-            <span class="spinner-border spinner-border-sm me-2"></span> Cargando...
+            <span class="spinner-border spinner-border-sm me-2"></span> Redirigiendo a Pago...
           } @else {
-            <span class="fw-bold">Pagar ahora S/ {{ cartStore.subtotal() | number : '1.2-2' }}</span>
+            <i class="bi bi-credit-card-2-back me-2"></i> PAGAR AHORA S/ {{ cartStore.subtotal() | number : '1.2-2' }}
           }
         </button>
       </form>
     </div>
 
     <div class="col-md-5">
+      <div class="card shadow-sm border-0 rounded-3 sticky-top" style="top: 2rem;">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0 fw-bold d-flex justify-content-between align-items-center">
+            Tu Pedido
+            <span class="badge bg-dark rounded-pill small">{{ cartStore.items().length }}</span>
+          </h5>
+        </div>
+
+        <div class="card-body p-0">
+          <div class="overflow-auto" style="max-height: 380px;">
+            @for (item of cartStore.items(); track item.producto.id) {
+              <div class="p-3 border-bottom d-flex align-items-center gap-3">
+                <div class="position-relative">
+                  <img [src]="item.producto.imagenUrl" class="rounded border bg-light"
+                       style="width: 70px; height: 70px; object-fit: contain;">
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary border border-white">
+                    {{ item.cantidad }}
+                  </span>
+                </div>
+                <div class="flex-grow-1">
+                  <p class="mb-0 fw-bold small lh-sm">{{ item.producto.nombre }}</p>
+                  <p class="mb-0 text-muted extra-small">Unid: S/ {{ item.producto.precio | number:'1.2-2' }}</p>
+                </div>
+                <div class="text-end">
+                  <span class="fw-bold text-dark">S/ {{ (item.producto.precio * item.cantidad) | number:'1.2-2' }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="card-footer bg-light border-0 p-4">
+          <div class="d-flex justify-content-between mb-2 small text-muted">
+            <span>Subtotal (Base Imponible)</span>
+            <span>S/ {{ (cartStore.subtotal() / 1.18) | number:'1.2-2' }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-3 small text-muted">
+            <span>IGV (18%)</span>
+            <span>S/ {{ (cartStore.subtotal() - (cartStore.subtotal() / 1.18)) | number:'1.2-2' }}</span>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center border-top pt-3 mt-2">
+            <h5 class="fw-bold text-dark mb-0">Total Final</h5>
+            <h4 class="fw-bold text-primary mb-0">S/ {{ cartStore.subtotal() | number:'1.2-2' }}</h4>
+          </div>
+
+          <div class="mt-4 p-3 bg-white rounded border border-info border-opacity-25 d-flex gap-2 align-items-center">
+            <i class="bi bi-info-circle text-info"></i>
+            <p class="mb-0 extra-small text-muted">
+              Entrega estimada en <strong>{{ checkoutForm.get('distrito')?.value || 'tu zona' }}</strong>
+              sujeto a disponibilidad horaria.
+            </p>
+          </div>
+        </div>
       </div>
+    </div>
   </div>
 </div>
