@@ -1,98 +1,78 @@
-/* --- BOTÓN ESTILO STRIPE --- */
-.btn-primary {
-    background-color: #635bff;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 14px 28px;
-    font-weight: 600;
-    transition: all 0.25s cubic-bezier(0.02, 0.01, 0.47, 1);
-    box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
+.container {
+  position: relative;
+  z-index: 1;
 }
 
-.btn-primary:hover:not(:disabled) {
-    background-color: #0a2540; /* El azul oscuro característico de Stripe */
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+/* hover cards */
+.anti-hover:hover {
+  transform: translateY(-8px) scale(1.015);
+  box-shadow: 0 25px 60px rgba(0,0,0,0.18);
 }
 
-.btn-primary:active:not(:disabled) {
-    transform: translateY(0);
+/* mapa */
+.anti-map {
+  transition: all 0.3s ease;
 }
 
-.btn-primary:disabled {
-    background-color: #a3acb9;
-    border-color: #a3acb9;
-    cursor: not-allowed;
-    opacity: 0.7;
+.anti-map:hover {
+  transform: scale(1.02);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.2);
 }
 
-/* --- TARJETAS Y CONTENEDORES --- */
-.card {
-    border-radius: 12px;
-    border: 1px solid rgba(0,0,0,0.05) !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+/* botón */
+.anti-btn {
+  transition: all 0.25s ease;
 }
 
-.card-header {
-    border-bottom: 1px solid rgba(0,0,0,0.05) !important;
-    font-weight: 600;
+.anti-btn:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 20px 40px rgba(99,91,255,0.5);
 }
 
-/* --- MAPA LEAFLET --- */
-#map, [leaflet] {
-    z-index: 10; /* Asegura que no tape dropdowns si los hubiera */
-    border-radius: 8px;
+/* micro animaciones */
+.anti-float-soft {
+  transition: transform 0.2s ease;
 }
 
-/* --- TEXTOS Y TIPOGRAFÍA --- */
-.small {
-    font-size: 0.875rem;
+.anti-float-soft:hover {
+  transform: translateY(-3px);
 }
 
-.extra-small {
-    font-size: 0.75rem;
+/* lista productos */
+.card-body .border-bottom {
+  border-color: rgba(0,0,0,0.05) !important;
+  transition: all 0.2s ease;
 }
 
-.tracking-wider {
-    letter-spacing: 0.05em;
+.card-body .border-bottom:hover {
+  background: rgba(255,255,255,0.2);
 }
 
-/* --- FORMULARIOS --- */
-.form-control, .form-select {
-    padding: 10px 12px;
-    border-radius: 8px;
-    border: 1px solid #e6ebf1;
-    transition: border-color 0.15s ease;
+/* imágenes */
+.card-body img {
+  transition: transform 0.25s ease;
 }
 
-.form-control:focus, .form-select:focus {
-    border-color: #635bff;
-    box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.2);
-    outline: none;
+.card-body img:hover {
+  transform: scale(1.05);
 }
 
-/* --- ANIMACIONES --- */
-.animate__fadeInUp {
-    animation: fadeInUp 0.4s ease-out;
+/* alerta */
+.alert {
+  backdrop-filter: blur(10px);
+  background: rgba(255,255,255,0.3) !important;
+  border-radius: 12px;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translate3d(0, 20px, 0);
-    }
-    to {
-        opacity: 1;
-        transform: translate3d(0, 0, 0);
-    }
-}
+/* texto */
+.small { font-size: 0.875rem; }
+.extra-small { font-size: 0.75rem; }
+.tracking-wider { letter-spacing: 0.05em; }
 
-/* --- STICKY SUMMARY --- */
+/* responsive */
 @media (min-width: 768px) {
-    .sticky-top {
-        z-index: 1000;
-        margin-bottom: 2rem;
-    }
+  .sticky-top {
+    z-index: 1000;
+    margin-bottom: 2rem;
+  }
 }

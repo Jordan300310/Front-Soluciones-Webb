@@ -132,6 +132,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/admin/compra/compra.component').then((m) => m.CompraComponent),
       },
+      {
+        path: 'pronosticos',
+        loadComponent: () =>
+          import('./features/admin/pronostico/pronostico.component').then(
+            (m) => m.PronosticoComponent
+          ),
+      },
     ],
   },
   {

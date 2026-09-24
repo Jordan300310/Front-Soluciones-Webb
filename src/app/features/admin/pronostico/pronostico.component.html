@@ -1,0 +1,172 @@
+<section class="forecast-page">
+  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-4">
+    <div>
+      <p class="section-kicker mb-1">Analítica predictiva</p>
+      <h2 class="mb-1 fw-bold">Pronóstico de demanda</h2>
+      <p class="text-muted mb-0">Proyección de unidades y recomendaciones de inventario para los próximos 7 días.</p>
+    </div>
+
+    <form class="run-panel" (ngSubmit)="ejecutar()">
+      <div>
+        <label for="fechaCorte" class="form-label small fw-semibold mb-1">Fecha de corte (domingo)</label>
+        <input
+          id="fechaCorte"
+          name="fechaCorte"
+          type="date"
+          class="form-control"
+          [(ngModel)]="fechaCorte"
+          [max]="maxFecha"
+          required
+        />
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="ejecutando() || !fechaCorte">
+        <span *ngIf="ejecutando()" class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+        <i *ngIf="!ejecutando()" class="bi bi-stars me-2"></i>
+        {{ ejecutando() ? 'Calculando…' : 'Generar pronóstico' }}
+      </button>
+    </form>
+  </div>
+
+  <div class="analytics-panel mb-4">
+    <div>
+      <h5 class="mb-1 fw-bold"><i class="bi bi-database-check me-2"></i>Resultados analíticos y Power BI</h5>
+      <p class="text-muted small mb-1">
+        Completa ventas reales de periodos ya terminados y actualiza KPI, métricas,
+        hipótesis, quiebres y retención.
+      </p>
+      <span class="small" *ngIf="analitica() as estado">
+        Última carga: <strong>{{ estado.status }}</strong>
+        <ng-container *ngIf="estado.processedWeeks != null"> · {{ estado.processedWeeks }} semanas</ng-container>
+        <ng-container *ngIf="estado.finishedAt"> · {{ estado.finishedAt | date:'dd/MM/yyyy HH:mm' }}</ng-container>
+      </span>
+      <span class="small text-muted" *ngIf="!analitica()">Aún no hay una carga analítica registrada.</span>
+    </div>
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      (click)="actualizarAnalitica()"
+      [disabled]="actualizandoAnalitica()"
+    >
+      <span *ngIf="actualizandoAnalitica()" class="spinner-border spinner-border-sm me-2"></span>
+      <i *ngIf="!actualizandoAnalitica()" class="bi bi-arrow-repeat me-2"></i>
+      {{ actualizandoAnalitica() ? 'Actualizando…' : 'Actualizar resultados BI' }}
+    </button>
+  </div>
+
+  <div *ngIf="mensaje() as texto" class="alert alert-success d-flex align-items-center" role="alert">
+    <i class="bi bi-check-circle-fill me-2"></i>{{ texto }}
+  </div>
+  <div *ngIf="error() as texto" class="alert alert-danger d-flex align-items-center" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ texto }}
+  </div>
+
+  <div *ngIf="cargandoResumen()" class="loading-card mb-4">
+    <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando</span></div>
+    <span>Consultando pronóstico…</span>
+  </div>
+
+  <ng-container *ngIf="!cargandoResumen() && resumen() as actual; else sinPronosticos">
+    <div class="summary-grid mb-4">
+      <article class="summary-card">
+        <span class="summary-icon icon-blue"><i class="bi bi-boxes"></i></span>
+        <div><span class="summary-label">Demanda estimada</span><strong>{{ actual.demandaTotal | number:'1.0-3' }}</strong><small>unidades</small></div>
+      </article>
+      <article class="summary-card">
+        <span class="summary-icon icon-red"><i class="bi bi-exclamation-triangle"></i></span>
+        <div><span class="summary-label">Riesgo alto</span><strong>{{ actual.productosRiesgoAlto }}</strong><small>productos</small></div>
+      </article>
+      <article class="summary-card">
+        <span class="summary-icon icon-green"><i class="bi bi-calendar-range"></i></span>
+        <div><span class="summary-label">Horizonte</span><strong>{{ actual.ejecucion.horizonteDias }}</strong><small>días</small></div>
+      </article>
+      <article class="summary-card">
+        <span class="summary-icon icon-purple"><i class="bi bi-cpu"></i></span>
+        <div><span class="summary-label">Modelo</span><strong class="model-version">{{ actual.ejecucion.versionModelo }}</strong><small>{{ actual.ejecucion.latenciaMs ?? 0 }} ms</small></div>
+      </article>
+    </div>
+
+    <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+      <div class="card-header bg-white py-3 d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+          <h5 class="mb-1 fw-bold">Resultado de la ejecución #{{ actual.ejecucion.idEjecucion }}</h5>
+          <span class="text-muted small">
+            Corte {{ actual.ejecucion.fechaCorte | date:'dd/MM/yyyy':'UTC' }} ·
+            Periodo {{ actual.productos[0]?.fechaInicio | date:'dd/MM/yyyy':'UTC' }}–{{ actual.productos[0]?.fechaFin | date:'dd/MM/yyyy':'UTC' }}
+          </span>
+        </div>
+        <span class="badge rounded-pill" [ngClass]="claseEstado(actual.ejecucion.estado)">
+          {{ actual.ejecucion.estado }}
+        </span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0 forecast-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th class="text-end">Predicción</th>
+              <th class="text-end">Stock</th>
+              <th class="text-end">Seguridad</th>
+              <th class="text-end">Compra sugerida</th>
+              <th class="text-center">Riesgo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let producto of actual.productos">
+              <td>
+                <div class="fw-semibold">{{ producto.nombreProducto }}</div>
+                <div class="text-muted small">{{ producto.categoria }} · {{ producto.marca }}</div>
+              </td>
+              <td class="text-end fw-semibold">{{ producto.cantidadPredicha | number:'1.0-3' }}</td>
+              <td class="text-end">{{ producto.stockActual }}</td>
+              <td class="text-end">{{ producto.stockSeguridad }}</td>
+              <td class="text-end">
+                <strong [class.text-danger]="producto.compraSugerida > 0">{{ producto.compraSugerida }}</strong>
+              </td>
+              <td class="text-center">
+                <span class="badge rounded-pill" [ngClass]="claseRiesgo(producto.nivelRiesgo)">
+                  {{ producto.nivelRiesgo }}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #sinPronosticos>
+    <div *ngIf="!cargandoResumen()" class="empty-state mb-4">
+      <i class="bi bi-graph-up-arrow"></i>
+      <h5>Aún no hay pronósticos</h5>
+      <p>Selecciona una fecha de corte y genera la primera proyección.</p>
+    </div>
+  </ng-template>
+
+  <div class="card border-0 shadow-sm overflow-hidden">
+    <div class="card-header bg-white py-3">
+      <h5 class="mb-0 fw-bold">Historial de ejecuciones</h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0 history-table">
+        <thead>
+          <tr><th>ID</th><th>Fecha de corte</th><th>Tipo</th><th>Modelo</th><th>Duración</th><th>Estado</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of ejecuciones()">
+            <td class="fw-semibold">#{{ item.idEjecucion }}</td>
+            <td>{{ item.fechaCorte | date:'dd/MM/yyyy':'UTC' }}</td>
+            <td>{{ item.tipoDisparo }}</td>
+            <td><code>{{ item.versionModelo }}</code></td>
+            <td>{{ item.latenciaMs == null ? '—' : item.latenciaMs + ' ms' }}</td>
+            <td><span class="badge rounded-pill" [ngClass]="claseEstado(item.estado)">{{ item.estado }}</span></td>
+            <td class="text-end"><button type="button" class="btn btn-sm btn-outline-primary" (click)="verEjecucion(item.idEjecucion)">Ver</button></td>
+          </tr>
+          <tr *ngIf="ejecuciones().length === 0">
+            <td colspan="7" class="text-center text-muted py-4">No hay ejecuciones registradas.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

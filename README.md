@@ -1,5 +1,8 @@
 # Tienda
 
+Consulta [CONFIGURACION_LOCAL.md](CONFIGURACION_LOCAL.md) para instalar el
+frontend y conectarlo correctamente con Spring Boot, Python y PostgreSQL.
+
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.6.
 
 ## Development server

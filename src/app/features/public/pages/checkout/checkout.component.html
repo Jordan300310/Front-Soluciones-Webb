@@ -1,5 +1,5 @@
-<div class="container my-5 animate__animated animate__fadeIn">
-  <div class="mb-4">
+<div class="container my-5 animate__animated animate__fadeIn anti-bg">
+  <div class="mb-4 anti-float-soft">
     <span class="badge rounded-pill bg-primary me-2 px-3">1</span>
     <span class="fw-bold text-dark small text-uppercase tracking-wider">Datos de envío y pago</span>
     <span class="mx-2 text-muted">›</span>
@@ -9,14 +9,14 @@
 
   <div class="row g-5">
     <div class="col-md-7">
-      <h2 class="h4 fw-bold mb-4 d-flex align-items-center gap-2">
+      <h2 class="h4 fw-bold mb-4 d-flex align-items-center gap-2 anti-float-soft">
         <i class="bi bi-shield-check text-primary"></i>
         Finalizar Compra
       </h2>
 
       <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
 
-        <div class="card shadow-sm rounded-3 mb-4 border-0">
+        <div class="card shadow-sm rounded-3 mb-4 border-0 anti-card anti-hover">
           <div class="card-header bg-light py-3">
             <h5 class="mb-0 d-flex align-items-center gap-2">
               <i class="bi bi-geo-alt-fill text-primary"></i>
@@ -73,7 +73,7 @@
                   <i class="bi bi-cursor-fill me-1"></i> Arrastra el pin a tu puerta
                 </span>
               </label>
-              <div class="rounded-3 border overflow-hidden shadow-sm"
+              <div class="rounded-3 border overflow-hidden shadow-sm anti-map"
                    style="height: 320px;"
                    leaflet
                    [leafletOptions]="options"
@@ -99,7 +99,7 @@
           </div>
         </div>
 
-        <div class="card shadow-sm rounded-3 mb-4 border-0 overflow-hidden">
+        <div class="card shadow-sm rounded-3 mb-4 border-0 overflow-hidden anti-card anti-hover">
           <div class="card-header bg-light py-3">
             <h6 class="fw-bold mb-0 text-dark">
               <i class="bi bi-receipt me-2 text-primary"></i>Envío de Comprobante Electrónico
@@ -131,7 +131,7 @@
           </div>
         </div>
 
-        <div class="alert alert-light border d-flex align-items-center gap-3 mb-4 shadow-sm">
+        <div class="alert alert-light border d-flex align-items-center gap-3 mb-4 shadow-sm anti-float-soft">
           <div class="bg-primary bg-opacity-10 p-3 rounded-circle">
             <i class="bi bi-shield-lock-fill text-primary fs-4"></i>
           </div>
@@ -147,7 +147,7 @@
           </div>
         }
 
-        <button type="submit" class="btn btn-primary btn-lg w-100 py-3 shadow-lg fw-bold mb-5"
+        <button type="submit" class="btn btn-primary btn-lg w-100 py-3 shadow-lg fw-bold mb-5 anti-btn"
           [disabled]="checkoutForm.invalid || isSubmitting || cartStore.items().length === 0">
           @if (isSubmitting) {
             <span class="spinner-border spinner-border-sm me-2"></span> Redirigiendo a Pago...
@@ -159,7 +159,7 @@
     </div>
 
     <div class="col-md-5">
-      <div class="card shadow-sm border-0 rounded-3 sticky-top" style="top: 2rem;">
+      <div class="card shadow-sm border-0 rounded-3 sticky-top anti-card anti-hover" style="top: 2rem;">
         <div class="card-header bg-white py-3">
           <h5 class="mb-0 fw-bold d-flex justify-content-between align-items-center">
             Tu Pedido

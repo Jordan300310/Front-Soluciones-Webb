@@ -1,107 +1,19 @@
-:host {
-  --bs-primary: #1193d4;
-  --bs-primary-rgb: 17, 147, 212;
-}
-
 /* --- HERO SECTION --- */
 .hero-section {
-  min-height: 480px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)),
+  min-height: 520px;
+  /* Overlay oscuro para que el texto resalte sobre la imagen */
+  background-image: linear-gradient(135deg, rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.85)),
     url('https://www.gorayeb.com/wp-content/uploads/2025/03/equipo-proteccion-personal-salva-vidas-construccion.jpg');
   background-size: cover;
   background-position: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.hero-section .btn-primary {
-  --bs-btn-color: #ffffff;
-  --bs-btn-bg: var(--bs-primary);
-  --bs-btn-border-color: var(--bs-primary);
-  --bs-btn-hover-bg: #1082bb;
-  --bs-btn-hover-border-color: #1082bb;
-  font-weight: 700;
-  font-size: 1rem;
-  padding: 0.75rem 1.25rem;
+.hero-section h1 {
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-/* --- ESTILOS DE IMAGEN Y ZOOM --- */
-.ratio {
-  overflow: hidden;
-  background-color: #fff;
-}
-
-.product-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: cover;
-  border-radius: 0.5rem 0.5rem 0 0;
-  transition: transform 0.3s ease;
-}
-
-.card:hover .product-image {
-  transform: scale(1.05);
-}
-
-/* --- ESTILOS GENERALES DE TARJETA --- */
-.product-price {
-  color: var(--bs-primary);
-  font-size: 0.875rem;
-}
-
-.card-title {
-  font-weight: 500;
-}
-
-/* --- BOTÓN AÑADIR (ANIMACIÓN) --- */
-.add-to-cart-btn {
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.add-to-cart-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
-}
-
-.add-to-cart-btn .btn-icon {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%) scale(0);
-  opacity: 0;
-  font-size: 1.5rem;
-  transition: all 0.3s ease;
-}
-
-.add-to-cart-btn .btn-text {
-  display: inline-block;
-  transition: all 0.3s ease;
-}
-
-.add-to-cart-btn.animating {
-  animation: pulse 0.6s ease;
-}
-
-.add-to-cart-btn.animating .btn-text {
-  opacity: 0;
-  transform: scale(0);
-}
-
-.add-to-cart-btn.animating .btn-icon {
-  opacity: 1;
-  transform: translate(-50%, -50%) scale(1);
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); box-shadow: 0 0 20px rgba(0, 123, 255, 0.6); }
-  100% { transform: scale(1); }
-}
-
-/* --- CARRUSEL Y SCROLL --- */
+/* --- CARRUSEL Y NAVEGACIÓN --- */
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -112,40 +24,42 @@
 }
 
 .card-wrapper {
-  flex: 0 0 auto; /* Importante para que no se achiquen */
+  flex: 0 0 auto;
+  padding: 10px; /* Espacio para que la sombra del hover no se corte */
 }
 
-/* --- FLECHAS DE NAVEGACIÓN (CONFIGURACIÓN FLEX) --- */
-
 .nav-btn {
-  /* Al estar en un contenedor FLEX, esto asegura que no se encojan */
-  flex: 0 0 auto; 
-  
-  background: transparent;
+  flex: 0 0 auto;
+  background: white;
   border: none;
-  padding: 0;
-  margin: 0 10px; /* Un poco de aire a los lados */
-  
-  /* Estilo visual */
-  font-size: 3rem; /* TAMAÑO GRANDE */
-  color: #343a40;
-  opacity: 0.5;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  
-  /* Centrado del ícono */
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  color: var(--bs-primary);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
 }
 
 .nav-btn:hover {
-  color: var(--bs-primary);
-  opacity: 1;
-  transform: scale(1.2); /* Zoom al pasar el mouse */
+  background-color: var(--bs-primary);
+  color: white;
+  transform: scale(1.1);
 }
 
-/* En móviles ocultamos las flechas para dar más espacio al touch */
+.product-image {
+  transition: transform 0.5s ease;
+}
+
+/* El efecto de zoom se activa al pasar el mouse sobre la card */
+.card:hover .product-image {
+  transform: scale(1.1);
+}
+
 @media (max-width: 576px) {
   .nav-btn {
     display: none;

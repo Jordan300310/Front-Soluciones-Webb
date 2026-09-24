@@ -19,11 +19,11 @@ import { LeafletModule } from '@bluehalo/ngx-leaflet';
 })
 export class CheckoutComponent implements OnInit {
   checkoutForm: FormGroup;
-  lat: number = -12.0464;
-  lng: number = -77.0428;
+  lat = -12.0464;
+  lng = -77.0428;
   errorMessage: string | null = null;
   isSubmitting = false;
-  userEmail: string = 'jordan.estudiante@upn.pe';
+  userEmail = 'jordan.estudiante@upn.pe';
 
   departamentos: any[] = [];
   provincias: any[] = [];
@@ -41,26 +41,21 @@ export class CheckoutComponent implements OnInit {
     private router: Router
   ) {
     this.checkoutForm = this.fb.group({
-      departamento: ['', [Validators.required]],
-      ciudad: ['', [Validators.required]], // Representa Provincia
-      distrito: ['', [Validators.required]],
+      departamento: ['', Validators.required],
+      ciudad: ['', Validators.required],
+      distrito: ['', Validators.required],
       direccion: ['', [Validators.required, Validators.minLength(5)]],
-      referencia: ['', [Validators.required]],
-      pais: ['Perú', [Validators.required]],
+      referencia: ['', Validators.required],
+      pais: ['Perú', Validators.required],
       codigoPostal: ['', [Validators.required, Validators.pattern('^[0-9]{5,6}$')]],
       emailOption: ['principal'],
-      emailAlternativo: ['', [Validators.email]]
+      emailAlternativo: ['', Validators.email]
     });
 
-    // Validación dinámica del email alternativo
-    this.checkoutForm.get('emailOption')?.valueChanges.subscribe(value => {
-      const emailAltControl = this.checkoutForm.get('emailAlternativo');
-      if (value === 'otro') {
-        emailAltControl?.setValidators([Validators.required, Validators.email]);
-      } else {
-        emailAltControl?.clearValidators();
-      }
-      emailAltControl?.updateValueAndValidity();
+    this.checkoutForm.get('emailOption')?.valueChanges.subscribe(v => {
+      const c = this.checkoutForm.get('emailAlternativo');
+      v === 'otro' ? c?.setValidators([Validators.required, Validators.email]) : c?.clearValidators();
+      c?.updateValueAndValidity();
     });
   }
 
@@ -86,19 +81,17 @@ export class CheckoutComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.cartStore.items().length === 0) {
-      this.router.navigate(['/']);
-    }
+    if (!this.cartStore.items().length) this.router.navigate(['/']);
 
-    this.ubicacionService.getDepartamentos().subscribe(data => {
-      this.departamentos = data;
+    this.ubicacionService.getDepartamentos().subscribe(d => {
+      this.departamentos = d;
       this.cdr.detectChanges();
     });
 
     this.mainMarker.on('dragend', () => {
-      const position = this.mainMarker.getLatLng();
-      this.lat = position.lat;
-      this.lng = position.lng;
+      const p = this.mainMarker.getLatLng();
+      this.lat = p.lat;
+      this.lng = p.lng;
       this.cdr.detectChanges();
     });
   }
@@ -112,46 +105,46 @@ export class CheckoutComponent implements OnInit {
     return this.checkoutForm.controls;
   }
 
-  onDepartamentoChange(event: any) {
-    const depId = event.target.value;
+  onDepartamentoChange(e: any) {
+    const id = e.target.value;
     this.provincias = [];
     this.distritos = [];
     this.checkoutForm.patchValue({ ciudad: '', distrito: '' });
 
-    if (depId) {
-      this.ubicacionService.getProvincias(depId).subscribe(data => {
-        this.provincias = data;
+    if (id) {
+      this.ubicacionService.getProvincias(id).subscribe(d => {
+        this.provincias = d;
         this.cdr.detectChanges();
       });
     }
   }
 
-  onProvinciaChange(event: any) {
-    const provId = event.target.value;
+  onProvinciaChange(e: any) {
+    const id = e.target.value;
     this.distritos = [];
     this.checkoutForm.patchValue({ distrito: '' });
 
-    if (provId) {
-      this.ubicacionService.getDistritos(provId).subscribe(data => {
-        this.distritos = data;
+    if (id) {
+      this.ubicacionService.getDistritos(id).subscribe(d => {
+        this.distritos = d;
         this.cdr.detectChanges();
       });
     }
   }
 
-  onDistritoChange(event: any) {
-    const distritoNombre = event.target.options[event.target.selectedIndex].text;
-    const provinciaNombre = this.provincias.find(p => p.id === this.checkoutForm.get('ciudad')?.value)?.nombre;
-    const departamentoNombre = this.departamentos.find(d => d.id === this.checkoutForm.get('departamento')?.value)?.nombre;
+  onDistritoChange(e: any) {
+    const distrito = e.target.options[e.target.selectedIndex].text;
+    const provincia = this.provincias.find(p => p.id === this.checkoutForm.get('ciudad')?.value)?.nombre;
+    const departamento = this.departamentos.find(d => d.id === this.checkoutForm.get('departamento')?.value)?.nombre;
 
-    if (distritoNombre && provinciaNombre) {
-      const query = `${distritoNombre}, ${provinciaNombre}, ${departamentoNombre}, Peru`;
-      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=1`;
+    if (distrito && provincia) {
+      const q = `${distrito}, ${provincia}, ${departamento}, Peru`;
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1`;
 
-      this.http.get<any[]>(url).subscribe(res => {
-        if (res && res.length > 0) {
-          this.lat = parseFloat(res[0].lat);
-          this.lng = parseFloat(res[0].lon);
+      this.http.get<any[]>(url).subscribe(r => {
+        if (r?.length) {
+          this.lat = +r[0].lat;
+          this.lng = +r[0].lon;
           this.map.flyTo([this.lat, this.lng], 16);
           this.mainMarker.setLatLng([this.lat, this.lng]);
           this.cdr.detectChanges();
@@ -160,45 +153,52 @@ export class CheckoutComponent implements OnInit {
     }
   }
 
+  onMouseMove(e: MouseEvent) {
+    const el = e.currentTarget as HTMLElement;
+    const r = el.getBoundingClientRect();
+    const x = e.clientX - r.left;
+    const y = e.clientY - r.top;
+    const mx = (x - r.width / 2) / 25;
+    const my = (y - r.height / 2) / 25;
+    el.style.transform = `translate(${mx}px, ${my}px) scale(1.02)`;
+  }
+
+  onMouseLeave(e: MouseEvent) {
+    (e.currentTarget as HTMLElement).style.transform = '';
+  }
+
   onSubmit() {
     if (this.checkoutForm.invalid) {
       this.checkoutForm.markAllAsTouched();
-      this.errorMessage = 'Por favor, completa todos los campos requeridos.';
+      this.errorMessage = 'Completa los campos requeridos';
       return;
     }
 
     this.isSubmitting = true;
-    const formValues = this.checkoutForm.value;
+    const v = this.checkoutForm.value;
 
-    const depNombre = this.departamentos.find(d => d.id === formValues.departamento)?.nombre || '';
-    const provNombre = this.provincias.find(p => p.id === formValues.ciudad)?.nombre || '';
-    const emailFinal = formValues.emailOption === 'principal' ? this.userEmail : formValues.emailAlternativo;
+    const dep = this.departamentos.find(d => d.id === v.departamento)?.nombre || '';
+    const prov = this.provincias.find(p => p.id === v.ciudad)?.nombre || '';
+    const email = v.emailOption === 'principal' ? this.userEmail : v.emailAlternativo;
 
-    const request: CheckoutRequest = {
-      items: this.cartStore.items().map(item => ({
-        productoId: item.producto.id,
-        cantidad: item.cantidad
-      })),
-      pais: formValues.pais,
-      departamento: depNombre,
-      ciudad: provNombre,
-      distrito: formValues.distrito,
-      direccion: formValues.direccion,
-      referencia: formValues.referencia,
+    const req: CheckoutRequest = {
+      items: this.cartStore.items().map(i => ({ productoId: i.producto.id, cantidad: i.cantidad })),
+      pais: v.pais,
+      departamento: dep,
+      ciudad: prov,
+      distrito: v.distrito,
+      direccion: v.direccion,
+      referencia: v.referencia,
       latitud: this.lat,
       longitud: this.lng,
-      codigoPostal: formValues.codigoPostal,
-      emailEnvioComprobante: emailFinal
+      codigoPostal: v.codigoPostal,
+      emailEnvioComprobante: email
     };
 
-    this.checkoutService.realizarCheckout(request).subscribe({
-      next: (response) => {
-        if (response.checkoutUrl) {
-          window.location.href = response.checkoutUrl;
-        }
-      },
-      error: (err) => {
-        this.errorMessage = 'Error al procesar el pago.';
+    this.checkoutService.realizarCheckout(req).subscribe({
+      next: r => r.checkoutUrl && (window.location.href = r.checkoutUrl),
+      error: () => {
+        this.errorMessage = 'Error al procesar pago';
         this.isSubmitting = false;
       }
     });
